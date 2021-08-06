@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const bcrypt = require('bcryptjs');
 const validator = require('mongoose-validator')
 
 const AccountSchema = new Schema({
     userName: {
         type: String,
+        trim: true,
         required: [true, "Username is required"],
         minlength: [6, "Username musts have more than 6 characters"],
         unique: true,
@@ -34,6 +36,7 @@ const AccountSchema = new Schema({
     },
     verifyCode: {
         type: Number,
+        trim: true,
         required: [true, "Verify Code is required"],
     },
     isLogin: {
@@ -48,6 +51,16 @@ const AccountSchema = new Schema({
     toJSON: { virtuals: true },
     timestamps: true,
 });
+
+AccountSchema.pre("save", async function(next) {
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+})
+
+AccountSchema.statics.comparePassword = async function(password, hashPassword) {
+    return await bcrypt.compare(password, hashPassword)
+}
 
 AccountSchema.virtual("role_detail", {
     ref: "Role",

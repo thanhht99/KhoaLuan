@@ -14,12 +14,12 @@ const UserSchema = new Schema({
     },
     fullName: {
         type: String,
+        trim: true,
         required: [true, "Full Name is required"],
         minlength: [3, "Full Name musts have more than 3 characters"],
     },
     address: {
         type: String,
-        required: [true, "Address is required"],
     },
     email: {
         type: String,
@@ -35,7 +35,8 @@ const UserSchema = new Schema({
         unique: true,
     },
     phone: {
-        type: Number,
+        type: String,
+        trim: true,
         required: [true, "Phone is required"],
         validate: [isPhone, 'Oops..Please fill a valid number phone'],
     },
