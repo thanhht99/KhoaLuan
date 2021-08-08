@@ -13,7 +13,7 @@ const errorMiddleware = (err, req, res, next) => {
     if (err.code === 11000) {
         errors = new ErrorResponse(400, err.keyValue);
         for (let i in errors.message) {
-            errors.message[i] = `${i} is already exist`;
+            errors.message[i] = `${i.charAt(0).toUpperCase() + i.slice(1)} is already exist`;
         }
     }
 

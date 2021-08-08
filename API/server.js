@@ -1,14 +1,15 @@
 const express = require("express");
 require("dotenv").config();
 
-const validator = require('express-validator');
-const colors = require("colors");
 const app = express();
-// const PORT = 4200;
-const errorMiddleware = require("./middleware/errorMiddleware");
+const validator = require('express-validator');
+const colors = require('colors');
+const session = require('express-session');
 
+const errorMiddleware = require("./middleware/errorMiddleware");
 const { ConnectMongo } = require("./database/connectDB");
 const MailService = require("./utility/mail");
+
 const auth = require("./routes/auth");
 
 // using MongoDB
@@ -18,13 +19,15 @@ MailService.init();
 // middleware parse body
 app.use(express.json());
 app.use(validator());
+app.use(session({
+    cookie: { httpOnly: true, maxAge: 60 * 60 * 1000 },
+    secret: 'S3cret',
+    saveUninitialized: false,
+    resave: true
+}));
 
 // routes
 app.use("/api/auth", auth);
-
-app.get("/", (req, res, next) => {
-    res.status(200).json({ success: true });
-});
 
 // middleware error
 app.use(errorMiddleware);
