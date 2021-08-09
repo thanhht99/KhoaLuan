@@ -11,6 +11,7 @@ const { ConnectMongo } = require("./database/connectDB");
 const MailService = require("./utility/mail");
 
 const auth = require("./routes/auth");
+const user = require("./routes/user");
 
 // using MongoDB
 ConnectMongo.getConnect();
@@ -28,6 +29,7 @@ app.use(session({
 
 // routes
 app.use("/api/auth", auth);
+app.use("/api/user", user);
 
 // middleware error
 app.use(errorMiddleware);

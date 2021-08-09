@@ -12,18 +12,21 @@ const jwtAuth = async(req, res, next) => {
     if (!token) {
         return next(new ErrorResponse(401, "Unauthorized"))
     }
+
     try {
         const payload = jwt.verify(token, process.env.SECRETKEY);
+        // console.log(payload);
         const account = await Account.findOne({ email: payload.email });
         if (account) {
             req.session.account = payload;
-            // console.log(req.session.account);
+            // console.log(req.session);
             next();
         } else {
             return next(new ErrorResponse(401, "Unauthorized"));
         }
     } catch (error) {
         if (error.name === "TokenExpiredError") {
+            req.session = null;
             return next(new ErrorResponse(401, "Token is expired"));
         }
         return next(new ErrorResponse(401, "Unauthorized"));

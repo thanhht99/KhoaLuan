@@ -121,15 +121,20 @@ exports.signIn = asyncMiddleware(async(req, res, next) => {
                 account.password
             );
             if (isMatchPassword) {
+                if (account.isLogin) {
+                    return next(new ErrorResponse(403, "Account is logged in somewhere else"));
+                }
                 const token = jwt.sign({
                         userName: account.userName,
                         email: account.email,
                         role: account.role
                     },
-                    process.env.SECRETKEY, { expiresIn: "1h" }
+                    process.env.SECRETKEY, { expiresIn: "1m" }
                 );
                 const updatedIsLogin = await Account.findOneAndUpdate({ email: account.email }, { isLogin: true }, { new: true });
-                // console.log(updatedIsLogin);
+                setTimeout(async function() {
+                    await Account.findOneAndUpdate({ email: jwt.decode(token).email }, { isLogin: false }, { new: true });
+                }, 1000 * 60);
                 return res.status(200).json(new SuccessResponse(200, token));
             }
             return next(new ErrorResponse(401, "Password is not match"));
