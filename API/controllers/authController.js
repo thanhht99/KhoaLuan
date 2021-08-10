@@ -34,7 +34,8 @@ exports.signUp = asyncMiddleware(async(req, res, next) => {
     const newUser = new User({
         fullName,
         email,
-        phone
+        phone,
+        isAcc: true
     });
 
     const res_acc = await newAccount.save();
