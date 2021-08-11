@@ -3,6 +3,58 @@ const SuccessResponse = require("../model/statusResponse/SuccessResponse");
 const Account = require("../model/database/Account");
 const User = require("../model/database/User");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
+const { ConnectMongo } = require('../database/connectDB');
+
+// Get All Users
+exports.getAllUsers = asyncMiddleware(async(req, res, next) => {
+    try {
+        const users = await User.find().select("-updatedAt -createdAt -__v");
+        const userAndAccount = await Promise.all(users.map(async(user) => {
+            if (user.isAcc) {
+                const account = await Account.findOne({ email: user.email }).select("-password -updatedAt -createdAt -__v");
+                user.account = account;
+                return user;
+            }
+            return user;
+        }));
+        return res.status(200).json(new SuccessResponse(200, userAndAccount));
+    } catch (error) {
+        return next(new ErrorResponse(400, error));
+    }
+});
+
+// Avatar User
+exports.avatarUser = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    const checkExistAccount = await Account.findOne({
+        userName: req.session.account.userName,
+    });
+    if (!checkExistAccount) {
+        return next(new ErrorResponse(404, "Account is not found"));
+    }
+    if (!checkExistAccount.isActive) {
+        return next(new ErrorResponse(403, "Account locked"));
+    }
+
+    try {
+        const findUser = await User.findOne({ email: req.session.account.email });
+        req.params.filename = findUser.image;
+
+        const { filename } = req.params;
+
+        const file = ConnectMongo.gfs.find({ filename }).toArray((err, files) => {
+                if (!files || !files.length) {
+                    return next(new ErrorResponse(404, "file not found"));
+                }
+                ConnectMongo.gfs.openDownloadStreamByName(filename).pipe(res);
+            })
+            // console.log(file);
+    } catch (error) {
+        return next(new ErrorResponse(500, "Can't open the image"));
+    }
+});
 
 // Update Password
 exports.updatePassword = asyncMiddleware(async(req, res, next) => {

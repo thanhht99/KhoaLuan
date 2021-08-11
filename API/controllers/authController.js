@@ -18,6 +18,7 @@ exports.signUp = asyncMiddleware(async(req, res, next) => {
     req.checkBody('password', 'Password is empty!!').notEmpty();
     req.checkBody('email', 'Invalid email!!').isEmail();
     req.checkBody('phone', 'Invalid phone!!').custom((val) => /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(val));
+    req.checkBody('userName', 'Invalid UserName!!').custom((val) => /^[a-zA-Z0-9]+$/.test(val));
 
     let errors = await req.getValidationResult()
     if (!errors.isEmpty()) {
@@ -130,12 +131,13 @@ exports.signIn = asyncMiddleware(async(req, res, next) => {
                         email: account.email,
                         role: account.role
                     },
-                    process.env.SECRETKEY, { expiresIn: "1m" }
+                    process.env.SECRETKEY, { expiresIn: "5m" }
                 );
                 const updatedIsLogin = await Account.findOneAndUpdate({ email: account.email }, { isLogin: true }, { new: true });
                 setTimeout(async function() {
                     await Account.findOneAndUpdate({ email: jwt.decode(token).email }, { isLogin: false }, { new: true });
-                }, 1000 * 60);
+                    console.log('Run setTimeout() Account update isLogin(false) success !!! !!! !!!')
+                }, 1000 * 60 * 5);
                 return res.status(200).json(new SuccessResponse(200, token));
             }
             return next(new ErrorResponse(401, "Password is not match"));

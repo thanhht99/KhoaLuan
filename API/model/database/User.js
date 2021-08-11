@@ -43,6 +43,9 @@ const UserSchema = new Schema({
     image: {
         type: String,
     },
+    account: {
+        type: Object,
+    },
     isAcc: {
         type: Boolean,
         default: false

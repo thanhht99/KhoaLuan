@@ -20,7 +20,7 @@ class MailService {
                 html,
             })
             .then((info) => {
-                console.log(info);
+                // console.log(info);
                 console.log("===============================");
                 console.log("Sent Email");
             })

@@ -4,7 +4,13 @@ const jwtAuth = require('../middleware/jwtAuth');
 const userController = require('../controllers/userController');
 const { authorize } = require("../middleware/authorize");
 const mongoUpload = require("../middleware/mongoUpload");
+const { ConnectMongo } = require('../database/connectDB');
 
+// router.get("/updatePassword", jwtAuth, userController.updatePassword);
+
+router.get("/all", jwtAuth, authorize("Admin"), userController.getAllUsers);
+
+router.get("/avatar", jwtAuth, authorize("Customer", "Saler"), userController.avatarUser);
 
 router.patch("/updatePassword", jwtAuth, userController.updatePassword);
 
