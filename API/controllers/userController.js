@@ -23,6 +23,27 @@ exports.getAllUsers = asyncMiddleware(async(req, res, next) => {
     }
 });
 
+// Find User By UserName
+exports.findUserByUserName = asyncMiddleware(async(req, res, next) => {
+    const { userName } = req.params;
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (userName !== req.session.account.userName) {
+        return next(new ErrorResponse(403, "Forbidden !!!. What are you doing???"));
+    }
+    try {
+        const user = await User.findOne({ email: req.session.account.email }).select("-updatedAt -createdAt -__v");
+        if (user.isAcc) {
+            const account = await Account.findOne({ email: user.email }).select("-password -updatedAt -createdAt -__v");
+            user.account = account;
+        }
+        return res.status(200).json(new SuccessResponse(200, user));
+    } catch (error) {
+        return next(new ErrorResponse(400, error));
+    }
+});
+
 // Avatar User
 exports.avatarUser = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
