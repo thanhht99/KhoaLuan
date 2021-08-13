@@ -7,6 +7,9 @@ const { ConnectMongo } = require('../database/connectDB');
 
 // Get All Users
 exports.getAllUsers = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
     try {
         const users = await User.find().select("-updatedAt -createdAt -__v");
         const userAndAccount = await Promise.all(users.map(async(user) => {
