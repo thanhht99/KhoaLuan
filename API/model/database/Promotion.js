@@ -21,8 +21,7 @@ const PromotionSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ["Money", "Percent"],
-        default: "Money"
+        enum: ["Money", "Percent"]
     },
     isActive: {
         type: Boolean,

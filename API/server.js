@@ -13,7 +13,7 @@ const MailService = require("./utility/mail");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
 const category = require("./routes/category");
-// const promotion = require("./routes/promotion");
+const promotion = require("./routes/promotion");
 
 // using MongoDB
 ConnectMongo.getConnect();
@@ -33,7 +33,7 @@ app.use(session({
 app.use("/api/auth", auth);
 app.use("/api/user", user);
 app.use("/api/category", category);
-// app.use("/api/promotion", promotion);
+app.use("/api/promotion", promotion);
 
 // middleware error
 app.use(errorMiddleware);

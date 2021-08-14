@@ -131,13 +131,13 @@ exports.signIn = asyncMiddleware(async(req, res, next) => {
                         email: account.email,
                         role: account.role
                     },
-                    process.env.SECRETKEY, { expiresIn: "5m" }
+                    process.env.SECRETKEY, { expiresIn: "15m" }
                 );
                 const updatedIsLogin = await Account.findOneAndUpdate({ email: account.email }, { isLogin: true }, { new: true });
                 setTimeout(async function() {
                     await Account.findOneAndUpdate({ email: jwt.decode(token).email }, { isLogin: false }, { new: true });
                     console.log('Run setTimeout() Account update isLogin(false) success !!! !!! !!!')
-                }, 1000 * 60 * 5);
+                }, 1000 * 60 * 15);
                 return res.status(200).json(new SuccessResponse(200, token));
             }
             return next(new ErrorResponse(401, "Password is not match"));

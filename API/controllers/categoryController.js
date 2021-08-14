@@ -71,14 +71,15 @@ exports.updateCategory = asyncMiddleware(async(req, res, next) => {
 exports.updateActiveCategory = asyncMiddleware(async(req, res, next) => {
     const { id } = req.params;
     const isActive = req.query.isActive;
-    console.log(req.query);
-    console.log("===================");
-    console.log(req.query.isActive);
     if (!req.session.account) {
         return next(new ErrorResponse(401, "End of login session"));
     }
     if (!id.trim()) {
         return next(new ErrorResponse(400, "Id is empty"));
+    }
+    // console.log(isActive)
+    if (isActive === null || isActive === undefined || typeof(Boolean(isActive)) !== "boolean") {
+        return next(new ErrorResponse(404, "API invalid"));
     }
     const updatedCategory = await Category.findOneAndUpdate({ _id: id }, { isActive }, { new: true });
     if (!updatedCategory) {

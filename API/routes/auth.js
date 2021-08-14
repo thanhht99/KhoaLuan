@@ -10,7 +10,7 @@ router.post("/signUp/verifyCode/:id", baseAuth, authController.verifyCode);
 
 router.post("/signIn", baseAuth, authController.signIn);
 
-router.post("/forgetPassword1", baseAuth, authController.forgetPassword);
+router.post("/forgetPassword", baseAuth, authController.forgetPassword);
 
 router.post("/resetPassword/:token", baseAuth, authController.resetPassword);
 
