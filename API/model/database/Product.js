@@ -57,8 +57,8 @@ const ProductSchema = new Schema({
 
 ProductSchema.virtual("category_detail", {
     ref: "Category",
-    foreignField: "category",
-    localField: "category_name",
+    foreignField: "category_name",
+    localField: "category",
     justOne: true
 });
 

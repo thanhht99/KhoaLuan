@@ -62,12 +62,4 @@ AccountSchema.statics.comparePassword = async function(password, hashPassword) {
     return await bcrypt.compare(password, hashPassword)
 }
 
-AccountSchema.virtual("role_detail", {
-    ref: "Role",
-    foreignField: "role_name",
-    localField: "role",
-    justOne: true
-
-})
-
 module.exports = mongoose.model('Account', AccountSchema);
