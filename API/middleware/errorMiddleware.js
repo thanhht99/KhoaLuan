@@ -26,7 +26,8 @@ const errorMiddleware = (err, req, res, next) => {
     }
     if (err.name === 'CastError') {
         errors.code = 400;
-        errors.message = "Id in invalid";
+        // errors.message = "Id in invalid";
+        errors.message = err.message;
     }
     if (err.message.code === 'EAUTH') {
         errors.code = 503;

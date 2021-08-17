@@ -3,6 +3,23 @@ const SuccessResponse = require("../model/statusResponse/SuccessResponse");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const Promotion = require("../model/database/Promotion");
 
+function getBoolean(value) {
+    switch (value) {
+        case true:
+        case "true":
+        case 1:
+        case "1":
+            return true;
+        case false:
+        case "false":
+        case 0:
+        case "0":
+            return false;
+        default:
+            return value;
+    }
+}
+
 // All Promotion
 exports.getAllPromotions = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
@@ -63,6 +80,7 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
     if (!id.trim()) {
         return next(new ErrorResponse(400, "Id is empty"));
     }
+
     const { promotion_name, promotion_desc, discount, type } = req.body;
     req.checkBody("promotion_name", "Promotion Name is empty!!").notEmpty();
     req.checkBody("promotion_desc", "Promotion Description is empty!!").notEmpty();
@@ -86,7 +104,6 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
             return next(new ErrorResponse(400, "Discount invalid"));
         }
     }
-
     const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc, discount, type }, { new: true });
     if (!updatedPromotion) {
         return next(new ErrorResponse(400, 'Can not updated'))
@@ -97,7 +114,7 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
 // Update isActive Promotion
 exports.updateActivePromotion = asyncMiddleware(async(req, res, next) => {
     const { id } = req.params;
-    const isActive = req.query.isActive;
+    const isActive = getBoolean(req.query.isActive);
     if (!req.session.account) {
         return next(new ErrorResponse(401, "End of login session"));
     }
@@ -105,7 +122,7 @@ exports.updateActivePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(400, "Id is empty"));
     }
     // console.log(isActive)
-    if (isActive === null || isActive === undefined || typeof(Boolean(isActive)) !== "boolean") {
+    if (isActive === null || isActive === undefined || typeof(isActive) !== "boolean") {
         return next(new ErrorResponse(404, "API invalid"));
     }
     const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { isActive }, { new: true });

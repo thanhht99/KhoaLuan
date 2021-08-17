@@ -3,6 +3,23 @@ const SuccessResponse = require("../model/statusResponse/SuccessResponse");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const Category = require("../model/database/Category");
 
+function getBoolean(value) {
+    switch (value) {
+        case true:
+        case "true":
+        case 1:
+        case "1":
+            return true;
+        case false:
+        case "false":
+        case 0:
+        case "0":
+            return false;
+        default:
+            return value;
+    }
+}
+
 // All Category
 exports.getAllCategories = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
@@ -70,7 +87,7 @@ exports.updateCategory = asyncMiddleware(async(req, res, next) => {
 // Update isActive Category
 exports.updateActiveCategory = asyncMiddleware(async(req, res, next) => {
     const { id } = req.params;
-    const isActive = req.query.isActive;
+    const isActive = getBoolean(req.query.isActive);
     if (!req.session.account) {
         return next(new ErrorResponse(401, "End of login session"));
     }
@@ -78,7 +95,7 @@ exports.updateActiveCategory = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(400, "Id is empty"));
     }
     // console.log(isActive)
-    if (isActive === null || isActive === undefined || typeof(Boolean(isActive)) !== "boolean") {
+    if (isActive === null || isActive === undefined || typeof(isActive) !== "boolean") {
         return next(new ErrorResponse(404, "API invalid"));
     }
     const updatedCategory = await Category.findOneAndUpdate({ _id: id }, { isActive }, { new: true });

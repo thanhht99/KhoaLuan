@@ -14,8 +14,19 @@ router.post("/create",
 
 router.get("/all", jwtAuth, authorize("Admin"), productController.getAllProducts);
 
+router.get("/allByActive", jwtAuth, authorize("Admin"), productController.getAllProductsSortByIsActive);
+
 router.get("/:sku", jwtAuth, productController.getProductBySku);
 
 router.get("/image/:sku", jwtAuth, productController.getImageProductBySku);
+
+router.patch("/updateActive/:sku", jwtAuth, authorize("Admin"), productController.updateActiveProduct);
+
+router.patch("/update/:sku",
+    jwtAuth,
+    mongoUpload.single("image"),
+    authorize("Admin"),
+    productController.updateProduct
+);
 
 module.exports = router;

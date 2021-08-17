@@ -5,6 +5,23 @@ const Category = require("../model/database/Category");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const { ConnectMongo } = require('../database/connectDB');
 
+function getBoolean(value) {
+    switch (value) {
+        case true:
+        case "true":
+        case 1:
+        case "1":
+            return true;
+        case false:
+        case "false":
+        case 0:
+        case "0":
+            return false;
+        default:
+            return value;
+    }
+}
+
 // Get All Products
 exports.getAllProducts = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
@@ -27,11 +44,36 @@ exports.getAllProducts = asyncMiddleware(async(req, res, next) => {
     }
 });
 
+// Get All Products By IsActive
+exports.getAllProductsSortByIsActive = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    const isActive = getBoolean(req.query.isActive);
+    if (isActive === null || isActive === undefined || typeof(isActive) !== "boolean") {
+        return next(new ErrorResponse(404, "API invalid"));
+    }
+    const products = await Product
+        .find({ isActive })
+        .populate({
+            path: "category_detail",
+            select: "category_name category_desc"
+        })
+        .select("-updatedAt -createdAt -__v");
+    if (!products.length) {
+        return next(new ErrorResponse(404, 'No products'));
+    }
+    return res.status(200).json(new SuccessResponse(200, products));
+});
+
 // Find Product By SKU
 exports.getProductBySku = asyncMiddleware(async(req, res, next) => {
     const { sku } = req.params;
     if (!req.session.account) {
         return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (!sku.trim()) {
+        return next(new ErrorResponse(400, "Sku is empty"));
     }
     const doc = await Product
         .findOne({ sku })
@@ -98,6 +140,9 @@ exports.getImageProductBySku = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(401, "End of login session"));
     }
     const { sku } = req.params;
+    if (!sku.trim()) {
+        return next(new ErrorResponse(400, "Sku is empty"));
+    }
     const doc = await Product
         .findOne({ sku })
         .populate({
@@ -123,3 +168,64 @@ exports.getImageProductBySku = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(500, "Can't open the image"));
     }
 });
+
+// Update isActive Product
+exports.updateActiveProduct = asyncMiddleware(async(req, res, next) => {
+    const { sku } = req.params;
+    const isActive = getBoolean(req.query.isActive);
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (!sku.trim()) {
+        return next(new ErrorResponse(400, "Sku is empty"));
+    }
+    if (isActive === null || isActive === undefined || typeof(isActive) !== "boolean") {
+        return next(new ErrorResponse(404, "API invalid"));
+    }
+    const updatedProduct = await Product.findOneAndUpdate({ sku }, { isActive }, { new: true });
+    if (!updatedProduct) {
+        return next(new ErrorResponse(400, 'Not found to updated'))
+    }
+    return res.status(200).json(new SuccessResponse(200, updatedProduct))
+})
+
+// Update Product
+exports.updateProduct = asyncMiddleware(async(req, res, next) => {
+    const { name, price, quantity, description } = req.body;
+    const image = req.file.filename;
+    const { sku } = req.params;
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (!sku.trim()) {
+        return next(new ErrorResponse(400, "Sku is empty"));
+    }
+    const product = await Product.findOne({ sku });
+    if (!product) {
+        return next(new ErrorResponse(404, "Product not found"));
+    }
+
+    req.checkBody("name", "Product name is empty !!").notEmpty();
+    req.checkBody("price", "Product price is empty !!").notEmpty();
+    req.checkBody("quantity", "Product quantity is empty !!").notEmpty();
+    req.checkBody("description", "Product description is empty !!").notEmpty();
+
+    let errors = await req.getValidationResult();
+    if (!errors.isEmpty()) {
+        let array = [];
+        errors.array().forEach((e) => array.push(e.msg));
+        return next(new ErrorResponse(422, array));
+    }
+
+    const updatedProduct = await Product.findOneAndUpdate({ sku }, {
+        name,
+        price,
+        quantity,
+        description,
+        image
+    }, { new: true });
+    if (!updatedProduct) {
+        return next(new ErrorResponse(400, 'Can not updated'))
+    }
+    return res.status(200).json(new SuccessResponse(200, updatedProduct))
+})

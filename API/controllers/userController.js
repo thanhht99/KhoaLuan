@@ -117,6 +117,7 @@ exports.updatePassword = asyncMiddleware(async(req, res, next) => {
 exports.updateUser = asyncMiddleware(async(req, res, next) => {
     const { fullName, address, phone } = req.body;
     const image = req.file.filename;
+    console.log(req.body);
     req.checkBody("fullName", "Full Name is empty!!").notEmpty();
     req.checkBody("address", "Address is empty!!").notEmpty();
     req.checkBody("phone", "Phone is empty!!").notEmpty();
