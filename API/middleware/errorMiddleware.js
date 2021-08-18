@@ -1,8 +1,9 @@
 const ErrorResponse = require("../model/statusResponse/ErrorResponse");
+const removeUpload = require("./removeUpload");
 
 const errorMiddleware = (err, req, res, next) => {
     let errors = {...err };
-    // console.log(err)
+    console.log(err)
 
     if (!err.code && err.message) {
         errors.code = 500;
@@ -14,6 +15,12 @@ const errorMiddleware = (err, req, res, next) => {
         errors = new ErrorResponse(400, err.keyValue);
         for (let i in errors.message) {
             errors.message[i] = `${i.charAt(0).toUpperCase() + i.slice(1)} is already exist`;
+        }
+        // console.log(req.file);
+        if (req.file) {
+            if (req.file.filename) {
+                removeUpload(req.file.filename);
+            }
         }
     }
 

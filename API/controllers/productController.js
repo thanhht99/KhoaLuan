@@ -4,6 +4,7 @@ const Product = require("../model/database/Product");
 const Category = require("../model/database/Category");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const { ConnectMongo } = require('../database/connectDB');
+const removeUpload = require("../middleware/removeUpload");
 
 function getBoolean(value) {
     switch (value) {
@@ -93,6 +94,7 @@ exports.createNewProduct = asyncMiddleware(async(req, res, next) => {
     const { name, price, quantity, description, category, sku, } = req.body;
     const image = req.file.filename;
     if (!req.session.account) {
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(401, "End of login session"));
     }
     req.checkBody("name", "Product Name is empty!!").notEmpty();
@@ -106,6 +108,7 @@ exports.createNewProduct = asyncMiddleware(async(req, res, next) => {
     if (!errors.isEmpty()) {
         let array = [];
         errors.array().forEach((e) => array.push(e.msg));
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(422, array));
     }
 
@@ -117,6 +120,7 @@ exports.createNewProduct = asyncMiddleware(async(req, res, next) => {
     // console.log(categoryAll_Name.includes(category));
 
     if (!categoryAll_Name.includes(category)) {
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(422, "Category invalid !!!"));
     }
     const newProduct = new Product({
@@ -195,13 +199,16 @@ exports.updateProduct = asyncMiddleware(async(req, res, next) => {
     const image = req.file.filename;
     const { sku } = req.params;
     if (!req.session.account) {
+        removeUpload(req.params.id);
         return next(new ErrorResponse(401, "End of login session"));
     }
     if (!sku.trim()) {
+        removeUpload(req.params.id);
         return next(new ErrorResponse(400, "Sku is empty"));
     }
     const product = await Product.findOne({ sku });
     if (!product) {
+        removeUpload(req.params.id);
         return next(new ErrorResponse(404, "Product not found"));
     }
 
@@ -214,7 +221,12 @@ exports.updateProduct = asyncMiddleware(async(req, res, next) => {
     if (!errors.isEmpty()) {
         let array = [];
         errors.array().forEach((e) => array.push(e.msg));
+        removeUpload(req.params.id);
         return next(new ErrorResponse(422, array));
+    }
+    if (product.image) {
+        req.params.id = product.image;
+        removeUpload(req.params.id);
     }
 
     const updatedProduct = await Product.findOneAndUpdate({ sku }, {
@@ -225,6 +237,7 @@ exports.updateProduct = asyncMiddleware(async(req, res, next) => {
         image
     }, { new: true });
     if (!updatedProduct) {
+        removeUpload(req.params.id);
         return next(new ErrorResponse(400, 'Can not updated'))
     }
     return res.status(200).json(new SuccessResponse(200, updatedProduct))

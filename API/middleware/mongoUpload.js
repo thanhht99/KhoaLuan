@@ -6,6 +6,8 @@ const path = require('path');
 const storage = new GridFsStorage({
     url: "mongodb://localhost:27017/SaleOnline",
     file: (req, file) => {
+        // console.log("---------------------------------");
+        // console.log(file);
         return new Promise((resolve, reject) => {
             crypto.randomBytes(16, (err, buf) => {
                 if (err) {

@@ -4,6 +4,7 @@ const Account = require("../model/database/Account");
 const User = require("../model/database/User");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const { ConnectMongo } = require('../database/connectDB');
+const removeUpload = require("../middleware/removeUpload");
 
 // Get All Users
 exports.getAllUsers = asyncMiddleware(async(req, res, next) => {
@@ -117,7 +118,7 @@ exports.updatePassword = asyncMiddleware(async(req, res, next) => {
 exports.updateUser = asyncMiddleware(async(req, res, next) => {
     const { fullName, address, phone } = req.body;
     const image = req.file.filename;
-    console.log(req.body);
+    // console.log(req.body);
     req.checkBody("fullName", "Full Name is empty!!").notEmpty();
     req.checkBody("address", "Address is empty!!").notEmpty();
     req.checkBody("phone", "Phone is empty!!").notEmpty();
@@ -127,29 +128,42 @@ exports.updateUser = asyncMiddleware(async(req, res, next) => {
     if (!errors.isEmpty()) {
         let array = [];
         errors.array().forEach((e) => array.push(e.msg));
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(422, array));
     }
 
     if (!req.session.account) {
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(401, "End of login session"));
     }
     const checkExistAccount = await Account.findOne({
         userName: req.session.account.userName,
     });
     if (!checkExistAccount) {
+        removeUpload(req.file.filename);
         return next(new ErrorResponse(404, "Account is not found"));
     }
-    if (checkExistAccount.isActive) {
-        const updateUser = await User.findOneAndUpdate({ email: req.session.account.email }, { fullName, address, phone, image }, { new: true });
-        if (!updateUser) {
-            return next(
-                new ErrorResponse(
-                    400,
-                    "Update Failure. Please contact the administrator to get the problem resolved. Thanks!!!"
-                )
-            );
-        }
-        return res.status(200).json(new SuccessResponse(200, updateUser));
+    if (!checkExistAccount.isActive) {
+        removeUpload(req.file.filename);
+        return next(new ErrorResponse(403, "Account locked"));
     }
-    return next(new ErrorResponse(403, "Account locked"));
+
+    const user = await User.findOne({ email: req.session.account.email });
+    if (!user) {
+        return next(new ErrorResponse(404, "User not found"));
+    }
+    console.log(user.image);
+    removeUpload(user.image);
+
+    const updateUser = await User.findOneAndUpdate({ email: req.session.account.email }, { fullName, address, phone, image }, { new: true });
+    if (!updateUser) {
+        removeUpload(req.file.filename);
+        return next(
+            new ErrorResponse(
+                400,
+                "Update Failure. Please contact the administrator to get the problem resolved. Thanks!!!"
+            )
+        );
+    }
+    return res.status(200).json(new SuccessResponse(200, updateUser));
 });
