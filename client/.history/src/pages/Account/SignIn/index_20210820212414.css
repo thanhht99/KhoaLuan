@@ -1,0 +1,11 @@
+.floatRightClear {
+    float: right;
+    clear: right;
+    margin-left: 20px
+}
+
+.form {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

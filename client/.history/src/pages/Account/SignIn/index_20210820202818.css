@@ -1,0 +1,10 @@
+.container {
+    paddingTop: 200, backgroundImage: `url("/image/20170720_221112.jpg")`
+}
+
+.form {
+    display: center;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

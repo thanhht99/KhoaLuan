@@ -1,0 +1,10 @@
+.ant-from-item-label {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.form {
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

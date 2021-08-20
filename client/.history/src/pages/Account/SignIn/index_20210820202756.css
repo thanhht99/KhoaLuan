@@ -1,0 +1,10 @@
+.container {
+    paddingT: 200,
+}
+
+.form {
+    display: center;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
