@@ -46,10 +46,6 @@ const ProductSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    promotionId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Promotion",
-    },
     isActive: {
         type: Boolean,
         default: true

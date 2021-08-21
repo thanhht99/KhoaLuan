@@ -3,11 +3,11 @@ const { Schema } = mongoose;
 
 const PromotionSchema = new Schema({
     products: [{
-        productSku: {
-            type: mongoose.Schema.Types.String,
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
-        }
-    }],
+        },
+    }, ],
     promotion_name: {
         type: String,
         required: [true, "Promotion Name is required"],
@@ -22,14 +22,6 @@ const PromotionSchema = new Schema({
     type: {
         type: String,
         enum: ["Money", "Percent"]
-    },
-    startDate: {
-        type: Date,
-        required: [true, "Start Date is required"],
-    },
-    endDate: {
-        type: Date,
-        required: [true, "End Date is required"],
     },
     isActive: {
         type: Boolean,

@@ -2,7 +2,6 @@ const ErrorResponse = require("../model/statusResponse/ErrorResponse");
 const SuccessResponse = require("../model/statusResponse/SuccessResponse");
 const asyncMiddleware = require("../middleware/asyncMiddleware");
 const Promotion = require("../model/database/Promotion");
-const Product = require("../model/database/Product");
 
 function getBoolean(value) {
     switch (value) {
@@ -42,43 +41,17 @@ exports.createNewPromotion = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
         return next(new ErrorResponse(401, "End of login session"));
     }
-    const { products, promotion_name, promotion_desc, discount, type, startDate, endDate } = req.body;
-    req.checkBody("products", "Products is empty!!").notEmpty();
+    const { promotion_name, promotion_desc, discount, type } = req.body;
     req.checkBody("promotion_name", "Promotion Name is empty!!").notEmpty();
     req.checkBody("promotion_desc", "Promotion Description is empty!!").notEmpty();
     req.checkBody("discount", "Discount is empty!!").notEmpty();
     req.checkBody("type", "Type Promotion is empty!!").notEmpty();
-    req.checkBody("startDate", "Start Date is empty!!").notEmpty();
-    req.checkBody("endDate", "End Date is empty!!").notEmpty();
-    req.checkBody("startDate", "Start Date must be in correct format YYYY-MM-DDTHH:MM:SS.000Z !!").isISO8601().toDate();
-    req.checkBody("endDate", "End Date must be in correct format YYYY-MM-DDTHH:MM:SS.00Z !!").isISO8601().toDate();
 
     let errors = await req.getValidationResult();
     if (!errors.isEmpty()) {
         let array = [];
         errors.array().forEach((e) => array.push(e.msg));
         return next(new ErrorResponse(422, array));
-    }
-
-    const objProducts = products.map((val) => {
-        return { productSku: val };
-    });
-    const findProduct = await Promise.all(objProducts.map(async(val) => {
-        const a = await Product.findOne({ sku: val.productSku, isPromotion: false });
-        if (a) return a.sku;
-        return " ";
-    }));
-    const checkProduct = objProducts.filter((val, index) => {
-        return val.productSku === findProduct[index]
-    });
-    if (objProducts.length !== checkProduct.length) {
-        return next(new ErrorResponse(400, "List products invalid !"));
-    }
-
-    const convertStartDate = new Date(startDate);
-    const convertEndDate = new Date(endDate);
-    if (convertStartDate >= convertEndDate) {
-        return next(new ErrorResponse(400, "Start date and End date invalid"));
     }
     if (type === "Money") {
         if (discount < 1000) {
@@ -91,17 +64,9 @@ exports.createNewPromotion = asyncMiddleware(async(req, res, next) => {
         }
     }
 
-    const promotion = new Promotion({ products: checkProduct, promotion_name, promotion_desc, discount, type, startDate: convertStartDate, endDate: convertEndDate });
+    const promotion = new Promotion({ promotion_name, promotion_desc, discount, type });
     const res_promotion = await promotion.save();
     if (res_promotion) {
-        const a = await Promise.all(checkProduct.map(async(val) => {
-            const b = await Product.findOneAndUpdate({ sku: val.productSku }, { isPromotion: true, promotionId: res_promotion._id });
-            return b.sku;
-        }));
-        if (!a) {
-            await Promotion.findByIdAndDelete({ id: res_promotion._id });
-            return next(new ErrorResponse(400, "Update isPromotion Promotion failed"));
-        }
         return res.status(200).json(new SuccessResponse(200, res_promotion))
     }
 })
@@ -116,9 +81,11 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(400, "Id is empty"));
     }
 
-    const { promotion_name, promotion_desc } = req.body;
+    const { promotion_name, promotion_desc, discount, type } = req.body;
     req.checkBody("promotion_name", "Promotion Name is empty!!").notEmpty();
     req.checkBody("promotion_desc", "Promotion Description is empty!!").notEmpty();
+    req.checkBody("discount", "Discount is empty!!").notEmpty();
+    req.checkBody("type", "Type Promotion is empty!!").notEmpty();
 
     let errors = await req.getValidationResult();
     if (!errors.isEmpty()) {
@@ -127,7 +94,17 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(422, array));
     }
 
-    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc }, { new: true });
+    if (type === "Money") {
+        if (discount < 1000) {
+            return next(new ErrorResponse(400, "Discount invalid"));
+        }
+    }
+    if (type === "Percent") {
+        if (discount > 1 || discount < 0) {
+            return next(new ErrorResponse(400, "Discount invalid"));
+        }
+    }
+    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc, discount, type }, { new: true });
     if (!updatedPromotion) {
         return next(new ErrorResponse(400, 'Can not updated'))
     }

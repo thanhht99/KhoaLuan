@@ -98,6 +98,7 @@ exports.createNewPromotion = asyncMiddleware(async(req, res, next) => {
             const b = await Product.findOneAndUpdate({ sku: val.productSku }, { isPromotion: true, promotionId: res_promotion._id });
             return b.sku;
         }));
+        console.log("🚀 ~ file: promotionController.js ~ line 101 ~ a ~ a", a)
         if (!a) {
             await Promotion.findByIdAndDelete({ id: res_promotion._id });
             return next(new ErrorResponse(400, "Update isPromotion Promotion failed"));
@@ -116,9 +117,11 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(400, "Id is empty"));
     }
 
-    const { promotion_name, promotion_desc } = req.body;
+    const { promotion_name, promotion_desc, discount, type } = req.body;
     req.checkBody("promotion_name", "Promotion Name is empty!!").notEmpty();
     req.checkBody("promotion_desc", "Promotion Description is empty!!").notEmpty();
+    req.checkBody("discount", "Discount is empty!!").notEmpty();
+    req.checkBody("type", "Type Promotion is empty!!").notEmpty();
 
     let errors = await req.getValidationResult();
     if (!errors.isEmpty()) {
@@ -127,7 +130,17 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(422, array));
     }
 
-    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc }, { new: true });
+    if (type === "Money") {
+        if (discount < 1000) {
+            return next(new ErrorResponse(400, "Discount invalid"));
+        }
+    }
+    if (type === "Percent") {
+        if (discount > 1 || discount < 0) {
+            return next(new ErrorResponse(400, "Discount invalid"));
+        }
+    }
+    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc, discount, type }, { new: true });
     if (!updatedPromotion) {
         return next(new ErrorResponse(400, 'Can not updated'))
     }

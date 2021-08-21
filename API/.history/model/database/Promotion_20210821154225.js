@@ -2,12 +2,13 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const PromotionSchema = new Schema({
-    products: [{
-        productSku: {
-            type: mongoose.Schema.Types.String,
+    products: [
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Product",
-        }
-    }],
+            ,
+        },
+    ],
     promotion_name: {
         type: String,
         required: [true, "Promotion Name is required"],
