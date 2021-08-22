@@ -148,6 +148,11 @@ exports.updateUser = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(403, "Account locked"));
     }
 
+    if (!req.file.filename.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+        removeUpload(req.file.filename);
+        return next(new ErrorResponse(400, "This is not an image file"));
+    }
+
     const user = await User.findOne({ email: req.session.account.email });
     if (!user) {
         return next(new ErrorResponse(404, "User not found"));

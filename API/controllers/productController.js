@@ -112,6 +112,11 @@ exports.createNewProduct = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(422, array));
     }
 
+    if (!req.file.filename.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+        removeUpload(req.file.filename);
+        return next(new ErrorResponse(400, "This is not an image file"));
+    }
+
     const categoryAll = await Category.find().select("-updatedAt -createdAt -__v");
     const categoryAll_Name = await Promise.all(categoryAll.map(category => {
         return category.category_name;
@@ -205,6 +210,10 @@ exports.updateProduct = asyncMiddleware(async(req, res, next) => {
     if (!sku.trim()) {
         removeUpload(req.params.id);
         return next(new ErrorResponse(400, "Sku is empty"));
+    }
+    if (!req.file.filename.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+        removeUpload(req.file.filename);
+        return next(new ErrorResponse(400, "This is not an image file"));
     }
     const product = await Product.findOne({ sku });
     if (!product) {

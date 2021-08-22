@@ -2,12 +2,13 @@ const multer = require('multer');
 const crypto = require('crypto');
 const GridFsStorage = require('multer-gridfs-storage');
 const path = require('path');
+const ErrorResponse = require("../model/statusResponse/ErrorResponse");
 
 const storage = new GridFsStorage({
     url: "mongodb://localhost:27017/SaleOnline",
     file: (req, file) => {
         // console.log("---------------------------------");
-        // console.log(file);
+        // console.log(file);        
         return new Promise((resolve, reject) => {
             crypto.randomBytes(16, (err, buf) => {
                 if (err) {
