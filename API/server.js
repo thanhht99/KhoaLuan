@@ -15,6 +15,7 @@ const user = require("./routes/user");
 const category = require("./routes/category");
 const promotion = require("./routes/promotion");
 const product = require("./routes/product");
+const cart = require("./routes/cart");
 
 // using MongoDB
 ConnectMongo.getConnect();
@@ -36,6 +37,7 @@ app.use("/api/user", user);
 app.use("/api/category", category);
 app.use("/api/promotion", promotion);
 app.use("/api/product", product);
+app.use("/api/cart", cart);
 
 // middleware error
 app.use(errorMiddleware);
