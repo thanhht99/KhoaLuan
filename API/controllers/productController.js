@@ -99,7 +99,9 @@ exports.createNewProduct = asyncMiddleware(async(req, res, next) => {
     }
     req.checkBody("name", "Product Name is empty!!").notEmpty();
     req.checkBody("price", "Product price is empty!!").notEmpty();
+    req.checkBody("price", "Product price must is number!").isNumeric();
     req.checkBody("quantity", "Product quantity is empty!!").notEmpty();
+    req.checkBody("quantity", "Product quantity must is number!").isNumeric();
     req.checkBody("description", "Product description is empty!!").notEmpty();
     req.checkBody("category", "Product category is empty!!").notEmpty();
     req.checkBody("sku", "Product sku is empty!!").notEmpty();

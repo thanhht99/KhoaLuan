@@ -23,6 +23,10 @@ const CartSchema = new Schema({
         promotion: {
             type: Number,
         },
+        typePromotion: {
+            type: String,
+            enum: ["Money", "Percent", null]
+        },
         total: {
             type: Number,
             required: [true, "Total is required"],
