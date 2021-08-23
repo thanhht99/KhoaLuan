@@ -12,9 +12,9 @@ router.post("/create",
     productController.createNewProduct
 );
 
-router.get("/all", jwtAuth, authorize("Admin"), productController.getAllProducts);
+router.get("/all", jwtAuth, productController.getAllProducts);
 
-router.get("/allByActive", jwtAuth, authorize("Admin"), productController.getAllProductsSortByIsActive);
+router.get("/allByActive", jwtAuth, productController.getAllProductsSortByIsActive);
 
 router.get("/:sku", jwtAuth, productController.getProductBySku);
 
