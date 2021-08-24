@@ -23,8 +23,15 @@ const VoucherSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ["Money", "Percent"],
-        default: "Money"
+        enum: ["Money", "Percent"]
+    },
+    startDate: {
+        type: Date,
+        required: [true, "Start Date is required"],
+    },
+    endDate: {
+        type: Date,
+        required: [true, "End Date is required"],
     },
     isActive: {
         type: Boolean,

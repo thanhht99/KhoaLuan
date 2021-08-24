@@ -6,6 +6,11 @@ const OrderSchema = new Schema({
         type: mongoose.Schema.Types.String,
         ref: "User",
     },
+    orderCode: {
+        type: String,
+        required: [true, "Order code is required"],
+        unique: true,
+    },
     phone: {
         type: String,
         required: [true, "Phone is required"],
@@ -38,19 +43,17 @@ const OrderSchema = new Schema({
     }, ],
     orderDate: {
         type: Date,
-        default: Date.now(),
     },
     intendedArrivalDate: {
         type: Date,
-        default: Date.now(),
     },
     payments: {
         type: String,
-        required: [true, "Payments is required"],
+        enum: ["Momo", "COD", "Bank account"]
     },
-    provisionalFee: {
+    temporaryMoney: {
         type: Number,
-        required: [true, "Provisional Fee is required"],
+        required: [true, "Temporary money is required"],
     },
     transportFee: {
         type: Number,
@@ -78,10 +81,13 @@ const OrderSchema = new Schema({
         ],
         default: "Waiting for confirmation",
     },
-    code: {
+    voucherCode: {
         type: String,
         trim: true,
         default: null
+    },
+    discount: {
+        type: Number,
     },
     isBill: {
         type: Boolean,
