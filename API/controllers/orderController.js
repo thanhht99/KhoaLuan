@@ -13,6 +13,23 @@ Date.prototype.addDays = function(days) {
     return date;
 };
 
+function getBoolean(value) {
+    switch (value) {
+        case true:
+        case "true":
+        case 1:
+        case "1":
+            return true;
+        case false:
+        case "false":
+        case 0:
+        case "0":
+            return false;
+        default:
+            return value;
+    }
+}
+
 // All Order
 exports.allOrder = asyncMiddleware(async(req, res, next) => {
     if (!req.session.account) {
@@ -166,3 +183,70 @@ exports.createOrder = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(400, "Cart is empty"));
     }
 });
+
+// Change Order Status
+exports.changeOrderStatus = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    const { id } = req.params;
+    const { orderStatus } = req.body;
+    req.checkBody("orderStatus", "Order Status is empty!!").notEmpty();
+
+    let errors = await req.getValidationResult();
+    if (!errors.isEmpty()) {
+        let array = [];
+        errors.array().forEach((e) => array.push(e.msg));
+        return next(new ErrorResponse(422, array));
+    }
+
+    if (!id.trim()) {
+        return next(new ErrorResponse(400, "Id is empty"));
+    }
+    const listOrderStatus = ["Waiting for confirmation",
+        "Waiting for the goods",
+        "Delivered to the carrier",
+        "Delivering",
+        "Successful delivery",
+        "Has received the goods",
+        "Cancel order",
+        "Return the goods/ Refund"
+    ];
+    if (!listOrderStatus.includes(orderStatus)) {
+        return next(new ErrorResponse(400, "Invalid order status, list order status: " + listOrderStatus));
+    }
+
+    const order = await Order.findOne({ _id: id, userEmail: req.session.account.email, isActive: true }).select(
+        "-updatedAt -createdAt -__v"
+    );
+    // console.log(order);
+    if (!order) {
+        return next(new ErrorResponse(404, "Update order status failed ! Invalid Product"));
+    }
+    const updatedOrderStatus = await Order.findOneAndUpdate({ _id: id }, { orderStatus }, { new: true });
+    if (!updatedOrderStatus) {
+        return next(new ErrorResponse(400, "Update failed !!!"));
+    }
+    return res.status(200).json(new SuccessResponse(200, updatedOrderStatus));
+});
+
+// Update isActive Order
+exports.updateActiveOrder = asyncMiddleware(async(req, res, next) => {
+    const { id } = req.params;
+    const isActive = getBoolean(req.query.isActive);
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (!id.trim()) {
+        return next(new ErrorResponse(400, "Id is empty"));
+    }
+    // console.log(isActive)
+    if (isActive === null || isActive === undefined || typeof(isActive) !== "boolean") {
+        return next(new ErrorResponse(404, "API invalid"));
+    }
+    const updatedOrder = await Order.findOneAndUpdate({ _id: id }, { isActive }, { new: true });
+    if (!updatedOrder) {
+        return next(new ErrorResponse(400, 'Not found to updated'))
+    }
+    return res.status(200).json(new SuccessResponse(200, updatedOrder))
+})

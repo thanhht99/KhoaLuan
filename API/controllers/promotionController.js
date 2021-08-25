@@ -127,9 +127,9 @@ exports.updatePromotion = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(422, array));
     }
 
-    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id }, { promotion_name, promotion_desc }, { new: true });
+    const updatedPromotion = await Promotion.findOneAndUpdate({ _id: id, isActive: true }, { promotion_name, promotion_desc }, { new: true });
     if (!updatedPromotion) {
-        return next(new ErrorResponse(400, 'Can not updated'))
+        return next(new ErrorResponse(400, 'Can not updated. Active promotion is false!'))
     }
     return res.status(200).json(new SuccessResponse(200, updatedPromotion))
 })

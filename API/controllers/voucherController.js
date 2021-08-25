@@ -105,9 +105,9 @@ exports.updateVoucher = asyncMiddleware(async(req, res, next) => {
         return next(new ErrorResponse(422, array));
     }
 
-    const updatedVoucher = await Voucher.findOneAndUpdate({ _id: id }, { voucher_name, voucher_desc }, { new: true });
+    const updatedVoucher = await Voucher.findOneAndUpdate({ _id: id, isActive: true }, { voucher_name, voucher_desc }, { new: true });
     if (!updatedVoucher) {
-        return next(new ErrorResponse(400, 'Can not updated'))
+        return next(new ErrorResponse(400, 'Can not updated. Active voucher is false!'));
     }
     return res.status(200).json(new SuccessResponse(200, updatedVoucher))
 })
@@ -128,9 +128,9 @@ exports.updateActiveVoucher = asyncMiddleware(async(req, res, next) => {
     }
     const updatedVoucher = await Voucher.findOneAndUpdate({ _id: id }, { isActive }, { new: true });
     if (!updatedVoucher) {
-        return next(new ErrorResponse(400, 'Not found to updated'))
+        return next(new ErrorResponse(400, 'Not found to updated'));
     }
-    return res.status(200).json(new SuccessResponse(200, updatedVoucher))
+    return res.status(200).json(new SuccessResponse(200, updatedVoucher));
 })
 
 // Delete Voucher

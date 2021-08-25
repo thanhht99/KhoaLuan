@@ -11,4 +11,10 @@ router.get("/", jwtAuth, orderController.orderOfUser);
 
 router.post("/", jwtAuth, orderController.createOrder);
 
+router.post("/changeOrderStatus/:id", jwtAuth, authorize("Admin", "Saler"),
+    orderController.changeOrderStatus
+);
+
+router.patch("/updateActive/:id", jwtAuth, authorize("Admin", "Saler"), orderController.updateActiveOrder);
+
 module.exports = router;

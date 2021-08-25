@@ -77,9 +77,9 @@ exports.updateCategory = asyncMiddleware(async(req, res, next) => {
         errors.array().forEach((e) => array.push(e.msg));
         return next(new ErrorResponse(422, array));
     }
-    const updatedCategory = await Category.findOneAndUpdate({ _id: id }, { category_name, category_desc }, { new: true });
+    const updatedCategory = await Category.findOneAndUpdate({ _id: id, isActive: true }, { category_name, category_desc }, { new: true });
     if (!updatedCategory) {
-        return next(new ErrorResponse(400, 'Can not updated'))
+        return next(new ErrorResponse(400, 'Can not updated. Active category is false!'))
     }
     return res.status(200).json(new SuccessResponse(200, updatedCategory))
 })
