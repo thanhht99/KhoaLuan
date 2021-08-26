@@ -13,12 +13,12 @@ const BillSchema = new Schema({
     },
     invoiceNumber: {
         type: String,
-        minlength: [8, "Invoice Number musts have more than 8 characters"],
+        minlength: [8, "Invoice Number musts have 8 characters"],
+        maxlength: [8, "Invoice Number musts have 8 characters"],
         required: [true, "Invoice Number is required"],
     },
     invoiceDate: {
         type: Date,
-        default: Date.now(),
     },
     notation: {
         type: String,
