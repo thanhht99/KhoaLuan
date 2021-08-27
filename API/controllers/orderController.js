@@ -250,3 +250,20 @@ exports.updateActiveOrder = asyncMiddleware(async(req, res, next) => {
     }
     return res.status(200).json(new SuccessResponse(200, updatedOrder))
 })
+
+// Confirmation of receipt of goods
+exports.confirmationOfReceiptOfGoods = asyncMiddleware(async(req, res, next) => {
+    const { id } = req.params;
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    if (!id.trim()) {
+        return next(new ErrorResponse(400, "Id is empty"));
+    }
+
+    const updatedOrder = await Order.findOneAndUpdate({ _id: id, userEmail: req.session.account.email, isActive: true }, { orderStatus: "Has received the goods" }, { new: true });
+    if (!updatedOrder) {
+        return next(new ErrorResponse(400, 'Not found to updated, order status.!'))
+    }
+    return res.status(200).json(new SuccessResponse(200, updatedOrder))
+})

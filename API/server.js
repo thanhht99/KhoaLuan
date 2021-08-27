@@ -19,6 +19,7 @@ const order = require("./routes/order");
 const cart = require("./routes/cart");
 const voucher = require("./routes/voucher");
 const bill = require("./routes/bill");
+const feedback = require("./routes/feedback");
 
 // using MongoDB
 ConnectMongo.getConnect();
@@ -44,6 +45,7 @@ app.use("/api/order", order);
 app.use("/api/cart", cart);
 app.use("/api/voucher", voucher);
 app.use("/api/bill", bill);
+app.use("/api/feedback", feedback);
 
 // middleware error
 app.use(errorMiddleware);

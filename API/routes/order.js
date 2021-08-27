@@ -17,4 +17,7 @@ router.post("/changeOrderStatus/:id", jwtAuth, authorize("Admin", "Saler"),
 
 router.patch("/updateActive/:id", jwtAuth, authorize("Admin", "Saler"), orderController.updateActiveOrder);
 
+// Confirmation of receipt of goods
+router.post("/confirmationOfReceiptOfGoods/:id", jwtAuth, orderController.confirmationOfReceiptOfGoods);
+
 module.exports = router;
