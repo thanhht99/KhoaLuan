@@ -103,6 +103,7 @@ exports.verifyCode = asyncMiddleware(async(req, res, next) => {
 // Sign In
 exports.signIn = asyncMiddleware(async(req, res, next) => {
     const { userNameOrEmail, password } = req.body;
+    console.log("🚀 ~ file: authController.js ~ line 106 ~ exports.signIn=asyncMiddleware ~ req.body", req.body)
     req.checkBody('userNameOrEmail', 'User Name Or Email is empty!!').notEmpty();
     req.checkBody('password', 'Password is empty!!').notEmpty();
 
@@ -110,7 +111,7 @@ exports.signIn = asyncMiddleware(async(req, res, next) => {
     if (!errors.isEmpty()) {
         let array = []
         errors.array().forEach(e => array.push(e.msg))
-        return next(new ErrorResponse(422, array));
+        return next(new ErrorResponse(422, array)).send(array);
     }
     const checkExistAccountByUserName = await Account.findOne({ userName: userNameOrEmail });
     const checkExistAccountByEmail = await Account.findOne({ email: userNameOrEmail });

@@ -5,6 +5,7 @@ exports.baseAuth = async(req, res, next) => {
         req.headers.authorization.split(' ')[1] :
         null;
 
+    console.log("🚀 ~ file: baseAuth.js ~ line 5 ~ exports.baseAuth=async ~ token", token)
     if (!token) {
         return next(new ErrorResponse(401, "Base token is required"));
     }

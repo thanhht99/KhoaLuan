@@ -14,14 +14,10 @@ const PageFooter = React.lazy(() => import("./_components/Footer/index"));
 
 const App = () => {
   return (
-    <Suspense fallback={
-        ((
-          <div className="example">
-            <Spin tip="Loading..." />
-          </div>
-        ),
-        document.getElementById("container"))
-      }>
+    //   document.getElementById("container")
+    <Suspense fallback={<div className="example">
+                          <Spin tip="Loading..." />
+                        </div>}>
       <PageHeader />
       <Switch>
         <Route exact path="/" component={Home}/>

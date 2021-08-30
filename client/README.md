@@ -3,6 +3,10 @@
 
 ## Run client
 ### Step 1: Install dependencies
-`npm i`
+```
+npm i
+```
 ### Step 2: Run
-`yarn start`
+```
+yarn start
+```
