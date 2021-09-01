@@ -10,17 +10,21 @@ export const signIn = async (body) => {
   try {
     const res = await callApi("auth/signIn", "POST", body, headers)
       .then((res) => {
-        console.log("😈 👿 👿 ~ file: Auth ~ signIn DATA 🧡", res.data);
+        // console.log("😈 👿 👿 ~ file: Auth ~ signIn DATA 🧡", res.data);
         return res.data;
       })
       .catch((err) => {
-        console.log("🙏🙏🙏 Error Error 🙏🙏🙏");
-        console.log("🚀", err.response.data);
+        // console.log("🚀 ~ file:~ signIn ~ err:", err);
+        if (err.message === "Network Error") {
+          return null;
+        }
+        // console.log("🙏🙏🙏 Error Error 🙏🙏🙏 ~ file: Auth ~ signIn");
+        // console.log("🚀", err.response.data);
         return err.response.data;
       });
-      return res;
+    return res;
   } catch (error) {
-    console.log("💣💣💣~ file: Auth ~ signIn ~ error", error);
+    // console.log("💣💣💣~ file: Auth ~ signIn ~ error", error);
     return null;
   }
 };

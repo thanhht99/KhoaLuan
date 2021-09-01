@@ -1,0 +1,45 @@
+.name {
+    font-family: "Great Vibes", cursive;
+    line-height: 160px;
+    font-weight: normal;
+    margin-bottom: 0px;
+    margin-top: 30px;
+    text-align: center;
+    text-shadow: 0 1px 1px #fff;
+}
+
+@supports (mix-blend-mode: lighten) {
+    section.light .h1 {
+        display: inline-block;
+        position: relative;
+        color: #000;
+        background: #fff;
+        mix-blend-mode: multiply;
+    }
+    section.light .h1::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient( to right, #23966c, #faaa54, #e23b4a, #db0768, #360670);
+        pointer-events: none;
+    }
+    section.light .h1::before {
+        mix-blend-mode: screen;
+    }
+}
+
+section {
+    min-height: 50vh;
+    padding: 2em;
+}
+
+.name .h1 {
+    color: color-mix(in srgb, #22879e 10%, white);
+    font-size: 115px;
+    margin: 0.5em;
+    opacity: 0.9;
+}

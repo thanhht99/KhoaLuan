@@ -7,10 +7,9 @@ import { Route, Switch } from "react-router-dom";
 import { Account } from "./pages/Account/index";
 import { Home } from "./pages/Home/index";
 import {NotFound} from "./_components/NotFound/index";
+import {ServerUpgrade} from "./_components/ServerUpgrade/index";
 const PageHeader = React.lazy(() => import("./_components/Header/index"));
 const PageFooter = React.lazy(() => import("./_components/Footer/index"));
-
-
 
 const App = () => {
   return (
@@ -23,6 +22,7 @@ const App = () => {
         <Route exact path="/" component={Home}/>
         <Route path="/home" component={Home}/>
         <Route path="/account" component={Account}/>
+        <Route path="/server-upgrade" component={ServerUpgrade}/>
         <Route component={NotFound} />
       </Switch>
       <PageFooter />
