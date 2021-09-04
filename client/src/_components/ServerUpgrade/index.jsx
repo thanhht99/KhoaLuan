@@ -6,9 +6,15 @@ import { Row, Col } from "antd";
 const ServerUpgrade = () => {
   return (
     <div className="htmlServerUpgrade">
-      <Row>
-        <Col span={10}>
-          <img src="/image/ServerUpgrade.gif" alt="ServerUpgrade"></img>
+      <Row className="row" style={{ height: "100%", width: "100%" }}>
+        <Col
+          span={10}
+          className={"colServerUpgrade"}>
+          <img
+            className="imgServerUpgrade"
+            src="/image/ServerUpgrade.gif"
+            alt="ServerUpgrade"
+            style={{ height: "100%", width: "100%" }}></img>
         </Col>
         <Col span={14} className="name">
           <section className="light">
