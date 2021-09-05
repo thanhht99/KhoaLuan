@@ -14,7 +14,71 @@
     margin: auto;
 }
 
-.bestSeller p.ant-divider-horizontal.ant-divider-with-text {
-    font-size: 70px;
+.titleBestSeller {
+    /* height: 100%;
+    width: 100%; */
+    font-family: "Great Vibes", cursive;
+    text-align: center !important;
     font-style: bold;
+    color: hsla(340, 100%, 50%, 0.5);
+    background-color: rgb(161, 161, 161);
+    margin-top: -20px;
+}
+
+.titleBestSeller p.tbs-1 {
+    height: 100%;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 50px;
+}
+
+.titleBestSeller p.tbs-2 {
+    height: 100%;
+    width: 100%;
+    font-size: 25px;
+    margin-top: -50px;
+}
+
+.images {
+    margin-top: -25px;
+    display: grid;
+    grid-gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(293px, 1fr));
+}
+
+.image-item {
+    height: 420px;
+    object-fit: cover;
+}
+
+.image-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.bg {
+    height: 551px;
+    object-fit: cover;
+}
+
+.bg img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+@media screen and (max-width: 1395px) {}
+
+@media screen and (max-width: 1024px) {}
+
+@media screen and (max-width: 632px) {
+    .titleBestSeller p.tbs-1 {
+        font-size: 35px;
+    }
+    .titleBestSeller p.tbs-2 {
+        font-size: 15px;
+        padding: 15px;
+    }
 }

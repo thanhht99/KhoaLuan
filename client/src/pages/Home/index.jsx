@@ -1,25 +1,29 @@
 import React from "react";
 import "antd/dist/antd.css";
 import "./index.css";
-import { Carousel, Row, Col, Divider } from "antd";
+import { Carousel } from "antd";
 
 const Home = () => {
   const contentStyle = {
-    height: "600px",
-    width: "500",
+    height: "70%",
+    width: "40%",
     color: "#fff",
     position: "relative",
-    left: "50%",
-    margin: "0px 20px 0 -250px",
+    left: "30%",
     background: "#fff",
   };
 
-  const style = { background: "#0092ff", padding: "8px 0" };
-
   return (
-    <div className="htmlHome" id="htmlHome">
+    <div
+      className="htmlHome"
+      id="htmlHome"
+      style={{ height: "100%", width: "100%" }}>
       <div className="infoStore">
-        <img src="/image/homevideo.gif" alt="Home Video" className="info"></img>
+        <img
+          src="/image/homevideo.gif"
+          alt="Home Video"
+          className="info"
+          style={{ height: "100%", width: "100%" }}></img>
       </div>
       <div className="container">
         <Carousel autoplay>
@@ -59,24 +63,69 @@ const Home = () => {
         </Carousel>
       </div>
       <div className="row">
-        <Divider orientation="center" className={"bestSeller"}>
-          <p>Best Seller</p>
-          <p>Best selling products</p>
-        </Divider>
-        <Row gutter={16}>
-          <Col className="gutter-row" span={6}>
-            <div style={style}>col-6</div>
-          </Col>
-          <Col className="gutter-row" span={6}>
-            <div style={style}>col-6</div>
-          </Col>
-          <Col className="gutter-row" span={6}>
-            <div style={style}>col-6</div>
-          </Col>
-          <Col className="gutter-row" span={6}>
-            <div style={style}>col-6</div>
-          </Col>
-        </Row>
+        <div className="titleBestSeller">
+          <p className="tbs-1">Best Seller</p>
+          <p className="tbs-2">Best selling products</p>
+        </div>
+        <div className="images">
+          <div className="image-item">
+            <img src="/image/product/product1.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product2.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product3.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product4.jpg" alt=""></img>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="titleBestSeller">
+          <p className="tbs-1">New Product</p>
+          <p className="tbs-2">Top latest products</p>
+        </div>
+        <div className="images">
+          <div className="image-item">
+            <img src="/image/product/product1.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product2.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product3.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product4.jpg" alt=""></img>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="titleBestSeller">
+          <p className="tbs-1">Promotions & Vouchers</p>
+          <p className="tbs-2">Info</p>
+        </div>
+        <div className="images">
+          <div className="image-item">
+            <img src="/image/product/product1.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product2.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product3.jpg" alt=""></img>
+          </div>
+          <div className="image-item">
+            <img src="/image/product/product4.jpg" alt=""></img>
+          </div>
+        </div>
+      </div>
+      <div className="row-background">
+        <div className="bg">
+          <img src="/image/homeBackground.jpg" alt=""></img>
+        </div>
       </div>
     </div>
   );
