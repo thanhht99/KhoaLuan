@@ -2,6 +2,8 @@
     height: 650px;
     background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
     overflow: hidden;
+    /* height: 100%; */
+    width: 100%;
 }
 
 #stars {
@@ -470,17 +472,34 @@
     color: rgb(255, 255, 255);
 }
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
 .my-form {
     left: 20rem;
 }
 
 .rememberMe {
     color: white;
+}
+
+@media screen and (max-width: 924px) {
+    .ant-form .ant-form-item .ant-form-item-label,
+    .ant-form .ant-form-item .ant-form-item-control {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    .ant-form-item .ant-form-item-label {
+        padding: 0 0 8px;
+        line-height: 1.5715;
+        white-space: initial;
+        text-align: left;
+    }
+    .ant-form .ant-form-item {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 543px) {
+    .form {
+        padding: 60px;
+    }
 }

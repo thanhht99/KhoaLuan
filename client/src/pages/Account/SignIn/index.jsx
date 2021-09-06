@@ -50,11 +50,7 @@ const SignIn = () => {
           wrapperCol={{
             span: 8,
           }}
-          font={{
-            weight: "bold",
-            size: "18",
-            color: "white",
-          }}
+          style={{ height: "100%", width: "100%" }}
           initialValues={{
             remember: true,
           }}
