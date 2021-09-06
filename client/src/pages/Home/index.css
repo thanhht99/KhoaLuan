@@ -14,7 +14,7 @@
     margin: auto;
 }
 
-.titleBestSeller {
+.title {
     /* height: 100%;
     width: 100%; */
     font-family: "Great Vibes", cursive;
@@ -25,14 +25,14 @@
     margin-top: -20px;
 }
 
-.titleBestSeller p.tbs-1 {
+.title p.t-1 {
     height: 100%;
     width: 100%;
     margin-top: 20px;
     font-size: 50px;
 }
 
-.titleBestSeller p.tbs-2 {
+.title p.t-2 {
     height: 100%;
     width: 100%;
     font-size: 25px;
@@ -52,10 +52,32 @@
     object-fit: cover;
 }
 
-.image-item img {
+.image-item2 {
+    height: 420px;
+    max-width: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    /* position: relative; */
+}
+
+.image-item .hover-image {
     height: 100%;
     width: 100%;
     object-fit: cover;
+    /* position: absolute; */
+}
+
+.image-item2 img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-in-out;
+}
+
+.image-item2:hover img {
+    transition: transform 1s, filter 2s ease-in-out;
+    filter: brightness(120%);
+    transform: scale(1.2);
 }
 
 .bg {
@@ -74,10 +96,10 @@
 @media screen and (max-width: 1024px) {}
 
 @media screen and (max-width: 632px) {
-    .titleBestSeller p.tbs-1 {
+    .title p.t-1 {
         font-size: 35px;
     }
-    .titleBestSeller p.tbs-2 {
+    .title p.t-2 {
         font-size: 15px;
         padding: 15px;
     }

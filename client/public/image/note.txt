@@ -1,0 +1,2 @@
+home_x : 788x960
+product : 640x960

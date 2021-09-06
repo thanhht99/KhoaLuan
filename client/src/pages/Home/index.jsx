@@ -1,6 +1,7 @@
 import React from "react";
 import "antd/dist/antd.css";
 import "./index.css";
+import HoverImage from "react-hover-image";
 import { Carousel } from "antd";
 
 const Home = () => {
@@ -63,62 +64,116 @@ const Home = () => {
         </Carousel>
       </div>
       <div className="row">
-        <div className="titleBestSeller">
-          <p className="tbs-1">Best Seller</p>
-          <p className="tbs-2">Best selling products</p>
+        <div className="title">
+          <p className="t-1">Best Seller</p>
+          <p className="t-2">Best selling products</p>
         </div>
         <div className="images">
           <div className="image-item">
-            <img src="/image/product/product1.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product1.jpg"
+                hoverSrc="/image/product/product1_1.jpg"></HoverImage>
+            </a>
           </div>
           <div className="image-item">
-            <img src="/image/product/product2.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product2.jpg"
+                hoverSrc="/image/product/product2_1.jpg"></HoverImage>
+            </a>
           </div>
           <div className="image-item">
-            <img src="/image/product/product3.jpg" alt=""></img>
+            <a href="/">
+              <a href="/">
+                <HoverImage
+                  className="hover-image"
+                  src="/image/product/product3.jpg"
+                  hoverSrc="/image/product/product3_1.jpg"></HoverImage>
+              </a>
+            </a>
           </div>
           <div className="image-item">
-            <img src="/image/product/product4.jpg" alt=""></img>
+            <a href="/">
+              <a href="/">
+                <HoverImage
+                  className="hover-image"
+                  src="/image/product/product4.jpg"
+                  hoverSrc="/image/product/product4_1.jpg"></HoverImage>
+              </a>
+            </a>
           </div>
         </div>
       </div>
       <div className="row">
-        <div className="titleBestSeller">
-          <p className="tbs-1">New Product</p>
-          <p className="tbs-2">Top latest products</p>
+        <div className="title">
+          <p className="t-1">New Product</p>
+          <p className="t-2">Top latest products</p>
         </div>
         <div className="images">
           <div className="image-item">
-            <img src="/image/product/product1.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product8.jpg"
+                hoverSrc="/image/product/product8_1.jpg"></HoverImage>
+            </a>{" "}
           </div>
           <div className="image-item">
-            <img src="/image/product/product2.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product7.jpg"
+                hoverSrc="/image/product/product7_1.jpg"></HoverImage>
+            </a>{" "}
           </div>
           <div className="image-item">
-            <img src="/image/product/product3.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product6.jpg"
+                hoverSrc="/image/product/product6_1.jpg"></HoverImage>
+            </a>{" "}
           </div>
           <div className="image-item">
-            <img src="/image/product/product4.jpg" alt=""></img>
+            <a href="/">
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product5.jpg"
+                hoverSrc="/image/product/product5_1.jpg"></HoverImage>
+            </a>{" "}
           </div>
         </div>
       </div>
       <div className="row">
-        <div className="titleBestSeller">
-          <p className="tbs-1">Promotions & Vouchers</p>
-          <p className="tbs-2">Info</p>
+        <div className="title">
+          <p className="t-1">Promotions & Vouchers</p>
+          <p className="t-2">Info</p>
         </div>
         <div className="images">
-          <div className="image-item">
-            <img src="/image/product/product1.jpg" alt=""></img>
+          <div className="image-item2">
+            <a href="/">
+              <img
+                src="/image/Promotions_Vouchers/black_friday.jpg"
+                alt=""></img>
+            </a>
           </div>
-          <div className="image-item">
-            <img src="/image/product/product2.jpg" alt=""></img>
+          <div className="image-item2">
+            <a href="/">
+              <img src="/image/Promotions_Vouchers/sale50.jpg" alt=""></img>
+            </a>
           </div>
-          <div className="image-item">
-            <img src="/image/product/product3.jpg" alt=""></img>
+          <div className="image-item2">
+            <a href="/">
+              <img src="/image/Promotions_Vouchers/sale70.jpg" alt=""></img>
+            </a>
           </div>
-          <div className="image-item">
-            <img src="/image/product/product4.jpg" alt=""></img>
+          <div className="image-item2">
+            <a href="/">
+              <img src="/image/Promotions_Vouchers/xmas.jpg" alt=""></img>
+            </a>
           </div>
         </div>
       </div>
