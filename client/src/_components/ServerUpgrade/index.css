@@ -70,6 +70,9 @@ section {
     .colServerUpgrade {
         max-width: 100%;
     }
+    section.light .h1 {
+        padding: inherit;
+    }
 }
 
 @media screen and (max-width: 308px) {
@@ -84,5 +87,8 @@ section {
     }
     .colServerUpgrade {
         max-width: 100%;
+    }
+    section.light .h1 {
+        padding: inherit;
     }
 }

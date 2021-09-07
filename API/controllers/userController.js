@@ -27,6 +27,30 @@ exports.getAllUsers = asyncMiddleware(async(req, res, next) => {
     }
 });
 
+// Get User
+exports.getUser = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    const user = await User.findOne({ email: req.session.account.email }).select("-updatedAt -createdAt -__v");
+    if (!user) {
+        return next(new ErrorResponse(404, "User is not found"))
+    }
+    return res.status(200).json(new SuccessResponse(200, user));
+});
+
+// Get Account
+exports.getAcc = asyncMiddleware(async(req, res, next) => {
+    if (!req.session.account) {
+        return next(new ErrorResponse(401, "End of login session"));
+    }
+    const acc = await Account.findOne({ email: req.session.account.email }).select("-updatedAt -createdAt -__v");
+    if (!acc) {
+        return next(new ErrorResponse(404, "Account is not found"))
+    }
+    return res.status(200).json(new SuccessResponse(200, acc));
+});
+
 // Find User By UserName
 exports.findUserByUserName = asyncMiddleware(async(req, res, next) => {
     const { userName } = req.params;

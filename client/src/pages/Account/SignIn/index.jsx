@@ -4,6 +4,8 @@ import "antd/dist/antd.css";
 import { useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox, notification } from "antd";
 import { signIn } from "./../../../api/auth/index";
+// import { getUser, getAcc } from "./../../../api/user/index";
+// import { ErrorAlert } from "../../../_components/error";
 
 const SignIn = () => {
   const history = useHistory();
@@ -17,6 +19,10 @@ const SignIn = () => {
       history.push("/server-upgrade");
     } else if (res.success === true) {
       localStorage.setItem("token", res.data);
+      // const acc = await getAcc(res.data);
+      // console.log("🚀 ~ file: index.jsx ~ line 23 ~ onFinish ~ acc", acc)
+      // const user = await getUser(res.data);
+      // console.log("🚀 ~ file: index.jsx ~ line 24 ~ onFinish ~ user", user)
     } else if (res.success === false) {
       if (res.code === 404 || res.code === 403 || res.code === 401) {
         notification["warning"]({
