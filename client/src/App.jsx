@@ -5,6 +5,7 @@ import { Spin } from "antd";
 import { Route, Switch } from "react-router-dom";
 
 import { Account } from "./pages/Account/index";
+import { User } from "./pages/User/index";
 import { Home } from "./pages/Home/index";
 import {NotFound} from "./_components/NotFound/index";
 import {ServerUpgrade} from "./_components/ServerUpgrade/index";
@@ -22,6 +23,7 @@ const App = () => {
         <Route exact path="/" component={Home}/>
         <Route path="/home" component={Home}/>
         <Route path="/account" component={Account}/>
+        <Route path="/user" component={User}/>
         <Route path="/server-upgrade" component={ServerUpgrade}/>
         <Route component={NotFound} />
       </Switch>
