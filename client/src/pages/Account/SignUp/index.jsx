@@ -13,21 +13,21 @@ const SignUp = () => {
   };
 
   return (
-    <div id="container" style={{ padding: 205, backgroundImage: `url("/image/whitetheme.jpeg")`, backgroundSize: "100% 100%" }}>
-      <div className="form" >
-        <h1 className="texttop">Register For Free</h1>
+    <div className="htmlRegister" id="htmlRegister">
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
+      <div className="registerform" >
+        <h1 className="texttop" style={{color:"white"}}>Register For Free</h1>
         <Form
-          name="basic"
+          className={"my-regiterform"}
           labelCol={{
             span: 8,
           }}
           wrapperCol={{
             span: 8,
           }}
-          font={{
-            weight: "bold",
-            size: "16"
-          }}
+          style={{ height: "100%", width: "100%" }}
           initialValues={{
             remember: true,
           }}
@@ -60,14 +60,26 @@ const SignUp = () => {
           <Form.Item
             label="DOB"
             name="dayofbirth"
+            rules={[
+              {
+                required: true,
+                message: "Please input your name.Example: John Witch",
+              },
+            ]}
           >
             <DatePicker></DatePicker>
           </Form.Item>
 
-          <Form.Item name="radio-group" label="Gender">
+          <Form.Item name="radio-group" label="Gender"
+          rules={[
+            {
+              required: true,
+              message: "Please input your name.Example: John Witch",
+            },
+          ]}>
             <Radio.Group>
-              <Radio value="male">Male</Radio>
-              <Radio value="female">Female</Radio>
+              <Radio value="male" style={{color:"white"}}>Male</Radio>
+              <Radio value="female" style={{color:"white"}}>Female</Radio>
             </Radio.Group>
           </Form.Item>
 
@@ -88,7 +100,7 @@ const SignUp = () => {
             name="address"
             rules={[
               {
-                required: false,
+                required: true,
                 message: "Please input your address.Example: 1 Hai Ba Trung Street District 1",
               },
             ]}>
