@@ -7,6 +7,7 @@
         "@testing-library/react": "^11.1.0",
         "@testing-library/user-event": "^12.1.10",
         "antd": "^4.16.12",
+        "antd-img-crop": "^3.16.0",
         "axios": "^0.21.1",
         "react": "^17.0.2",
         "react-admin": "^3.17.3",
@@ -26,7 +27,10 @@
         "extends": [
             "react-app",
             "react-app/jest"
-        ]
+        ],
+        "rules": {
+            "no-template-curly-in-string": "off"
+        }
     },
     "browserslist": {
         "production": [
