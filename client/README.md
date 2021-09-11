@@ -1,16 +1,9 @@
 # Graduation Thesis
-## Install
-
-## Run client
-### Step 1: Install dependencies
+## Step 1: Install yarn
 ```
-npm i
+npm install --global yarn
 ```
-or
-```
-yarn install
-```
-### Step 2: Run
+## Step 2: Run client
 ```
 yarn start
 ```

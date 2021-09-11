@@ -1,0 +1,48 @@
+.htmlInfo {
+    height: 650px;
+    width: 100%;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    overflow: hidden;
+    /* position: relative;
+    display: inline-block; */
+}
+
+.formInfo {
+    justify-content: center;
+    align-items: center;
+    height: 10rem;
+    font-weight: bold;
+    padding: 50px;
+}
+
+.avatar {
+    text-align: center;
+}
+
+.my-form-info label,
+label.ant-form-item-required {
+    font-size: 17px;
+    color: rgb(255, 255, 255);
+}
+
+.formSaveInfo label {
+    visibility: hidden;
+}
+
+.saveInfo {
+    text-align: center;
+}
+
+.ant-upload-list-item-actions,
+.ant-tooltip-placement-top,
+.ant-tooltip-placement-topLeft,
+.ant-tooltip-placement-topRight,
+.ant-upload-list-picture-card .ant-upload-list-item-info::before {
+    visibility: hidden;
+}
+
+@media screen and (max-width: 910px) {
+    .htmlInfo {
+        height: 830px;
+    }
+}
