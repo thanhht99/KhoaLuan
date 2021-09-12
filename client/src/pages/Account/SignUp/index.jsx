@@ -1,7 +1,8 @@
 import React from "react";
 import "./index.css";
 import "antd/dist/antd.css";
-import { Form, Input, Button, Checkbox, DatePicker, Select, Radio } from "antd";
+import { Form, Input, Button, DatePicker, Radio, InputNumber } from "antd";
+import { validateMessages } from "./../../../constants/validateMessages";
 
 const SignUp = () => {
   const onFinish = (values) => {
@@ -17,8 +18,10 @@ const SignUp = () => {
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>
-      <div className="registerform" >
-        <h1 className="texttop" style={{color:"white"}}>Register For Free</h1>
+      <div className="registerform">
+        <h1 className="texttop" style={{ color: "white" }}>
+          Sign Up
+        </h1>
         <Form
           className={"my-regiterform"}
           labelCol={{
@@ -32,16 +35,30 @@ const SignUp = () => {
             remember: true,
           }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}>
+          onFinishFailed={onFinishFailed}
+          validateMessages={validateMessages}
+        >
           <Form.Item
-            label="Name"
+            label="Username"
             name="username"
             rules={[
               {
                 required: true,
-                message: "Please input your name.Example: John Witch",
               },
-            ]}>
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Full Name"
+            name="fullName"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
 
@@ -51,35 +68,41 @@ const SignUp = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your email.Example: johnwitch@gmail.com",
+                type: "email",
               },
-            ]}>
+            ]}
+          >
             <Input />
           </Form.Item>
 
           <Form.Item
             label="DOB"
-            name="dayofbirth"
+            name="dayOfBirth"
             rules={[
               {
                 required: true,
-                message: "Please input your name.Example: John Witch",
               },
             ]}
           >
-            <DatePicker></DatePicker>
+            <DatePicker style={{ width: "100%" }}></DatePicker>
           </Form.Item>
 
-          <Form.Item name="radio-group" label="Gender"
-          rules={[
-            {
-              required: true,
-              message: "Please input your name.Example: John Witch",
-            },
-          ]}>
+          <Form.Item
+            name="gender"
+            label="Gender"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
             <Radio.Group>
-              <Radio value="male" style={{color:"white"}}>Male</Radio>
-              <Radio value="female" style={{color:"white"}}>Female</Radio>
+              <Radio value="male" style={{ color: "white" }}>
+                Male
+              </Radio>
+              <Radio value="female" style={{ color: "white" }}>
+                Female
+              </Radio>
             </Radio.Group>
           </Form.Item>
 
@@ -89,22 +112,14 @@ const SignUp = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your phone number.Example: 0909222333",
               },
-            ]}>
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[
-              {
-                required: true,
-                message: "Please input your address.Example: 1 Hai Ba Trung Street District 1",
-              },
-            ]}>
-            <Input />
+            ]}
+          >
+            <InputNumber
+              value="0367662607"
+              placeholder="Phone"
+              style={{ width: "100%" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -113,29 +128,31 @@ const SignUp = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
               },
-            ]}>
-            <Input.Password />
+            ]}
+          >
+            <Input.Password placeholder="Password" />
           </Form.Item>
 
           <Form.Item
             label="Confirm Password"
             name="confirmpassword"
-            dependencies={['password']}
+            dependencies={["password"]}
             hasFeedback
             rules={[
               {
                 required: true,
-                message: 'Please confirm your password!',
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
+                  if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-
-                  return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                  return Promise.reject(
+                    new Error(
+                      "The two passwords that you entered do not match!"
+                    )
+                  );
                 },
               }),
             ]}
@@ -147,12 +164,18 @@ const SignUp = () => {
             wrapperCol={{
               offset: 8,
               span: 16,
-            }}>
+            }}
+          >
             <Button type="primary" htmlType="submit">
               Register
             </Button>
           </Form.Item>
         </Form>
+      </div>
+      <div className="night">
+        {Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13).map((val) => (
+          <div className="shooting_star" key={val}></div>
+        ))}
       </div>
     </div>
   );

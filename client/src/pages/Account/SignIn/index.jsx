@@ -48,6 +48,9 @@ const SignIn = () => {
       <div id="stars2"></div>
       <div id="stars3"></div>
       <div className="form">
+        <h1 className="texttop" style={{ color: "white" }}>
+          Sign In
+        </h1>
         <Form
           className={"my-form"}
           labelCol={{
@@ -61,7 +64,8 @@ const SignIn = () => {
             remember: true,
           }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}>
+          onFinishFailed={onFinishFailed}
+        >
           <Form.Item
             label="Username or Email"
             name="userNameOrEmail"
@@ -70,7 +74,8 @@ const SignIn = () => {
                 required: true,
                 message: "Please input your username or email!",
               },
-            ]}>
+            ]}
+          >
             <Input />
           </Form.Item>
 
@@ -82,7 +87,8 @@ const SignIn = () => {
                 required: true,
                 message: "Please input your password!",
               },
-            ]}>
+            ]}
+          >
             <Input.Password />
           </Form.Item>
 
@@ -92,7 +98,8 @@ const SignIn = () => {
             wrapperCol={{
               offset: 8,
               span: 16,
-            }}>
+            }}
+          >
             <Checkbox>
               <span className="rememberMe">Remember me</span>
             </Checkbox>
@@ -102,7 +109,8 @@ const SignIn = () => {
             wrapperCol={{
               offset: 8,
               span: 16,
-            }}>
+            }}
+          >
             <Button type="primary" htmlType="submit">
               Sign In
             </Button>
