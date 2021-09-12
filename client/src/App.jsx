@@ -1,32 +1,36 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useCallback } from "react";
 import "./App.css";
 import "antd/dist/antd.css";
 import { Spin } from "antd";
 import { Route, Switch } from "react-router-dom";
+import { routes } from "./routes/index";
 
-import { Account } from "./pages/Account/index";
-import { User } from "./pages/User/index";
-import { Home } from "./pages/Home/index";
-import {NotFound} from "./_components/NotFound/index";
-import {ServerUpgrade} from "./_components/ServerUpgrade/index";
 const PageHeader = React.lazy(() => import("./_components/Header/index"));
 const PageFooter = React.lazy(() => import("./_components/Footer/index"));
 
 const App = () => {
+  const renderRoutes = useCallback((routes) => {
+    let result = null;
+    if (routes.length > 0) {
+      result = routes.map((route, index) => {
+        const { path, exact, component } = route;
+        return (
+          <Route key={index} path={path} exact={exact} component={component} />
+        );
+      });
+    }
+    return <Switch>{result}</Switch>;
+  }, []);
   return (
-    //   document.getElementById("container")
-    <Suspense fallback={<div className="example">
-                          <Spin tip="Loading..." />
-                        </div>}>
+    <Suspense
+      fallback={
+        <div className="example">
+          <Spin tip="Loading..." />
+        </div>
+      }
+    >
       <PageHeader />
-      <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route path="/home" component={Home}/>
-        <Route path="/account" component={Account}/>
-        <Route path="/user" component={User}/>
-        <Route path="/server-upgrade" component={ServerUpgrade}/>
-        <Route component={NotFound} />
-      </Switch>
+      {renderRoutes(routes)}
       <PageFooter />
     </Suspense>
   );

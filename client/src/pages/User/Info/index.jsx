@@ -4,17 +4,7 @@ import "./index.css";
 import { Upload, Form, Input, InputNumber, Button } from "antd";
 //Descriptions,
 import ImgCrop from "antd-img-crop";
-
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-    number: "${label} is not a valid number!",
-  },
-  number: {
-    range: "${label} must be between ${min} and ${max}",
-  },
-};
+import { validateMessages } from "./../../../constants/validateMessages";
 
 const Info = () => {
   const [fileList, setFileList] = useState([]);

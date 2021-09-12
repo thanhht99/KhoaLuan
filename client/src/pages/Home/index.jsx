@@ -18,13 +18,15 @@ const Home = () => {
     <div
       className="htmlHome"
       id="htmlHome"
-      style={{ height: "100%", width: "100%" }}>
+      style={{ height: "100%", width: "100%" }}
+    >
       <div className="infoStore">
         <img
           src="/image/homevideo.gif"
           alt="Home Video"
           className="info"
-          style={{ height: "100%", width: "100%" }}></img>
+          style={{ height: "100%", width: "100%" }}
+        ></img>
       </div>
       <div className="container">
         <Carousel autoplay>
@@ -59,7 +61,8 @@ const Home = () => {
             <img
               src="/image/home10.jpg"
               alt="home10"
-              style={contentStyle}></img>
+              style={contentStyle}
+            ></img>
           </div>
         </Carousel>
       </div>
@@ -74,7 +77,8 @@ const Home = () => {
               <HoverImage
                 className="hover-image"
                 src="/image/product/product1.jpg"
-                hoverSrc="/image/product/product1_1.jpg"></HoverImage>
+                hoverSrc="/image/product/product1_1.jpg"
+              ></HoverImage>
             </a>
           </div>
           <div className="image-item">
@@ -82,27 +86,26 @@ const Home = () => {
               <HoverImage
                 className="hover-image"
                 src="/image/product/product2.jpg"
-                hoverSrc="/image/product/product2_1.jpg"></HoverImage>
+                hoverSrc="/image/product/product2_1.jpg"
+              ></HoverImage>
             </a>
           </div>
           <div className="image-item">
             <a href="/">
-              <a href="/">
-                <HoverImage
-                  className="hover-image"
-                  src="/image/product/product3.jpg"
-                  hoverSrc="/image/product/product3_1.jpg"></HoverImage>
-              </a>
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product3.jpg"
+                hoverSrc="/image/product/product3_1.jpg"
+              ></HoverImage>
             </a>
           </div>
           <div className="image-item">
             <a href="/">
-              <a href="/">
-                <HoverImage
-                  className="hover-image"
-                  src="/image/product/product4.jpg"
-                  hoverSrc="/image/product/product4_1.jpg"></HoverImage>
-              </a>
+              <HoverImage
+                className="hover-image"
+                src="/image/product/product4.jpg"
+                hoverSrc="/image/product/product4_1.jpg"
+              ></HoverImage>
             </a>
           </div>
         </div>
@@ -118,32 +121,36 @@ const Home = () => {
               <HoverImage
                 className="hover-image"
                 src="/image/product/product8.jpg"
-                hoverSrc="/image/product/product8_1.jpg"></HoverImage>
-            </a>{" "}
+                hoverSrc="/image/product/product8_1.jpg"
+              ></HoverImage>
+            </a>
           </div>
           <div className="image-item">
             <a href="/">
               <HoverImage
                 className="hover-image"
                 src="/image/product/product7.jpg"
-                hoverSrc="/image/product/product7_1.jpg"></HoverImage>
-            </a>{" "}
+                hoverSrc="/image/product/product7_1.jpg"
+              ></HoverImage>
+            </a>
           </div>
           <div className="image-item">
             <a href="/">
               <HoverImage
                 className="hover-image"
                 src="/image/product/product6.jpg"
-                hoverSrc="/image/product/product6_1.jpg"></HoverImage>
-            </a>{" "}
+                hoverSrc="/image/product/product6_1.jpg"
+              ></HoverImage>
+            </a>
           </div>
           <div className="image-item">
             <a href="/">
               <HoverImage
                 className="hover-image"
                 src="/image/product/product5.jpg"
-                hoverSrc="/image/product/product5_1.jpg"></HoverImage>
-            </a>{" "}
+                hoverSrc="/image/product/product5_1.jpg"
+              ></HoverImage>
+            </a>
           </div>
         </div>
       </div>
@@ -157,7 +164,8 @@ const Home = () => {
             <a href="/">
               <img
                 src="/image/Promotions_Vouchers/black_friday.jpg"
-                alt=""></img>
+                alt=""
+              ></img>
             </a>
           </div>
           <div className="image-item2">
