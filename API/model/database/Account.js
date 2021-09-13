@@ -37,7 +37,6 @@ const AccountSchema = new Schema({
     verifyCode: {
         type: Number,
         trim: true,
-        required: [true, "Verify Code is required"],
     },
     isLogin: {
         type: Boolean,

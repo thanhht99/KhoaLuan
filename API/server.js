@@ -20,6 +20,7 @@ const cart = require("./routes/cart");
 const voucher = require("./routes/voucher");
 const bill = require("./routes/bill");
 const feedback = require("./routes/feedback");
+const data = require("./routes/data");
 
 // using MongoDB
 ConnectMongo.getConnect();
@@ -47,10 +48,17 @@ app.use("/api/cart", cart);
 app.use("/api/voucher", voucher);
 app.use("/api/bill", bill);
 app.use("/api/feedback", feedback);
+app.use("/api/data", data);
+
+app.get('/', (req, res) => {
+    res.send('Hello. *_* Alo Alo!');
+});
 
 // middleware error
 app.use(errorMiddleware);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Hello QTD, I'm running at localhost:http://localhost:${process.env.PORT}`.red);
+//SET  Server  Port & Start Server
+app.set('port', process.env.PORT || 5000);
+app.listen(app.get('port'), () => {
+    console.log(`Hello QTD, I'm running at ${app.get('port')}`.red);
 });
