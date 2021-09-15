@@ -1,0 +1,19 @@
+.site-layout-content {
+    min-height: 280px;
+    padding: 24px;
+    background: #fff;
+}
+
+[data-theme="dark"] .site-layout-content {
+    background: #fc0000;
+}
+
+.hello {
+    float: right;
+    height: 64px;
+    background: rgb(255, 255, 255);
+}
+
+.ant-row-rtl .hello {
+    float: left;
+}
