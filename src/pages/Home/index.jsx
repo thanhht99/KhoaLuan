@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
 import HoverImage from "react-hover-image";
 import { Carousel } from "antd";
+// import { useDispatch } from "react-redux";
+// import store from './../../store'
 
 const Home = () => {
+  // const dispatch = useDispatch();
+  useEffect(() => {
+
+    // const token = localStorage.getItem("token");
+    // console.log("🚀 ~ file: index.jsx ~ line 10 ~ useEffect ~ token", token);
+
+
+    // if(token) {
+    //     history.push('/home');
+    // }
+  });
+
   const contentStyle = {
     height: "70%",
     width: "40%",

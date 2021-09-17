@@ -1,5 +1,4 @@
 import callApi from "./../index";
-// import { ErrorAlert } from "./../../_components/error";
 
 const headers = (token) => {
   return { Authorization: `Basic ${token}` };

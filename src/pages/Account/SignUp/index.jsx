@@ -29,7 +29,7 @@ const SignUp = () => {
       // const user = await getUser(res.data);
       // console.log("🚀 ~ file: index.jsx ~ line 24 ~ onFinish ~ user", user)
     } else if (res.success === false) {
-      if (res.code === 404 || res.code === 403 || res.code === 401) {
+      if (res.code === 404 || res.code === 403) {
         notification["warning"]({
           message: "Warning",
           description: `${res.message}`,

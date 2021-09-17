@@ -1,32 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.css";
 import "antd/dist/antd.css";
 import { useHistory } from "react-router-dom";
 import { Form, Input, Button, Checkbox, notification } from "antd";
 import { signIn } from "./../../../api/auth/index";
+import { getAcc, getUser } from "./../../../api/user/index";
 import { validateMessages } from "./../../../constants/validateMessages";
-
-// import { getUser, getAcc } from "./../../../api/user/index";
-// import { ErrorAlert } from "../../../_components/error";
+import Cookies from "js-cookie";
+import { useDispatch } from 'react-redux';
+import { insertAcc } from "./../../../store/reducers/acc";
+import { insertUser } from "./../../../store/reducers/user";
 
 const SignIn = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const token = Cookies.get("token");
+  if (token) {
+    history.push("/home");
+  }
+  useEffect(() => {});
 
   const onFinish = async (values) => {
     // console.log("Success:", values);
 
-    const res = await signIn(values);
-    // console.log("🚀 ~ file: SignIn ~ onFinish ~ res", res);
+    const res = await signIn(values); 
+
     if (res === null) {
       history.push("/server-upgrade");
     } else if (res.success === true) {
-      localStorage.setItem("token", res.data);
-      // const acc = await getAcc(res.data);
-      // console.log("🚀 ~ file: index.jsx ~ line 23 ~ onFinish ~ acc", acc)
-      // const user = await getUser(res.data);
-      // console.log("🚀 ~ file: index.jsx ~ line 24 ~ onFinish ~ user", user)
+      Cookies.set("token", res.data, { path: "", expires: 1 });
+      const token = Cookies.get("token");
+      const acc = await getAcc(token);
+      // console.log("🚀 ~ file: index.jsx ~ line 32 ~ onFinish ~ acc", acc);
+      dispatch(insertAcc({ newAcc: acc.data }));
+      const user = await getUser(token);
+      // console.log("🚀 ~ file: index.jsx ~ line 35 ~ onFinish ~ user", user);
+      dispatch(insertUser({ newUser: user.data }));
+      history.push("/home");
     } else if (res.success === false) {
-      if (res.code === 404 || res.code === 403 || res.code === 401) {
+      if (res.code === 404 || res.code === 403) {
         notification["warning"]({
           message: "Warning",
           description: `${res.message}`,
@@ -75,11 +87,12 @@ const SignIn = () => {
             rules={[
               {
                 required: true,
-                type: "string", max: 32
+                type: "string",
+                max: 32,
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Username or Email"/>
           </Form.Item>
 
           <Form.Item
@@ -88,11 +101,13 @@ const SignIn = () => {
             rules={[
               {
                 required: true,
-                type: "string", max:6, min:50
+                type: "string",
+                min: 6,
+                max: 50,
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Password"/>
           </Form.Item>
 
           <Form.Item

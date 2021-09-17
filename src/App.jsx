@@ -22,17 +22,17 @@ const App = () => {
     return <Switch>{result}</Switch>;
   }, []);
   return (
-    <Suspense
-      fallback={
-        <div className="example">
-          <Spin tip="Loading..." />
-        </div>
-      }
-    >
-      <PageHeader />
-      {renderRoutes(routes)}
-      <PageFooter />
-    </Suspense>
+      <Suspense
+        fallback={
+          <div className="example">
+            <Spin tip="Loading..." />
+          </div>
+        }
+      >
+        <PageHeader />
+        {renderRoutes(routes)}
+        <PageFooter />
+      </Suspense>
   );
 };
 

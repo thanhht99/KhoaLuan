@@ -10,7 +10,7 @@ export const signIn = async (body) => {
   try {
     const res = await callApi("auth/signIn", "POST", body, headers)
       .then((res) => {
-        // console.log("😈 👿 👿 ~ file: Auth ~ signIn DATA 🧡", res.data);
+        // console.log("😈 👿 👿 ~ file: Auth ~ signIn DATA 🧡", res);
         return res.data;
       })
       .catch((err) => {
