@@ -1,0 +1,72 @@
+.htmlListProduct {
+    /* height: 100%; */
+    position: "relative";
+    justify-content: "center";
+    text-align: "center";
+}
+
+.test-list-product {
+    padding-top: 50px;
+    padding-right: 50px;
+    padding-left: 50px;
+    height: 100%;
+    width: 100%;
+}
+
+.cart-list-product {
+    /* margin-top: -25px; */
+    padding: 50px;
+    display: grid;
+    grid-gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(293px, 1fr));
+}
+
+.list-product-sort-bar {
+    /* padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 50px; */
+    padding: .8125rem 1.25rem;
+    font-weight: 400;
+    background: rgb(161, 161, 161);
+    border-radius: 2px;
+    /* box-sizing: border-box; */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.list-product-sort-by-options {
+    display: flex;
+    align-items: stretch;
+    flex-basis: 0%;
+    justify-content: flex-start;
+}
+
+.ant-select-selection-item {
+    padding-right: 15px;
+}
+
+.ant-card-meta-title {
+    font-size: 25px;
+    color: hsla(340, 100%, 50%, 0.5);
+}
+
+.image-list-product {
+    height: 420px;
+    /* width: 280px; */
+    object-fit: cover;
+}
+
+.pagination-list-product {
+    margin: auto;
+    padding-left: 50px;
+    padding-bottom: 50px;
+}
+
+@media screen and (max-width: 420px) {
+    .cart-list-product {
+        padding-right: 25px;
+        padding-left: 25px;
+    }
+}

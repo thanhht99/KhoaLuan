@@ -1,6 +1,7 @@
 import { Account } from "./../pages/Account/index";
 import { User } from "./../pages/User/index";
 import { Home } from "./../pages/Home/index";
+import { Product } from "./../pages/Product/index";
 import { NotFound } from "./../_components/NotFound/index";
 import { ServerUpgrade } from "./../_components/ServerUpgrade/index";
 
@@ -22,6 +23,10 @@ export const routes = [
   {
     path: "/user",
     component: User,
+  },
+  {
+    path: "/product",
+    component: Product,
   },
   {
     path: "/server-upgrade",

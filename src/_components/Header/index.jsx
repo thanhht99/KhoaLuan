@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import "./index.css";
 import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Layout, Menu,notification } from "antd";
+import { Layout, Menu, notification } from "antd";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import { getAcc, getUser } from "./../../api/user";
@@ -40,7 +40,7 @@ const PageHeader = () => {
             description: `${re_acc.message}`,
           });
           history.push("/account/sign-in");
-        } else if(re_user.code !== 401 && re_acc.code !== 401){
+        } else if (re_user.code !== 401 && re_acc.code !== 401) {
           dispatch(insertAcc({ newAcc: re_acc.data }));
           dispatch(insertUser({ newUser: re_user.data }));
         }
