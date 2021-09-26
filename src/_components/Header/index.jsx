@@ -51,22 +51,29 @@ const PageHeader = () => {
   }, [acc, user, token, dispatch, history]);
 
   return (
-    <Header>
-      <div className="hello">
-        <h1>Hello {state.acc.userName}</h1>
-      </div>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
-        <Menu.Item key="home">
-          <Link to="/home">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="signUp">
-          <Link to="/account/sign-up">Sign Up</Link>
-        </Menu.Item>
-        <Menu.Item key="signIn" style={style}>
-          <Link to="/account/sign-in">Sign In</Link>
-        </Menu.Item>
-      </Menu>
-    </Header>
+    <div className="htmlHeader">
+      {state.acc.role !== "Admin" && state.acc.role !== "Saler" && (
+        <Header>
+          <div className="hello">
+            <h1>Hello {state.acc.userName}</h1>
+          </div>
+          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+            <Menu.Item key="home">
+              <Link to="/home">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="product">
+              <Link to="/product">Product</Link>
+            </Menu.Item>
+            <Menu.Item key="signUp">
+              <Link to="/account/sign-up">Sign Up</Link>
+            </Menu.Item>
+            <Menu.Item key="signIn" style={style}>
+              <Link to="/account/sign-in">Sign In</Link>
+            </Menu.Item>
+          </Menu>
+        </Header>
+      )}
+    </div>
   );
 };
 

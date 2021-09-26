@@ -1,4 +1,5 @@
 import { Account } from "./../pages/Account/index";
+import { Dashboard } from "./../pages/Dashboard/index";
 import { User } from "./../pages/User/index";
 import { Home } from "./../pages/Home/index";
 import { Product } from "./../pages/Product/index";
@@ -27,6 +28,10 @@ export const routes = [
   {
     path: "/product",
     component: Product,
+  },
+  {
+    path: "/dashboard",
+    component: Dashboard,
   },
   {
     path: "/server-upgrade",
