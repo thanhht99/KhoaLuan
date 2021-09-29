@@ -62,7 +62,7 @@ const PageHeader = () => {
               <Link to="/home">Home</Link>
             </Menu.Item>
             <Menu.Item key="product">
-              <Link to="/product">Product</Link>
+              <Link to="/product/all">Product</Link>
             </Menu.Item>
             <Menu.Item key="signUp">
               <Link to="/account/sign-up">Sign Up</Link>
