@@ -102,7 +102,7 @@ const Dashboard = () => {
                       width: "64px",
                       height: "64px",
                     }}
-                  ></img>{" "}
+                  ></img>
                 </span>
               </Dropdown>
             </div>

@@ -8,12 +8,12 @@
     background: #fc0000;
 }
 
-.hello {
+.logo-avatar {
     float: right;
     height: 64px;
-    background: rgb(255, 255, 255);
+    /* background: rgb(255, 255, 255); */
 }
 
-.ant-row-rtl .hello {
+.ant-row-rtl .logo-avatar {
     float: left;
 }

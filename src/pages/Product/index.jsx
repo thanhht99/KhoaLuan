@@ -8,7 +8,7 @@ const Product = () => {
     const { path } = useRouteMatch();
     return (
       <Switch>
-        <Route path={`${path}/`} component={ListProduct} />
+        <Route path={`${path}/all`} component={ListProduct} />
         <Route component={NotFound} />
       </Switch>
     );
