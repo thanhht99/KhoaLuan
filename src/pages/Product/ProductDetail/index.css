@@ -27,6 +27,15 @@
     text-align:center;
 }
 
+
+.infoProduct{
+    padding-top: 10px;
+    padding-right: 100px;
+    padding-left: 100px;
+    height: 100%;
+    width: 100%;
+}
+
 .commentProduct{
     padding-top: 10px;
     padding-right: 100px;
