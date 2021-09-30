@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./index.css";
 import "antd/dist/antd.css";
-import { Row, Col, Breadcrumb, Image, Rate, Button } from 'antd';
+import { Row, Col, Breadcrumb, Image, Rate, Button, Radio, Divider, InputNumber } from 'antd';
 import {
     CommentOutlined,
   } from '@ant-design/icons';
@@ -9,6 +9,15 @@ import {
 const ProductDetail = () => {
     //const { path } = useRouteMatch();
     const [visible, setVisible] = useState(false);
+    const [value, setValue] = React.useState(1);
+    const onChange = e => {
+        console.log('radio checked', e.target.value);
+        setValue(e.target.value);
+      };
+    const onChangeNumber = value => {
+        console.log('changed', value);
+      };
+
     return (
         <div className="htmlProductDetail">
             <div className="relatePage">
@@ -55,8 +64,45 @@ const ProductDetail = () => {
                                 <Button type="text">Đánh Giá</Button>
                             </Col>
                         </Row>
+                        <div className="formDetailProduct">
+                            <Row>
+                                <span>Chat lieu vai : Jean </span>
+                            </Row>
+                            <Divider />
+                            <Row>
+                                <span> Size :</span>   
+                                <Radio.Group onChange={onChange} value={value}>
+                                    <Radio value={1}>XS</Radio>
+                                    <Radio value={2}>S</Radio>
+                                    <Radio value={3}>M</Radio>
+                                    <Radio value={4}>L</Radio>
+                                    <Radio value={5}>XL</Radio>
+                                </Radio.Group>
+                            </Row>
+                            <Divider />
+                            <Row>
+                                <span> Chon mau :</span>   
+                                <Radio.Group onChange={onChange} defaultValue="a">
+                                    <Radio.Button value="a">Hangzhou</Radio.Button>
+                                    <Radio.Button value="b">Shanghai</Radio.Button>
+                                    <Radio.Button value="c">Beijing</Radio.Button>
+                                    <Radio.Button value="d">Chengdu</Radio.Button>
+                                </Radio.Group>
+                            </Row>
+                            <Divider />
+                            <Row>
+                                <span> So luong :</span>   
+                                <InputNumber min={1} max={20} defaultValue={1} onChange={onChangeNumber} />
+                            </Row>
+                            <div>
+                                
+                            </div>
+                        </div>
                     </Col>
                 </Row>
+            </div>
+            <div className="commentProduct">
+                Hello
             </div>
         </div>
     );
