@@ -26,9 +26,11 @@ export const accSlice = createSlice({
         (store) => store.id !== action.payload.Acc.id
       );
     },
+    resetAcc: () => initialState,
   },
 });
 
-export const { getAcc, insertAcc, updateAcc, removeAcc } = accSlice.actions;
+export const { getAcc, insertAcc, updateAcc, removeAcc, resetAcc } =
+  accSlice.actions;
 
 export default accSlice.reducer;

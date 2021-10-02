@@ -7,7 +7,7 @@ import { signIn } from "./../../../api/auth/index";
 import { getAcc, getUser } from "./../../../api/user/index";
 import { validateMessages } from "./../../../constants/validateMessages";
 import Cookies from "js-cookie";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { insertAcc } from "./../../../store/reducers/acc";
 import { insertUser } from "./../../../store/reducers/user";
 
@@ -23,20 +23,27 @@ const SignIn = () => {
   const onFinish = async (values) => {
     // console.log("Success:", values);
 
-    const res = await signIn(values); 
+    const res = await signIn(values);
 
     if (res === null) {
       history.push("/server-upgrade");
     } else if (res.success === true) {
-      Cookies.set("token", res.data, { path: "", expires: 1 });
+      Cookies.set("token", res.data, { path: "", expires: 5 });
       const token = Cookies.get("token");
       const acc = await getAcc(token);
-      // console.log("🚀 ~ file: index.jsx ~ line 32 ~ onFinish ~ acc", acc);
       dispatch(insertAcc({ newAcc: acc.data }));
       const user = await getUser(token);
-      // console.log("🚀 ~ file: index.jsx ~ line 35 ~ onFinish ~ user", user);
       dispatch(insertUser({ newUser: user.data }));
-      history.push("/home");
+
+      if (acc.data.role === "Saler") {
+        history.push("/staff");
+      }
+      if (acc.data.role === "Admin") {
+        history.push("/dashboard");
+      }
+      if (acc.data.role === "Customer") {
+        history.push("/home");
+      }
     } else if (res.success === false) {
       if (res.code === 404 || res.code === 403) {
         notification["warning"]({
@@ -92,7 +99,7 @@ const SignIn = () => {
               },
             ]}
           >
-            <Input placeholder="Username or Email"/>
+            <Input placeholder="Username or Email" />
           </Form.Item>
 
           <Form.Item
@@ -107,7 +114,7 @@ const SignIn = () => {
               },
             ]}
           >
-            <Input.Password placeholder="Password"/>
+            <Input.Password placeholder="Password" />
           </Form.Item>
 
           <Form.Item

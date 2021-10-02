@@ -6,6 +6,10 @@ const basicAuth = Buffer.from(
 ).toString("base64");
 const headers = { Authorization: `Basic ${basicAuth}` };
 
+const headersToken = (token) => {
+  return { Authorization: `Basic ${token}` };
+};
+
 export const signIn = async (body) => {
   try {
     const res = await callApi("auth/signIn", "POST", body, headers)
@@ -43,6 +47,24 @@ export const signUp = async (body) => {
         }
         console.log("🙏🙏🙏 Error Error 🙏🙏🙏");
         console.log("🚀", err.response.data);
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const logout = async (token) => {
+  try {
+    const res = await callApi("auth/logout", "POST", null, headersToken(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
         return err.response.data;
       });
     return res;
