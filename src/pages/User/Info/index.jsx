@@ -20,7 +20,11 @@ import { validateMessages } from "./../../../constants/validateMessages";
 import Cookies from "js-cookie";
 import { NotFound } from "../../../_components/NotFound/index";
 import moment from "moment";
-import { getUser, updateAvatar, updateUser } from "./../../../api/user/index";
+import {
+  getUser,
+  updateAvatar,
+  updateUser,
+} from "./../../../api/user/index";
 import * as config from "../../../constants/config";
 import { insertUser, resetUser } from "../../../store/reducers/user";
 
@@ -48,6 +52,8 @@ const Info = () => {
   const [state, setState] = useState({
     loading: false,
     imageUrl: "",
+    flag: false,
+    flagSave: false,
   });
   const token = Cookies.get("token");
   const user = useSelector((state) => state.user.User);
@@ -59,6 +65,10 @@ const Info = () => {
     DOB.getDate() + "/" + (DOB.getMonth() + 1) + "/" + DOB.getFullYear();
 
   useEffect(() => {
+    if (state.flagSave) {
+      setState((prev) => ({ ...prev, flagSave: false }));
+      window.location.reload();
+    }
     if (!user.image && user.gender === "Male") {
       setState((prev) => ({ ...prev, imageUrl: "/image/avatar/male.jpg" }));
     }
@@ -71,10 +81,17 @@ const Info = () => {
         imageUrl: `${config.API_URL}/user/avatar/${acc._id}`,
       }));
     }
-  }, [user.image, user.gender, acc._id]);
+  }, [
+    dispatch,
+    history,
+    token,
+    state.flagSave,
+    user.image,
+    user.gender,
+    acc._id,
+  ]);
 
   const onChange = (info) => {
-    console.log("🚀 ~ file: index.jsx ~ line 63 ~ onChange ~ info", info);
     if (info.file.type === "image/jpeg" || info.file.type === "image/png") {
       info.file.status = "done";
     }
@@ -90,9 +107,18 @@ const Info = () => {
         });
         const formData = new FormData();
         formData.append("image", info.file.originFileObj);
-        await updateAvatar(token, formData);
-        // window.location.reload();
+        const res = await updateAvatar(token, formData);
+        if (res) {
+          setState((prev) => ({ ...prev, flag: true }));
+        }
       });
+      if (state.flag) {
+        setState((prev) => ({ ...prev, flag: false }));
+        notification["success"]({
+          message: "Success",
+          description: "Update image successfully",
+        });
+      }
     }
   };
 
@@ -120,6 +146,7 @@ const Info = () => {
         window.location.reload();
       } else if (re_user.code !== 401) {
         dispatch(insertUser({ newUser: re_user.data }));
+        setState((prev) => ({ ...prev, flagSave: true }));
       }
       history.push("/user/info/reload");
     } else if (res.success === false) {

@@ -1,241 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./index.css";
 import "antd/dist/antd.css";
 import { createFromIconfontCN, DollarCircleOutlined } from "@ant-design/icons";
-import { Pagination, Card, Rate, Select, Radio } from "antd";
+import { Pagination, Card, Rate, Select, Radio, notification } from "antd";
+import { getCategory } from "../../../api/category";
+import { getProductIsActiveTrue } from "../../../api/product";
+
 const { Meta } = Card;
 const { Option } = Select;
 
 const ListProduct = () => {
-  let data_product = [
-    {
-      id: 1,
-      price: 69,
-      image: "/image/product/product4.jpg",
-      category: "Hat",
-      name: "Card name1",
-      sold: 10,
-      rating: 3.2,
-    },
-    {
-      id: 2,
-      price: 6,
-      image: "/image/product/product3_1.jpg",
-      category: "Shirt",
-      name: "Card name2",
-      sold: 10,
-      rating: 2,
-    },
-    {
-      id: 3,
-      price: 9,
-      image: "/image/product/product2_1.jpg",
-      category: "Coat",
-      name: "Card name3",
-      sold: 10,
-      rating: 3,
-    },
-    {
-      id: 4,
-      price: 6,
-      image: "/image/product/product4.jpg",
-      category: "Shirt",
-      name: "Card name4",
-      sold: 10,
-      rating: 3.7,
-    },
-    {
-      id: 5,
-      price: 6,
-      image: "/image/product/product2.jpg",
-      category: "Coat",
-      name: "Card name5",
-      sold: 10,
-      rating: 4.2,
-    },
-    {
-      id: 6,
-      price: 60,
-      image: "/image/product/product3_1.jpg",
-      category: "Shirt",
-      name: "Card name6",
-      sold: 10,
-      rating: 4.7,
-    },
-    {
-      id: 7,
-      price: 60,
-      image: "/image/product/product4.jpg",
-      category: "Coat",
-      name: "Card name7",
-      sold: 10,
-      rating: 1.2,
-    },
-    {
-      id: 8,
-      price: 61,
-      image: "/image/product/product2.jpg",
-      category: "Hat",
-      name: "Card name8",
-      sold: 10,
-      rating: 4.2,
-    },
-    {
-      id: 9,
-      price: 69,
-      image: "/image/product/product7_1.jpg",
-      category: "Hat",
-      name: "Card name9",
-      sold: 10,
-      rating: 3.3,
-    },
-    {
-      id: 10,
-      price: 9,
-      image: "/image/product/product3.jpg",
-      category: "Hat",
-      name: "Card name10",
-      sold: 10,
-      rating: 3.3,
-    },
-    {
-      id: 11,
-      price: 9,
-      image: "/image/product/product2_1.jpg",
-      category: "Shirt",
-      name: "Card name11",
-      sold: 10,
-      rating: 4.1,
-    },
-    {
-      id: 12,
-      price: 9,
-      image: "/image/product/product3_1.jpg",
-      category: "Shirt",
-      name: "Card name12",
-      sold: 10,
-      rating: 3.9,
-    },
-    {
-      id: 13,
-      price: 9,
-      image: "/image/product/product7_1.jpg",
-      category: "Hat",
-      name: "Card name13",
-      sold: 10,
-      rating: 4.1,
-    },
-    {
-      id: 14,
-      price: 9,
-      image: "/image/product/product3.jpg",
-      category: "Shirt",
-      name: "Card name14",
-      sold: 10,
-      rating: 1.1,
-    },
-    {
-      id: 15,
-      price: 9,
-      image: "/image/product/product2_1.jpg",
-      category: "Coat",
-      name: "Card name31",
-      sold: 10,
-      rating: 2.1,
-    },
-    {
-      id: 16,
-      price: 9,
-      image: "/image/product/product6.jpg",
-      category: "Shirt",
-      name: "Card name32",
-      sold: 10,
-      rating: 4.1,
-    },
-    {
-      id: 17,
-      price: 9,
-      image: "/image/product/product7_1.jpg",
-      category: "Hat",
-      name: "Card name33",
-      sold: 10,
-      rating: 3.1,
-    },
-    {
-      id: 18,
-      price: 619,
-      image: "/image/product/product7.jpg",
-      category: "Shirt",
-      name: "Card name34",
-      sold: 10,
-      rating: 3.2,
-    },
-    {
-      id: 19,
-      price: 699,
-      image: "/image/product/product6.jpg",
-      category: "Hat",
-      name: "Card name35",
-      sold: 10,
-      rating: 4.3,
-    },
-    {
-      id: 20,
-      price: 19,
-      image: "/image/product/product4.jpg",
-      category: "Hat",
-      name: "Card name36",
-      sold: 10,
-      rating: 4.4,
-    },
-    {
-      id: 21,
-      price: 19,
-      image: "/image/product/product3.jpg",
-      category: "Shirt",
-      name: "Card name37",
-      sold: 10,
-      rating: 4.7,
-    },
-    {
-      id: 22,
-      price: 69,
-      image: "/image/product/product2.jpg",
-      category: "Coat",
-      name: "Card name38",
-      sold: 10,
-      rating: 4.9,
-    },
-    {
-      id: 23,
-      price: 19,
-      image: "/image/product/product6.jpg",
-      category: "Coat",
-      name: "Card name39",
-      sold: 10,
-      rating: 4.1,
-    },
-  ];
-
-  let data_category = [
-    { id: 1, name: "Hat" },
-    { id: 2, name: "T-Shirt" },
-    { id: 3, name: "Shirt" },
-    { id: 4, name: "Coat" },
-  ];
-
-  sessionStorage.setItem("categories", JSON.stringify(data_category));
-  sessionStorage.setItem("products", JSON.stringify(data_product));
-  let list_product = JSON.parse(sessionStorage.getItem("products"));
-  let categories = JSON.parse(sessionStorage.getItem("categories"));
-
+  // const token = Cookies.get("token");
   const [state, setState] = useState({
     minValue: 0,
     maxValue: 12,
-    products: list_product.sort((a, b) => a.price - b.price),
+    products: [],
     category: "All",
     price: { value: "increase" },
+    // flag: false,
   });
+  useEffect(() => {
+    const fetchData = async () => {
+      const re_category = await getCategory();
+      const re_product = await getProductIsActiveTrue();
+      if (re_category.success && re_product.success) {
+        sessionStorage.setItem("categories", JSON.stringify(re_category.data));
+        sessionStorage.setItem("products", JSON.stringify(re_product.data));
+        setState((prev) => ({
+          ...prev,
+          products: re_product.data.sort((a, b) => a.price - b.price),
+        }));
+      }
+      if (!re_category.success || !re_product.success) {
+        notification["warning"]({
+          message: "Warning",
+          description: `${re_category.message}.\n ${re_product.message}.`,
+        });
+      }
+    };
+    fetchData();
+    // if (!state.flag) {
+    //   fetchData();
+    //   setState((prev) => ({ ...prev, flag: true }));
+    // }
+  }, []);
+
+  let list_product = JSON.parse(sessionStorage.getItem("products"));
+  let categories = JSON.parse(sessionStorage.getItem("categories"));
 
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);
@@ -278,7 +89,7 @@ const ListProduct = () => {
 
   const categoryChange = (e) => {
     categories.forEach((val) => {
-      if (e.target.value === val.name) {
+      if (e.target.value === val.category_name) {
         let changeProduct = list_product.filter((product) => {
           return e.target.value === product.category;
         });
@@ -314,9 +125,9 @@ const ListProduct = () => {
             <Radio value="All">All</Radio>
             {categories &&
               categories.length > 0 &&
-              categories.map((val) => (
-                <Radio key={val.id} value={val.name}>
-                  {val.name}
+              categories.map((val, index) => (
+                <Radio key={index} value={val.category_name}>
+                  {val.category_name}
                 </Radio>
               ))}
           </Radio.Group>

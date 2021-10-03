@@ -44,6 +44,7 @@ const PageHeader = () => {
             description: `${re_acc.message}`,
           });
           history.push("/account/sign-in/reload");
+          window.location.reload();
         } else if (re_user.code !== 401 && re_acc.code !== 401) {
           dispatch(insertAcc({ newAcc: re_acc.data }));
           dispatch(insertUser({ newUser: re_user.data }));
