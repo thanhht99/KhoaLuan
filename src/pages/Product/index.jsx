@@ -10,7 +10,6 @@ const Product = () => {
     return (
       <Switch>
         <Route path={`${path}/all`} component={ListProduct} />
-        <Route path={`${path}/detail`} component={ProductDetail} />
         <Route component={NotFound} />
       </Switch>
     );

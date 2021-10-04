@@ -26,10 +26,11 @@ export const userSlice = createSlice({
         (store) => store.id !== action.payload.User.id
       );
     },
+    resetUser: () => initialState,
   },
 });
 
-export const { getListUser, insertUser, updateUser, removeUser } =
+export const { getListUser, insertUser, updateUser, removeUser, resetUser } =
   userSlice.actions;
 
 export default userSlice.reducer;

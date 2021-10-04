@@ -33,14 +33,6 @@ label.ant-form-item-required {
     text-align: center;
 }
 
-.ant-upload-list-item-actions,
-.ant-tooltip-placement-top,
-.ant-tooltip-placement-topLeft,
-.ant-tooltip-placement-topRight,
-.ant-upload-list-picture-card .ant-upload-list-item-info::before {
-    visibility: hidden;
-}
-
 @media screen and (max-width: 910px) {
     .htmlInfo {
         height: 830px;

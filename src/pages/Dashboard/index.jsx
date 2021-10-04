@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import {
@@ -29,14 +29,20 @@ import {
   MenuFoldOutlined,
   CaretUpOutlined,
 } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
+import { NotFound } from "../../_components/NotFound/index";
+import { resetAcc } from "../../store/reducers/acc";
+import { resetUser } from "../../store/reducers/user";
+import { logout } from "../../api/auth";
 const { SubMenu } = Menu;
 const { Sider, Content, Header } = Layout;
 
 const Dashboard = () => {
+  const history = useHistory();
   const [state, setState] = useState({
     collapsed: false,
   });
-
+  const dispatch = useDispatch();
   const toggle = () => {
     setState((prev) => ({
       ...prev,
@@ -46,19 +52,28 @@ const Dashboard = () => {
 
   const token = Cookies.get("token");
   const acc = useSelector((state) => state.acc.Acc);
+  if (!token) {
+    history.push("/account/sign-in");
+  }
 
-  const handleMenuClick = (e) => {
-    // message.info("Click on menu item.");
-    // console.log("click", e);
-  };
+  const handleMenuClick = (e) => {};
 
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
-        Info
+        <Link to="/user/info">Info</Link>
       </Menu.Item>
-      <Menu.Item key="2" icon={<LogoutOutlined />}>
-        <Link to="/account/sign-in">Logout</Link>
+      <Menu.Item
+        key="2"
+        icon={<LogoutOutlined />}
+        onClick={async () => {
+          Cookies.remove("token", { path: "" });
+          await logout(token);
+          dispatch(resetAcc());
+          dispatch(resetUser());
+        }}
+      >
+        <Link to="/account/sign-in/reload">Logout</Link>
       </Menu.Item>
     </Menu>
   );
@@ -102,7 +117,7 @@ const Dashboard = () => {
                       width: "64px",
                       height: "64px",
                     }}
-                  ></img>{" "}
+                  ></img>
                 </span>
               </Dropdown>
             </div>
@@ -252,7 +267,7 @@ const Dashboard = () => {
           </Layout>
         </Layout>
       ) : (
-        <h1>Helllo</h1>
+        <NotFound />
       )}
     </div>
   );

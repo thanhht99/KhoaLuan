@@ -12,8 +12,15 @@ import {
 } from "antd";
 import { validateMessages } from "./../../../constants/validateMessages";
 import { signUp } from "../../../api/auth";
+import { useHistory } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const SignUp = () => {
+  const history = useHistory();
+  const token = Cookies.get("token");
+  if (token) {
+    history.push("/home");
+  }
   const onFinish = async (values) => {
     console.log("Success:", values);
     values.dayOfBirth = values.dayOfBirth._d;
