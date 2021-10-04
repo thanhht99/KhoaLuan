@@ -31,7 +31,12 @@ const ListProduct = () => {
           products: re_product.data.sort((a, b) => a.price - b.price),
         }));
       }
-      if (!re_category.success || !re_product.success) {
+      if (
+        !re_category.success ||
+        !re_product.success ||
+        !re_product ||
+        !re_category
+      ) {
         notification["warning"]({
           message: "Warning",
           description: `${re_category.message}.\n ${re_product.message}.`,
