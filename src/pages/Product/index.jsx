@@ -3,6 +3,7 @@ import { Switch, Route, useRouteMatch } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound"
 
 import { ListProduct } from "./ListProduct";
+import { ProductDetail } from "./ProductDetail";
 
 const Product = () => {
     const { path } = useRouteMatch();
@@ -13,5 +14,6 @@ const Product = () => {
       </Switch>
     );
   };
+
   
   export { Product };
