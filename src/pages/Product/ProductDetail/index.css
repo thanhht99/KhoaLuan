@@ -1,10 +1,10 @@
-.htmlProductDetail{
+.htmlProductDetail {
     position: "relative";
     justify-content: "center";
     text-align: "center";
 }
 
-.relatePage{
+.relatePage {
     padding-top: 10px;
     padding-right: 100px;
     padding-left: 100px;
@@ -12,7 +12,29 @@
     width: 100%;
 }
 
-.detailProduct{
+.detailProduct {
+    padding-top: 10px;
+    padding-right: 100px;
+    padding-left: 100px;
+    /* height: 100%; */
+    /* width: 100%; */
+}
+
+.imageListProduct {
+    padding: 5px;
+}
+
+.imageDetailProduct {
+    justify-content: center;
+    align-items: center;
+}
+
+.formDetailProduct {
+    padding-top: 10px;
+    padding-left: 30px;
+}
+
+.infoProduct {
     padding-top: 10px;
     padding-right: 100px;
     padding-left: 100px;
@@ -20,15 +42,12 @@
     width: 100%;
 }
 
-.formDetailProduct{
-    padding-top: 50px;
-    padding-right: 100px;
-    padding-left: 10px;
-    text-align:center;
+.collapseInfoProduct>.ant-collapse-item>.ant-collapse-header {
+    font-weight: bold;
+    font-size: 18px;
 }
 
-
-.infoProduct{
+.commentProduct {
     padding-top: 10px;
     padding-right: 100px;
     padding-left: 100px;
@@ -36,10 +55,23 @@
     width: 100%;
 }
 
-.commentProduct{
-    padding-top: 10px;
-    padding-right: 100px;
-    padding-left: 100px;
-    height: 100%;
-    width: 100%;
+.review,
+.sold {
+    padding-left: 20px;
+}
+
+.review,
+.rating {
+    cursor: pointer;
+}
+
+.btnAddToCart {
+    color: black;
+    border-color: white;
+    background: none;
+}
+
+.btnAddToCart:hover {
+    background: none;
+    border-color: white;
 }

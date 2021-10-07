@@ -1,14 +1,7 @@
-.example {
-    margin: 20px 0;
-    margin-bottom: 20px;
-    padding: 30px 50px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-}
-
-.example {
-    background: rgba(255, 255, 255, 0.08);
+.app {
+    min-width: 1280px;
+    width: auto !important;
+    width: 1280px;
 }
 
 #stars {

@@ -22,6 +22,7 @@ const App = () => {
     return <Switch>{result}</Switch>;
   }, []);
   return (
+    <div className="app">
       <Suspense
         fallback={
           <div className="example">
@@ -33,6 +34,7 @@ const App = () => {
         {renderRoutes(routes)}
         <PageFooter />
       </Suspense>
+    </div>
   );
 };
 

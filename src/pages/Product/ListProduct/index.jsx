@@ -5,6 +5,7 @@ import { createFromIconfontCN, DollarCircleOutlined } from "@ant-design/icons";
 import { Pagination, Card, Rate, Select, Radio, notification } from "antd";
 import { getCategory } from "../../../api/category";
 import { getProductIsActiveTrue } from "../../../api/product";
+import { doNotGetData } from "../../../constants/doNotGetData";
 
 const { Meta } = Card;
 const { Option } = Select;
@@ -23,31 +24,30 @@ const ListProduct = () => {
     const fetchData = async () => {
       const re_category = await getCategory();
       const re_product = await getProductIsActiveTrue();
-      if (re_category.success && re_product.success) {
-        sessionStorage.setItem("categories", JSON.stringify(re_category.data));
-        sessionStorage.setItem("products", JSON.stringify(re_product.data));
-        setState((prev) => ({
-          ...prev,
-          products: re_product.data.sort((a, b) => a.price - b.price),
-        }));
+      if (!re_category || !re_product) {
+        doNotGetData();
       }
-      if (
-        !re_category.success ||
-        !re_product.success ||
-        !re_product ||
-        !re_category
-      ) {
-        notification["warning"]({
-          message: "Warning",
-          description: `${re_category.message}.\n ${re_product.message}.`,
-        });
+      if (re_category && re_product) {
+        if (re_category.success && re_product.success) {
+          sessionStorage.setItem(
+            "categories",
+            JSON.stringify(re_category.data)
+          );
+          sessionStorage.setItem("products", JSON.stringify(re_product.data));
+          setState((prev) => ({
+            ...prev,
+            products: re_product.data.sort((a, b) => a.price - b.price),
+          }));
+        }
+        if (!re_category.success || !re_product.success) {
+          notification["warning"]({
+            message: "Warning",
+            description: `${re_category.message}.\n ${re_product.message}.`,
+          });
+        }
       }
     };
     fetchData();
-    // if (!state.flag) {
-    //   fetchData();
-    //   setState((prev) => ({ ...prev, flag: true }));
-    // }
   }, []);
 
   let list_product = JSON.parse(sessionStorage.getItem("products"));
@@ -155,7 +155,7 @@ const ListProduct = () => {
           state.products.length > 0 &&
           state.products.slice(state.minValue, state.maxValue).map((val) => (
             <a
-              href="/product"
+              href={`/product/${val.sku}`}
               key={val.id}
               style={{ width: "350px", height: "100%" }}
             >

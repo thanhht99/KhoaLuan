@@ -1,5 +1,6 @@
 .htmlListProduct {
     /* height: 100%; */
+    max-width: 1600px;
     position: "relative";
     justify-content: "center";
     text-align: "center";
@@ -64,9 +65,10 @@
     padding-bottom: 50px;
 }
 
-@media screen and (max-width: 420px) {
+
+/* @media screen and (max-width: 420px) {
     .cart-list-product {
         padding-right: 25px;
         padding-left: 25px;
     }
-}
+} */

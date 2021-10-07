@@ -30,9 +30,3 @@
 .rememberMe {
     color: white;
 }
-
-@media screen and (max-width: 910px) {
-    .htmlRegister {
-        height: 930px;
-    }
-}
