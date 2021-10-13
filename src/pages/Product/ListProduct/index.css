@@ -18,9 +18,9 @@
     /* margin-top: -25px; */
     padding: 50px;
     display: grid;
-    grid-gap: 30px;
+    grid-gap: 45px;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-template-columns: repeat(auto-fit, minmax(293px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
 }
 
 .list-product-sort-bar {
@@ -31,7 +31,6 @@
     font-weight: 400;
     background: rgb(161, 161, 161);
     border-radius: 2px;
-    /* box-sizing: border-box; */
     display: flex;
     align-items: center;
     justify-content: flex-start;

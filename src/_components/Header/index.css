@@ -8,10 +8,15 @@
     background: #fc0000;
 }
 
-.logo-avatar {
+.logo-avatar,
+.shopping-cart {
     float: right;
+}
+
+.avatar-img {
+    object-fit: cover;
+    width: 64px;
     height: 64px;
-    /* background: rgb(255, 255, 255); */
 }
 
 .ant-row-rtl .logo-avatar {

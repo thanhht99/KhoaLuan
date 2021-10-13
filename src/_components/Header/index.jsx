@@ -12,18 +12,28 @@ import { logout } from "./../../api/auth";
 import { insertUser, resetUser } from "./../../store/reducers/user";
 import { insertAcc, resetAcc } from "./../../store/reducers/acc";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { useCookies } from "react-cookie";
+
+const Drawers = React.lazy(() => import("./drawer"));
 const { Header } = Layout;
 
 const PageHeader = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
+  const [cookies, setCookie] = useCookies(["numberCart"], ["cart"]);
   const [state, setState] = useState({
     acc: {},
     user: {},
     style: {},
   });
+  if (isNaN(Number(cookies.numberCart))) {
+    setCookie("numberCart", 0, { path: "/" });
+    const cart = [];
+    let json_cart = JSON.stringify(cart);
+    setCookie("cart", json_cart, { path: "/" });
+  }
   const user = useSelector((state) => state.user.User);
   const acc = useSelector((state) => state.acc.Acc);
-  const dispatch = useDispatch();
   const token = Cookies.get("token");
 
   useEffect(() => {
@@ -53,7 +63,7 @@ const PageHeader = () => {
       fetchData();
     }
     setState((prev) => ({ ...prev, user, acc }));
-  }, [acc, user, token, dispatch, history]);
+  }, [acc, user, token, dispatch, history, cookies]);
 
   const handleMenuClick = (e) => {
     // console.log("click", e);
@@ -82,7 +92,16 @@ const PageHeader = () => {
     <div className="htmlHeader">
       {state.acc.role !== "Admin" && state.acc.role !== "Saler" && (
         <Header>
-          <div className="logo-avatar">
+          <div
+            className="shopping-cart"
+            style={{ marginBottom: "-8px", paddingTop: "5px" }}
+          >
+            <Drawers />
+          </div>
+          <div
+            className="logo-avatar"
+            style={{ marginBottom: "-2px", marginTop: "-4px" }}
+          >
             {token && state.acc.role === "Customer" && (
               <Dropdown
                 overlay={menu}
@@ -96,11 +115,6 @@ const PageHeader = () => {
                         src="/image/avatar/male.jpg"
                         alt=""
                         className="avatar-img"
-                        style={{
-                          objectFit: "cover",
-                          width: "64px",
-                          height: "64px",
-                        }}
                       ></img>
                     </>
                   )}
@@ -110,11 +124,6 @@ const PageHeader = () => {
                         src="/image/avatar/female.jpg"
                         alt=""
                         className="avatar-img"
-                        style={{
-                          objectFit: "cover",
-                          width: "64px",
-                          height: "64px",
-                        }}
                       ></img>
                     </>
                   )}
@@ -124,11 +133,6 @@ const PageHeader = () => {
                         src={`${config.API_URL}/user/avatar/${state.acc._id}`}
                         alt=""
                         className="avatar-img"
-                        style={{
-                          objectFit: "cover",
-                          width: "64px",
-                          height: "64px",
-                        }}
                       ></img>
                     </>
                   )}

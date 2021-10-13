@@ -10,9 +10,8 @@ const Product = () => {
   return (
     <Switch>
       <Route path={`${path}/all`} component={ListProduct} />
-      <Route path={`${path}/detail`} component={ProductDetail} />
       <Route
-        path={`${path}/:id`}
+        path={`${path}/detail/:id`}
         render={(props) => <ProductDetail {...props} />}
       />
       <Route component={NotFound} />

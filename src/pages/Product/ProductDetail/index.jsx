@@ -15,35 +15,44 @@ import {
   Comment,
   Tooltip,
   List,
-  // Form,
-  // Input,
+  message,
+  notification,
 } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { NotFound } from "../../../_components/NotFound/index";
+import { useHistory } from "react-router-dom";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { NotFound } from "../../../_components/NotFound/index";
+import { useDispatch } from "react-redux";
+import { numberProduct } from "../../../store/reducers/cart";
 
 const ProductDetail = (props) => {
+  const history = useHistory();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     product: {},
     flag: false,
+    radioSize: null,
+    quantity: 1,
   });
   const { Panel } = Collapse;
   const [visible, setVisible] = useState(false);
-  //chon size + mau
-  const [value, setValue] = React.useState(1);
 
   useEffect(() => {
-    setState((prev) => ({ ...prev, flag: false }));
+    setState((prev) => ({ ...prev, flag: false, radioSize: "S" }));
     const sessionProducts = sessionStorage.getItem("products");
     const products = JSON.parse(sessionProducts);
-    products.forEach((val) => {
-      if (props.match.params.id === val.sku) {
-        setState((prev) => ({ ...prev, product: val, flag: true }));
-      }
-    });
-  }, [props.match.params.id]);
+    if (products) {
+      products.forEach((val) => {
+        if (props.match.params.id === val.sku) {
+          setState((prev) => ({ ...prev, product: val, flag: true }));
+        }
+      });
+    } else {
+      history.push("/product/all");
+    }
+  }, [props.match.params.id, history]);
 
   const responsive = {
     superLargeDesktop: {
@@ -66,12 +75,25 @@ const ProductDetail = (props) => {
   };
 
   const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setState((prev) => ({ ...prev, radioSize: e.target.value }));
   };
 
   const onChangeQuantity = (value) => {
-    console.log("changed", value);
+    setState((prev) => ({ ...prev, quantity: value }));
+  };
+
+  const onClickAddToCart = (val) => {
+    if (val.quantity > 0 && state.quantity < val.quantity) {
+      dispatch(numberProduct({ product: val, number: state.quantity }));
+      message.destroy();
+      message.info("Added to cart");
+    }
+    if (val.quantity <= 0) {
+      notification["warning"]({
+        message: "Warning",
+        description: "Quantity is not enough !!!",
+      });
+    }
   };
 
   //data - list comment
@@ -216,14 +238,14 @@ const ProductDetail = (props) => {
                     <span>Size </span>
                     <Radio.Group
                       onChange={onChange}
-                      value={value}
                       style={{ paddingLeft: "46px" }}
+                      value={state.radioSize}
                     >
-                      <Radio value={1}>S</Radio>
-                      <Radio value={2}>M</Radio>
-                      <Radio value={3}>L</Radio>
-                      <Radio value={4}>XL</Radio>
-                      <Radio value={5}>XXL</Radio>
+                      <Radio value="S">S</Radio>
+                      <Radio value="M">M</Radio>
+                      <Radio value="L">L</Radio>
+                      <Radio value="XL">XL</Radio>
+                      <Radio value="XXL">XXL</Radio>
                     </Radio.Group>
                   </Row>
                   <Divider />
@@ -247,6 +269,7 @@ const ProductDetail = (props) => {
                       marginLeft: "70px",
                     }}
                     className={"btnAddToCart"}
+                    onClick={() => onClickAddToCart(state.product)}
                   >
                     Add to cart
                   </Button>

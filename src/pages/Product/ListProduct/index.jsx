@@ -1,17 +1,34 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
 import "antd/dist/antd.css";
-import { createFromIconfontCN, DollarCircleOutlined } from "@ant-design/icons";
-import { Pagination, Card, Rate, Select, Radio, notification } from "antd";
+import {
+  createFromIconfontCN,
+  DollarCircleOutlined,
+  ShoppingCartOutlined,
+  InfoCircleOutlined,
+} from "@ant-design/icons";
+import {
+  Pagination,
+  Card,
+  Rate,
+  Select,
+  Radio,
+  notification,
+  Button,
+  message,
+  // Divider,
+} from "antd";
 import { getCategory } from "../../../api/category";
 import { getProductIsActiveTrue } from "../../../api/product";
 import { doNotGetData } from "../../../constants/doNotGetData";
+import { useDispatch } from "react-redux";
+import { addCart } from "../../../store/reducers/cart";
 
 const { Meta } = Card;
 const { Option } = Select;
 
 const ListProduct = () => {
-  // const token = Cookies.get("token");
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     minValue: 0,
     maxValue: 12,
@@ -66,6 +83,20 @@ const ListProduct = () => {
     }
   };
 
+  const onClick = (val) => {
+    if (val.quantity > 0) {
+      dispatch(addCart({ product: val }));
+      message.destroy();
+      message.info("Added to cart");
+    }
+    if (val.quantity <= 0) {
+      notification["warning"]({
+        message: "Warning",
+        description: "Quantity is not enough !!!",
+      });
+    }
+  };
+
   const IconFont = createFromIconfontCN({
     scriptUrl: [
       "//at.alicdn.com/t/font_1788044_0dwu4guekcwr.js", // icon-javascript, icon-java, icon-shoppingcart (overrided)
@@ -108,7 +139,7 @@ const ListProduct = () => {
       } else if (e.target.value === "All") {
         setState((prev) => ({
           ...prev,
-          products: list_product,
+          products: list_product.sort((a, b) => a.price - b.price),
           category: e.target.value,
           price: { value: "increase" },
         }));
@@ -154,32 +185,53 @@ const ListProduct = () => {
         {state.products &&
           state.products.length > 0 &&
           state.products.slice(state.minValue, state.maxValue).map((val) => (
-            <a
-              href={`/product/${val.sku}`}
+            <Card
+              className="card-list-product"
               key={val.id}
-              style={{ width: "350px", height: "100%" }}
+              hoverable
+              style={{ width: 350 }}
+              cover={
+                <img alt="" src={val.image} className="image-list-product" />
+              }
+              actions={[
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<InfoCircleOutlined />}
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#3300FF",
+                  }}
+                  href={`/product/detail/${val.sku}`}
+                >
+                  Detail
+                </Button>,
+                <Button
+                  type="primary"
+                  size="large"
+                  icon={<ShoppingCartOutlined />}
+                  style={{
+                    backgroundColor: "hsla(340, 100%, 50%, 0.5)",
+                    width: "100%",
+                  }}
+                  className={"btnAddToCart"}
+                  onClick={() => onClick(val)}
+                >
+                  Add to cart
+                </Button>,
+              ]}
             >
-              <Card
-                className="card-list-product"
-                key={val.id}
-                hoverable
-                style={{ width: 350 }}
-                cover={
-                  <img alt="" src={val.image} className="image-list-product" />
-                }
-              >
-                <Meta className="card-meta-list-product" title={val.name} />
-                <p style={{ fontSize: "17px", paddingTop: "15px" }}>
-                  <strong>{val.price + " "} </strong>
-                  <DollarCircleOutlined />
-                  <span style={{ float: "right" }}>
-                    <IconFont type="icon-shoppingcart" />
-                    {val.sold}
-                  </span>
-                </p>
-                <Rate disabled allowHalf defaultValue={val.rating} />
-              </Card>
-            </a>
+              <Meta className="card-meta-list-product" title={val.name} />
+              <p style={{ fontSize: "17px", paddingTop: "15px" }}>
+                <strong>{val.price + " "} </strong>
+                <DollarCircleOutlined />
+                <span style={{ float: "right" }}>
+                  <IconFont type="icon-shoppingcart" />
+                  {val.sold}
+                </span>
+              </p>
+              <Rate disabled allowHalf defaultValue={val.rating} />
+            </Card>
           ))}
       </div>
       <div className="pagination-list-product">
