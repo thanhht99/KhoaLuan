@@ -12,15 +12,18 @@ export const cartSlice = createSlice({
   reducers: {
     addCart: (state, action) => {
       const cookiesCart = JSON.parse(Cookies.get("cart"));
+      const keyCart = Number(Cookies.get("keyCart"));
       state._products = action.payload.product;
-      if (Number(Cookies.get("numberCart")) === 0) {
+      if (cookiesCart.length === 0) {
         let cart = {
           id: state._products.id,
           quantity: 1,
+          key: keyCart + 1,
           name: state._products.name,
           image: state._products.image,
           price: state._products.price,
         };
+        Cookies.set("keyCart", keyCart + 1, { path: "/" });
         cookiesCart.push(cart);
       } else {
         let check = false;
@@ -35,37 +38,40 @@ export const cartSlice = createSlice({
           let _cart = {
             id: state._products.id,
             quantity: 1,
+            key: keyCart + 1,
             name: state._products.name,
             image: state._products.image,
             price: state._products.price,
           };
+          Cookies.set("keyCart", keyCart + 1, { path: "/" });
           cookiesCart.push(_cart);
         }
       }
       let json_cart = JSON.stringify(cookiesCart);
       Cookies.set("cart", json_cart, { path: "/" });
-      const newNumber = Number(Cookies.get("numberCart")) + 1;
-      Cookies.set("numberCart", newNumber, { path: "/" });
       state.Carts = cookiesCart;
       return state;
     },
     numberProduct: (state, action) => {
       const cookiesCart = JSON.parse(Cookies.get("cart"));
+      const keyCart = Number(Cookies.get("keyCart"));
       state._products = action.payload.product;
-      if (Number(Cookies.get("numberCart")) === 0) {
+      if (cookiesCart.length === 0) {
         let cart = {
           id: state._products.id,
           quantity: 1,
+          key: keyCart + 1,
           name: state._products.name,
           image: state._products.image,
           price: state._products.price,
         };
+        Cookies.set("keyCart", keyCart + 1, { path: "/" });
         cookiesCart.push(cart);
       } else {
         let check = false;
         cookiesCart.map((item, key) => {
           if (item.id === state._products.id) {
-            cookiesCart[key].quantity++;
+            cookiesCart[key].quantity += action.payload.number;
             check = true;
           }
           return item;
@@ -74,18 +80,17 @@ export const cartSlice = createSlice({
           let _cart = {
             id: state._products.id,
             quantity: 1,
+            key: keyCart + 1,
             name: state._products.name,
             image: state._products.image,
             price: state._products.price,
           };
+          Cookies.set("keyCart", keyCart + 1, { path: "/" });
           cookiesCart.push(_cart);
         }
       }
       let json_cart = JSON.stringify(cookiesCart);
       Cookies.set("cart", json_cart, { path: "/" });
-      const newNumber =
-        Number(Cookies.get("numberCart")) + action.payload.number;
-      Cookies.set("numberCart", newNumber, { path: "/" });
       state.Carts = cookiesCart;
       return state;
     },
@@ -94,9 +99,48 @@ export const cartSlice = createSlice({
       state.Carts = cookiesCart;
       return state;
     },
+    deleteProduct: (state, action) => {
+      let cookiesCart = JSON.parse(Cookies.get("cart"));
+      const id = action.payload.id;
+      const afterDelete = cookiesCart.filter((item) => {
+        return item.id !== id;
+      });
+      let json_cart = JSON.stringify(afterDelete);
+      Cookies.set("cart", json_cart, { path: "/" });
+      state.Carts = afterDelete;
+      return state;
+    },
+    changeNumberProduct: (state, action) => {
+      const cookiesCart = JSON.parse(Cookies.get("cart"));
+      const id = action.payload.id;
+      const quantity = action.payload.quantity;
+      cookiesCart.map((item, key) => {
+        if (item.id === id) {
+          cookiesCart[key].quantity = quantity;
+        }
+        return item;
+      });
+      let json_cart = JSON.stringify(cookiesCart);
+      Cookies.set("cart", json_cart, { path: "/" });
+      state.Carts = cookiesCart;
+      return state;
+    },
+    resetCart: () => {
+      const cart = [];
+      let json_cart = JSON.stringify(cart);
+      Cookies.set("cart", json_cart, { path: "/" });
+      return initialState;
+    },
   },
 });
 
-export const { addCart, numberProduct, updateCart } = cartSlice.actions;
+export const {
+  addCart,
+  numberProduct,
+  updateCart,
+  deleteProduct,
+  changeNumberProduct,
+  resetCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

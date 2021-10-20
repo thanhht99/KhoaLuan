@@ -16,6 +16,8 @@ import {
   notification,
   Button,
   message,
+  Tooltip,
+  Spin,
   // Divider,
 } from "antd";
 import { getCategory } from "../../../api/category";
@@ -182,8 +184,7 @@ const ListProduct = () => {
         </div>
       </div>
       <div className="cart-list-product">
-        {state.products &&
-          state.products.length > 0 &&
+        {state.products && state.products.length > 0 ? (
           state.products.slice(state.minValue, state.maxValue).map((val) => (
             <Card
               className="card-list-product"
@@ -221,7 +222,9 @@ const ListProduct = () => {
                 </Button>,
               ]}
             >
-              <Meta className="card-meta-list-product" title={val.name} />
+              <Tooltip placement="topLeft" title={val.name}>
+                <Meta className="card-meta-list-product" title={val.name} />
+              </Tooltip>
               <p style={{ fontSize: "17px", paddingTop: "15px" }}>
                 <strong>{val.price + " "} </strong>
                 <DollarCircleOutlined />
@@ -232,7 +235,10 @@ const ListProduct = () => {
               </p>
               <Rate disabled allowHalf defaultValue={val.rating} />
             </Card>
-          ))}
+          ))
+        ) : (
+          <Spin />
+        )}
       </div>
       <div className="pagination-list-product">
         <Pagination

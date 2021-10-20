@@ -20,17 +20,34 @@ const { Header } = Layout;
 const PageHeader = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [cookies, setCookie] = useCookies(["numberCart"], ["cart"]);
+  const [cookies, setCookie] = useCookies(
+    ["positionCart"],
+    ["keyCart"],
+    ["cart"],
+    ["infoOrder"]
+  );
   const [state, setState] = useState({
     acc: {},
     user: {},
     style: {},
   });
-  if (isNaN(Number(cookies.numberCart))) {
-    setCookie("numberCart", 0, { path: "/" });
+  if (isNaN(Number(cookies.positionCart))) {
+    setCookie("positionCart", 0, { path: "/" });
+    setCookie("keyCart", 0, { path: "/" });
     const cart = [];
     let json_cart = JSON.stringify(cart);
     setCookie("cart", json_cart, { path: "/" });
+    const infoOrder = {
+      address: null,
+      email: null,
+      fullName: null,
+      phone: null,
+      note: null,
+      voucher: null,
+      isError: true,
+    };
+    let json_infoOrder = JSON.stringify(infoOrder);
+    setCookie("infoOrder", json_infoOrder, { path: "/" });
   }
   const user = useSelector((state) => state.user.User);
   const acc = useSelector((state) => state.acc.Acc);

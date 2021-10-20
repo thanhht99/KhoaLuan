@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Badge, Drawer, Button, Row, Col } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import Cookies from "js-cookie";
-import { updateCart } from "./../../store/reducers/cart";
+import { resetCart, updateCart } from "./../../store/reducers/cart";
+import { Link } from "react-router-dom";
 
 const Drawers = (props) => {
   const dispatch = useDispatch();
-  const reduxCart = useSelector((state) => state.cart.Carts);
+  const reduxCart = useSelector((state) => state.cart.Carts, shallowEqual);
   const cookiesCart = JSON.parse(Cookies.get("cart"));
   if (reduxCart.length !== cookiesCart.length) {
     dispatch(updateCart());
@@ -53,6 +54,10 @@ const Drawers = (props) => {
     });
   };
 
+  const onClickClear = () => {
+    dispatch(resetCart());
+  };
+
   return (
     <>
       <Badge
@@ -89,14 +94,16 @@ const Drawers = (props) => {
         {state.shoppingCartList.length === 0 ? null : (
           <>
             <Button type="primary" style={{ margin: 5 }}>
-              Procced
+              <Link
+                to={{
+                  pathname: "/cart",
+                }}
+              >
+                Go to cart
+              </Link>
             </Button>
-            <Button
-              type="primary"
-              style={{ margin: 5 }}
-              //   onClick={() => props.clear()}
-            >
-              Clear
+            <Button type="primary" style={{ margin: 5 }} onClick={onClickClear}>
+              <Link to="/product/all">Clear</Link>
             </Button>
           </>
         )}
