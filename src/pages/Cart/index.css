@@ -22,3 +22,22 @@
     color: rgba(255, 255, 255, 0.65);
     padding-top: 80px;
 }
+
+.ant-descriptions-title {
+    margin-left: 19px;
+    color: rgba(255, 0, 85, 0.5);
+}
+
+.ant-descriptions-row>th,
+.ant-descriptions-row>td {
+    padding-bottom: 0px;
+}
+
+.collapseDeliveryFee>.ant-collapse-item>.ant-collapse-header {
+    color: white;
+}
+
+.imagePaymentUpload>.ant-upload.ant-upload-select-picture-card {
+    height: 180px;
+    width: 180px;
+}

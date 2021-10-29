@@ -29,8 +29,9 @@ const InfoOrder = () => {
       fullName: formValues.FullName,
       phone: formValues.Phone,
       note: formValues.note,
-      voucher: formValues.voucher,
+      voucherCode: formValues.voucher,
       isError: true,
+      isError2: true,
     };
     if (
       form.isFieldTouched("FullName") &&
@@ -102,7 +103,7 @@ const InfoOrder = () => {
           },
           {
             name: ["voucher"],
-            value: state.infoOrder.voucher,
+            value: state.infoOrder.voucherCode,
           },
         ]}
         initialValues={{

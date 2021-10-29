@@ -133,7 +133,7 @@ const ListProduct = () => {
         });
         setState((prev) => ({
           ...prev,
-          products: changeProduct,
+          products: changeProduct.sort((a, b) => a.price - b.price),
           category: e.target.value,
           price: { value: "increase" },
         }));

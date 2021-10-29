@@ -13,6 +13,8 @@ import {
 } from "@ant-design/icons";
 
 const { Footer } = Layout;
+const API_KEY = "AIzaSyC43U2-wqXxYEk1RBrTLdkYt3aDoOxO4Fw"; // API key free
+// const API_KEY = process.env.REACT_APP_API_KEY;
 const AnyReactComponent = ({ text }) => (
   <div
     style={{
@@ -84,7 +86,7 @@ const PageFooter = () => {
               >
                 <GoogleMapReact
                   bootstrapURLKeys={{
-                    key: "AIzaSyDwwjv9y-PJGshULnz_NXULOXpPKBTrhCQ",
+                    key: API_KEY,
                   }}
                   defaultCenter={{ lat: 10.849967, lng: 106.77164 }}
                   defaultZoom={16}

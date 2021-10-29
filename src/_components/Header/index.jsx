@@ -43,7 +43,7 @@ const PageHeader = () => {
       fullName: null,
       phone: null,
       note: null,
-      voucher: null,
+      voucherCode: null,
       isError: true,
     };
     let json_infoOrder = JSON.stringify(infoOrder);

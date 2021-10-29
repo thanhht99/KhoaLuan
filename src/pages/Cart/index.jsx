@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
-import { Steps, Button, message, notification } from "antd";
+import { Steps, Button, notification } from "antd";
 import {
   ShoppingCartOutlined,
   SolutionOutlined,
@@ -11,25 +11,29 @@ import {
 } from "@ant-design/icons";
 import { InfoCart } from "./InfoCart";
 import { InfoOrder } from "./InfoOrder";
+import { Reconfirm } from "./Reconfirm";
+import { Payment } from "./Payment";
+import { Done } from "./Done";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
-import { updateCart } from "../../store/reducers/cart";
-import { updateInfoOrder } from "../../store/reducers/infoOrder";
+import { resetCart, updateCart } from "../../store/reducers/cart";
+import {
+  resetInfoOrder,
+  updateInfoOrder,
+} from "../../store/reducers/infoOrder";
+import { createOrder } from "../../api/order";
 
 const { Step } = Steps;
 
 const Cart = (props) => {
-  const [current, setCurrent] = useState(0);
+  const cookiesPositionCart = JSON.parse(Cookies.get("positionCart"));
+
+  const [current, setCurrent] = useState(cookiesPositionCart);
   const dispatch = useDispatch();
   const reduxCart = useSelector((state) => state.cart.Carts, shallowEqual);
   const reduxInfoOrder = useSelector(
     (state) => state.infoOrder.InfoOrder,
     shallowEqual
-  );
-  const cookiesInfoOrder = JSON.parse(Cookies.get("infoOrder"));
-  console.log(
-    "🚀 ~ file: index.jsx ~ line 30 ~ Cart ~ cookiesInfoOrder",
-    cookiesInfoOrder
   );
   const cookiesCart = JSON.parse(Cookies.get("cart"));
   const [state, setState] = useState({
@@ -62,17 +66,17 @@ const Cart = (props) => {
     },
     {
       title: "Reconfirm the order",
-      content: "Reconfirm the order-content",
+      content: <Reconfirm />,
       icon: <CheckSquareOutlined />,
     },
     {
-      title: "Payment methods",
-      content: "Payment methods-content",
+      title: "Payment",
+      content: <Payment />,
       icon: <BankOutlined />,
     },
     {
       title: "Done",
-      content: "Done-content",
+      content: <Done />,
       icon: <SmileOutlined />,
     },
   ];
@@ -93,6 +97,56 @@ const Cart = (props) => {
       let json_InfoOrder = JSON.stringify(reduxInfoOrder);
       Cookies.set("infoOrder", json_InfoOrder, { path: "/" });
       Cookies.set("positionCart", 2, { path: "/" });
+      next();
+    }
+  };
+
+  const onClickInfoOrder2 = async () => {
+    // console.log(
+    //   "🚀 ~ file: index.jsx ~ line 105 ~ onClickInfoOrder2 ~ reduxInfoOrder",
+    //   reduxInfoOrder
+    // );
+    if (reduxInfoOrder.isError2) {
+      notification["error"]({
+        message: "Error",
+        description: "Please choose a payment method!",
+      });
+    } else if (!reduxInfoOrder.isError2) {
+      const apiOrder = await createOrder(reduxInfoOrder);
+      if (apiOrder.success) {
+        let json_InfoOrder = JSON.stringify(apiOrder.data);
+        Cookies.set("infoOrder", json_InfoOrder, { path: "/" });
+        Cookies.set("positionCart", 3, { path: "/" });
+        next();
+      }
+      if (!apiOrder.success) {
+        notification["warning"]({
+          message: "Warning",
+          description: `${apiOrder.message}`,
+        });
+      }
+    }
+  };
+
+  const onClickInfoOrder3 = async () => {
+    const cookiesInfoOrderUpdate = JSON.parse(Cookies.get("infoOrder"));
+    if (
+      (cookiesInfoOrderUpdate.payments === "Momo" ||
+        cookiesInfoOrderUpdate.payments === "Bank account") &&
+      !cookiesInfoOrderUpdate.imagePayment
+    ) {
+      notification["error"]({
+        message: "Error",
+        description: "Please upload payment image!",
+      });
+    } else if (
+      cookiesInfoOrderUpdate.payments === "COD" ||
+      cookiesInfoOrderUpdate.imagePayment
+    ) {
+      dispatch(resetCart());
+      dispatch(resetInfoOrder());
+      Cookies.set("positionCart", 0, { path: "/" });
+      Cookies.set("keyCart", 0, { path: "/" });
       next();
     }
   };
@@ -135,20 +189,17 @@ const Cart = (props) => {
             Next
           </Button>
         )}
-        {current > 1 && current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
+        {current === 2 && (
+          <Button type="primary" htmlType="submit" onClick={onClickInfoOrder2}>
             Next
           </Button>
         )}
-        {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => message.success("Processing complete!")}
-          >
-            Done
+        {current === 3 && (
+          <Button type="primary" htmlType="submit" onClick={onClickInfoOrder3}>
+            Next
           </Button>
         )}
-        {current > 0 && (
+        {current > 0 && current < 3 && (
           <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
             Previous
           </Button>

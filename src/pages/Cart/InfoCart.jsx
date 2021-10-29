@@ -142,7 +142,7 @@ const InfoCart = () => {
         }}
       >
         <span>
-          Total Carts:
+          Total :
           <strong> {Number(TotalCart).toLocaleString("en-US")} $</strong>
         </span>
         <br />
