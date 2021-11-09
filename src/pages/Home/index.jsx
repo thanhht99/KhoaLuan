@@ -2,18 +2,21 @@ import React, { useEffect } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
 import HoverImage from "react-hover-image";
-import { Carousel } from "antd";
-// import { useDispatch } from "react-redux";
+import { Carousel, Button, Affix } from "antd";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
+
 // import store from './../../store'
 
 const Home = () => {
   // const dispatch = useDispatch();
-  useEffect(() => {
+  const token = Cookies.get("token");
+  const acc = useSelector((state) => state.acc.Acc);
 
+  useEffect(() => {
     // const token = localStorage.getItem("token");
     // console.log("🚀 ~ file: index.jsx ~ line 10 ~ useEffect ~ token", token);
-
-
     // if(token) {
     //     history.push('/home');
     // }
@@ -34,6 +37,15 @@ const Home = () => {
       id="htmlHome"
       style={{ height: "100%", width: "100%" }}
     >
+      {token && acc.role === "Admin" && (
+        <>
+          <Affix offsetTop="0">
+            <Button type="primary">
+              <Link to="/dashboard">Go to Dashboard</Link>
+            </Button>
+          </Affix>
+        </>
+      )}
       <div className="infoStore">
         <img
           src="/image/homevideo.gif"

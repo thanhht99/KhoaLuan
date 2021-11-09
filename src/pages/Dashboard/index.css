@@ -72,3 +72,11 @@
     padding-top: 9px;
     border-top: 1px solid #292a2d;
 }
+
+.form-product-dashboard .ant-form-item-label>label {
+    color: rgb(0, 0, 0)
+}
+
+.form-add-product-dashboard .ant-form-item-label>label {
+    color: rgb(0, 0, 0)
+}

@@ -64,7 +64,7 @@ const PageHeader = () => {
       const fetchData = async () => {
         const re_acc = await getAcc(token);
         const re_user = await getUser(token);
-        if (re_user.code === 401 || re_acc.code === 401) {
+        if (re_user && re_acc && re_acc.code === 401) {
           Cookies.remove("token", { path: "" });
           notification["warning"]({
             message: "Warning",
@@ -72,7 +72,12 @@ const PageHeader = () => {
           });
           history.push("/account/sign-in/reload");
           window.location.reload();
-        } else if (re_user.code !== 401 && re_acc.code !== 401) {
+        } else if (
+          re_user &&
+          re_acc &&
+          re_user.code !== 401 &&
+          re_acc.code !== 401
+        ) {
           dispatch(insertAcc({ newAcc: re_acc.data }));
           dispatch(insertUser({ newUser: re_user.data }));
         }
