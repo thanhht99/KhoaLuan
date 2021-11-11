@@ -8,13 +8,14 @@ import {
   Switch,
   Input,
   Drawer,
+  Divider,
   Space,
   Button,
 } from "antd";
 import { getCategory } from "../../../api/category";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import { getProducts } from "../../../api/product";
-import { SearchOutlined } from "@ant-design/icons";
+import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { AddProduct } from "./AddProduct";
 import { DrawerProduct } from "./DrawerProduct";
@@ -27,8 +28,7 @@ const ListOfProducts = () => {
   const dispatch = useDispatch();
   const reduxProductAll = useSelector((state) => state.productAll.Product);
   const reduxCategoryAll = useSelector((state) => state.categoryAll.Category);
-
-  const [state, setState] = useState({
+  const initialState = {
     products: reduxProductAll,
     product: null,
     categories: reduxCategoryAll,
@@ -37,8 +37,15 @@ const ListOfProducts = () => {
     drawerVisible: false,
     imageUrl: "", //1
     fileList: [], //1
-  });
+  };
+
+  const [state, setState] = useState(initialState);
+
   let searchInput = React.createRef();
+
+  const refresh = () => {
+    setState({ ...initialState });
+  };
 
   const filterCategories = state.categories.map((item) => {
     const value = {
@@ -59,7 +66,11 @@ const ListOfProducts = () => {
       }
       if (re_category && re_product) {
         if (re_category.success && re_product.success) {
-          dispatch(insertCategory({ newCategory: re_category.data }));
+          const keyCategory = re_category.data.map((item, index) => {
+            const key = index;
+            return { ...item, key };
+          });
+          dispatch(insertCategory({ newCategory: keyCategory }));
           const keyProducts = re_product.data.map((item, index) => {
             const key = index;
             return { ...item, key };
@@ -68,7 +79,7 @@ const ListOfProducts = () => {
           setState((prev) => ({
             ...prev,
             products: keyProducts,
-            categories: re_category.data,
+            categories: keyCategory,
           }));
         }
         if (!re_category.success || !re_product.success) {
@@ -294,6 +305,18 @@ const ListOfProducts = () => {
 
   return (
     <>
+      <br />
+      <Button
+        type="primary"
+        size="small"
+        onClick={refresh}
+        icon={<ReloadOutlined />}
+        style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
+        className={"btn-Reload-Page-List-Of-Products"}
+      >
+        Reload Page
+      </Button>
+      <Divider />
       <AddProduct categories={state.categories} />
       <Table columns={columns} dataSource={state.products} />
       {state.product && (

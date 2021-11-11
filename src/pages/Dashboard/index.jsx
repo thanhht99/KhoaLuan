@@ -17,6 +17,7 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   UnorderedListOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -25,6 +26,7 @@ import { resetUser } from "../../store/reducers/user";
 import { logout } from "../../api/auth";
 import { HomeDashboard } from "./HomeDashboard";
 import { ListOfProducts } from "./Product/ListOfProducts";
+import { ListOfCategory } from "./Category/ListOfCategory";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -148,6 +150,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickCategory = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <MenuOutlined />
+          Category
+        </span>
+      ),
+      content: <ListOfCategory />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -260,7 +283,9 @@ const Dashboard = () => {
                     <Menu.Item key="listProduct" onClick={onClickListProduct}>
                       List
                     </Menu.Item>
-                    <Menu.Item key="category">Category</Menu.Item>
+                    <Menu.Item key="category" onClick={onClickCategory}>
+                      Category
+                    </Menu.Item>
                     <Menu.Item key="feedback">Feedback</Menu.Item>
                   </SubMenu>
                   <SubMenu

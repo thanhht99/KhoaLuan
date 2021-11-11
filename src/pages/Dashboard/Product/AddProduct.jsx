@@ -73,10 +73,10 @@ const AddProduct = (props) => {
     state.fileList.forEach((file) => {
       formDataListImage.append("files", file.originFileObj);
     });
-    console.log(
-      "formDataListImage 🧡 🧡 🧡 🧡 🧡 🧡:",
-      formDataListImage.getAll("files")
-    );
+    // console.log(
+    //   "formDataListImage 🧡 🧡 🧡 🧡 🧡 🧡:",
+    //   formDataListImage.getAll("files")
+    // );
 
     const newProduct = await createNewProduct(formData, token);
     let newListImageProduct;
