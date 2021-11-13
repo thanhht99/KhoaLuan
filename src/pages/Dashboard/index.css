@@ -90,3 +90,17 @@
     border-color: white;
     background: none;
 }
+
+.btn-Reload-Page-List-Of-Orders {
+    color: black;
+    border-color: white;
+    background: none;
+}
+
+.ant-descriptions-item-label {
+    font-weight: bold;
+}
+
+.ant-steps-item-title {
+    margin-top: -4px;
+}

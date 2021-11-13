@@ -28,7 +28,7 @@ const SignIn = () => {
     if (res === null) {
       history.push("/server-upgrade");
     } else if (res.success === true) {
-      Cookies.set("token", res.data, { path: "/", expires: 5 });
+      Cookies.set("token", res.data, { path: "/", expires: 2 });
       const token = Cookies.get("token");
       const acc = await getAcc(token);
       dispatch(insertAcc({ newAcc: acc.data }));

@@ -18,6 +18,7 @@ import {
   MenuFoldOutlined,
   UnorderedListOutlined,
   MenuOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -27,6 +28,7 @@ import { logout } from "../../api/auth";
 import { HomeDashboard } from "./HomeDashboard";
 import { ListOfProducts } from "./Product/ListOfProducts";
 import { ListOfCategory } from "./Category/ListOfCategory";
+import { ListOfOrders } from "./Order/ListOfOrders";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -171,6 +173,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickOrder = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <ShoppingCartOutlined />
+          Order
+        </span>
+      ),
+      content: <ListOfOrders />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -180,7 +203,7 @@ const Dashboard = () => {
         key="2"
         icon={<LogoutOutlined />}
         onClick={async () => {
-          Cookies.remove("token", { path: "" });
+          Cookies.remove("token", { path: "/" });
           await logout(token);
           dispatch(resetAcc());
           dispatch(resetUser());
@@ -294,7 +317,9 @@ const Dashboard = () => {
                     title="Business"
                   >
                     <Menu.Item key="bill">Bill</Menu.Item>
-                    <Menu.Item key="order">Order</Menu.Item>
+                    <Menu.Item key="order" onClick={onClickOrder}>
+                      Order
+                    </Menu.Item>
                   </SubMenu>
                   <SubMenu key="sale" icon={<TagFilled />} title="Sale">
                     <Menu.Item key="promotion">Promotion</Menu.Item>

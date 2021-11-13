@@ -37,6 +37,7 @@ const ListOfProducts = () => {
     drawerVisible: false,
     imageUrl: "", //1
     fileList: [], //1
+    total: null,
   };
 
   const [state, setState] = useState(initialState);
@@ -318,7 +319,20 @@ const ListOfProducts = () => {
       </Button>
       <Divider />
       <AddProduct categories={state.categories} />
-      <Table columns={columns} dataSource={state.products} />
+      <Table
+        columns={columns}
+        dataSource={state.products}
+        footer={() => {
+          const total = state.total ? state.total : state.products.length;
+          return <strong>Sum: {total}</strong>;
+        }}
+        onChange={(pagination, filters, sorter, extra) => {
+          setState((prev) => ({
+            ...prev,
+            total: extra.currentDataSource.length,
+          }));
+        }}
+      />
       {state.product && (
         <Drawer
           title={state.product.name}

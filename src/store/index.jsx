@@ -9,6 +9,8 @@ import categoryAllSlice from "./reducers/categoryAll";
 import productAllSlice from "./reducers/productAll";
 import categoryTAFSlice from "./reducers/categoryTrueAndFalse";
 import categoryDetailSlice from "./reducers/categoryDetail";
+import orderAllSlice from "./reducers/orderAll";
+import orderDetailSlice from "./reducers/orderDetail";
 
 export const store = configureStore({
   reducer: {
@@ -21,5 +23,7 @@ export const store = configureStore({
     categoryAll: categoryAllSlice,
     categoryTAF: categoryTAFSlice,
     categoryDetail: categoryDetailSlice,
+    orderAll: orderAllSlice,
+    orderDetail: orderDetailSlice,
   },
 });
