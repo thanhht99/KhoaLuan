@@ -11,6 +11,8 @@ import categoryTAFSlice from "./reducers/categoryTrueAndFalse";
 import categoryDetailSlice from "./reducers/categoryDetail";
 import orderAllSlice from "./reducers/orderAll";
 import orderDetailSlice from "./reducers/orderDetail";
+import voucherAllSlice from "./reducers/voucherAll";
+import voucherDetailSlice from "./reducers/voucherDetail";
 
 export const store = configureStore({
   reducer: {
@@ -25,5 +27,7 @@ export const store = configureStore({
     categoryDetail: categoryDetailSlice,
     orderAll: orderAllSlice,
     orderDetail: orderDetailSlice,
+    voucherAll: voucherAllSlice,
+    voucherDetail: voucherDetailSlice,
   },
 });

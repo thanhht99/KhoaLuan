@@ -68,7 +68,7 @@ const DrawerProduct = (props) => {
     if (!props.drawerVisible) {
       setState({ ...initialState });
     }
-  }, [props.product, props.drawerVisible, reduxProduct.image]);
+  }, [props.product, props.drawerVisible]);
 
   const onChange = (info) => {
     // console.log("🚀 ~ 🚀 ~ 🚀 ~", info);
@@ -137,7 +137,7 @@ const DrawerProduct = (props) => {
     // console.log("Success:", values);
 
     // console.log("State 😈 👿 👿 😈 👿 👿:", state);
-
+    
     const formData = new FormData();
     formData.append("file", state.originFileObj);
     formData.append("description", values.description);

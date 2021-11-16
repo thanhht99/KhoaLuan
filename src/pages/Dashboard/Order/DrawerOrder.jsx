@@ -12,7 +12,9 @@ import {
   Table,
   Button,
   Space,
+  Popconfirm,
   notification,
+  Image,
 } from "antd";
 import { changeOrderStatus } from "../../../api/order";
 import { doNotGetData } from "../../../constants/doNotGetData";
@@ -110,7 +112,7 @@ const DrawerOrder = (props) => {
   };
 
   const onClickConfirm = async () => {
-    if (state.current) {
+    if (state.current || state.current === 0) {
       const body = {
         orderStatus: orderStatus[state.current],
       };
@@ -175,6 +177,17 @@ const DrawerOrder = (props) => {
           </Descriptions>
           <br />
           <Table columns={columns} dataSource={products} />
+          {reduxOrder.payments === "Momo" ||
+          reduxOrder.payments === "Bank account" ? (
+            <Image
+              src={reduxOrder.imagePayment}
+              width={200}
+              height={200}
+              alt=""
+            />
+          ) : (
+            <></>
+          )}
           <Descriptions
             className={"drawer-order-dashboard"}
             style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
@@ -257,9 +270,14 @@ const DrawerOrder = (props) => {
               ))}
             </Steps>
 
-            <Button type="primary" onClick={onClickConfirm}>
-              Confirm & Save
-            </Button>
+            <Popconfirm
+              title="Are you sure to save?"
+              onConfirm={onClickConfirm}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="primary">Confirm & Save</Button>
+            </Popconfirm>
           </div>
         </>
       ) : (

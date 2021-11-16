@@ -19,6 +19,7 @@ import {
   UnorderedListOutlined,
   MenuOutlined,
   ShoppingCartOutlined,
+  GiftOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -29,6 +30,7 @@ import { HomeDashboard } from "./HomeDashboard";
 import { ListOfProducts } from "./Product/ListOfProducts";
 import { ListOfCategory } from "./Category/ListOfCategory";
 import { ListOfOrders } from "./Order/ListOfOrders";
+import { ListOfVoucher } from "./Voucher/ListOfVoucher";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -194,6 +196,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickVoucher = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <GiftOutlined />
+          Voucher
+        </span>
+      ),
+      content: <ListOfVoucher />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -323,7 +346,9 @@ const Dashboard = () => {
                   </SubMenu>
                   <SubMenu key="sale" icon={<TagFilled />} title="Sale">
                     <Menu.Item key="promotion">Promotion</Menu.Item>
-                    <Menu.Item key="voucher">Voucher</Menu.Item>
+                    <Menu.Item key="voucher" onClick={onClickVoucher}>
+                      Voucher
+                    </Menu.Item>
                   </SubMenu>
                   <SubMenu
                     key="notify"

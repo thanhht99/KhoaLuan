@@ -224,7 +224,10 @@ const ListOfOrders = () => {
         columns={columns}
         dataSource={state.orders}
         footer={() => {
-          const total = state.total ? state.total : state.orders.length;
+          const total =
+            state.total || state.total === 0
+              ? state.total
+              : state.orders.length;
           return <strong>Sum: {total}</strong>;
         }}
         onChange={(pagination, filters, sorter, extra) => {
