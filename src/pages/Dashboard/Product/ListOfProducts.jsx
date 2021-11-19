@@ -11,10 +11,11 @@ import {
   Divider,
   Space,
   Button,
+  Popconfirm,
 } from "antd";
 import { getCategory } from "../../../api/category";
 import { doNotGetData } from "../../../constants/doNotGetData";
-import { getProducts } from "../../../api/product";
+import { getProducts, updateActiveProduct } from "../../../api/product";
 import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import { AddProduct } from "./AddProduct";
@@ -23,9 +24,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { insertProduct } from "../../../store/reducers/productDetail";
 import { insertCategory } from "../../../store/reducers/categoryAll";
 import { insertProductAll } from "../../../store/reducers/productAll";
+import Cookies from "js-cookie";
+import { useHistory } from "react-router";
 
 const ListOfProducts = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const reduxProductAll = useSelector((state) => state.productAll.Product);
   const reduxCategoryAll = useSelector((state) => state.categoryAll.Category);
   const initialState = {
@@ -39,6 +43,7 @@ const ListOfProducts = () => {
     fileList: [], //1
     total: null,
   };
+  const token = Cookies.get("token");
 
   const [state, setState] = useState(initialState);
 
@@ -209,8 +214,51 @@ const ListOfProducts = () => {
     dispatch(insertProduct({ newProduct: record }));
   };
 
-  const onChangeSwitch = (e) => {
-    console.log("🚀 🚀 🚀 🚀 🚀 🚀", e);
+  const confirm = async (record) => {
+    const res = await updateActiveProduct(record.sku, !record.isActive, token);
+
+    if (res && res.success) {
+      const re_product = await getProducts();
+      const keyProducts = re_product.data.map((item, index) => {
+        const key = index;
+        return { ...item, key };
+      });
+      dispatch(insertProductAll({ newProduct: keyProducts }));
+      setState((prev) => ({
+        ...prev,
+        products: keyProducts,
+      }));
+
+      notification["success"]({
+        message: "Update status of the product",
+        description: "Update status of the product successfully",
+      });
+    }
+    if (res && !res.success) {
+      if (res.message === "Token is expired") {
+        Cookies.remove("token", { path: "/" });
+        notification["warning"]({
+          message: "Update status of the product",
+          description: `${res.message}`,
+        });
+        history.push("/account/sign-in/reload");
+        window.location.reload();
+      }
+      if (typeof res.message === "object") {
+        const message = Object.keys(res.message).map((key) => {
+          return res.message[key];
+        });
+        notification["warning"]({
+          message: "Update status of the product",
+          description: `${message}`,
+        });
+      } else {
+        notification["warning"]({
+          message: "Update status of the product",
+          description: `${res.message}`,
+        });
+      }
+    }
   };
 
   const columns = [
@@ -283,12 +331,27 @@ const ListOfProducts = () => {
       title: "Active",
       dataIndex: "isActive",
       width: "10%",
+      filters: [
+        {
+          text: "True",
+          value: "true",
+        },
+        {
+          text: "False",
+          value: "false",
+        },
+      ],
       onFilter: (value, record) => {
-        return record.isActive.indexOf(value) === 0;
+        return record.isActive.toString().indexOf(value) === 0;
       },
-      render: (isActive) => (
+      render: (isActive, record) => (
         <div>
-          <Switch checked={isActive} onChange={onChangeSwitch} />
+          <Popconfirm
+            title="Do you want to change the status?"
+            onConfirm={() => confirm(record)}
+          >
+            <Switch checked={isActive} />
+          </Popconfirm>
         </div>
       ),
     },

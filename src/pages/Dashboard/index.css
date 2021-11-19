@@ -85,6 +85,14 @@
     color: rgb(0, 0, 0)
 }
 
+.form-promotion-dashboard .ant-form-item-label>label {
+    color: rgb(0, 0, 0)
+}
+
+.form-add-promotion-dashboard .ant-form-item-label>label {
+    color: rgb(0, 0, 0)
+}
+
 .form-add-voucher-dashboard .ant-form-item-label>label {
     color: rgb(0, 0, 0)
 }
@@ -94,6 +102,12 @@
 }
 
 .btn-Reload-Page-List-Of-Products {
+    color: black;
+    border-color: white;
+    background: none;
+}
+
+.btn-Reload-Page-List-Of-Promotions {
     color: black;
     border-color: white;
     background: none;

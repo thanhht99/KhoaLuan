@@ -31,6 +31,7 @@ import { ListOfProducts } from "./Product/ListOfProducts";
 import { ListOfCategory } from "./Category/ListOfCategory";
 import { ListOfOrders } from "./Order/ListOfOrders";
 import { ListOfVoucher } from "./Voucher/ListOfVoucher";
+import { ListOfPromotion } from "./Promotion/ListOfPromotion";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -217,6 +218,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickPromotion = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <TagFilled />
+          Promotion
+        </span>
+      ),
+      content: <ListOfPromotion />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -345,7 +367,9 @@ const Dashboard = () => {
                     </Menu.Item>
                   </SubMenu>
                   <SubMenu key="sale" icon={<TagFilled />} title="Sale">
-                    <Menu.Item key="promotion">Promotion</Menu.Item>
+                    <Menu.Item key="promotion" onClick={onClickPromotion}>
+                      Promotion
+                    </Menu.Item>
                     <Menu.Item key="voucher" onClick={onClickVoucher}>
                       Voucher
                     </Menu.Item>

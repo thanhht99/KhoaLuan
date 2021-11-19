@@ -33,6 +33,29 @@ export const getProductIsActiveTrue = async () => {
   }
 };
 
+export const getProductIsActiveTrueAndIsPromotionFalse = async () => {
+  try {
+    const res = await callApi(
+      "product/allByActive?isActive=1&isPromotion=0",
+      "GET",
+      null,
+      headers
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const getProducts = async () => {
   try {
     const res = await callApi("product/all", "GET", null, headers)
@@ -126,6 +149,29 @@ export const updateListImageProduct = async (sku, body, token) => {
       `product/updateListImage/${sku}`,
       "PATCH",
       body,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const updateActiveProduct = async (sku, isActive, token) => {
+  try {
+    const res = await callApi(
+      `product/updateActive/${sku}?isActive=${isActive}`,
+      "PATCH",
+      null,
       headersToken(token)
     )
       .then((res) => {
