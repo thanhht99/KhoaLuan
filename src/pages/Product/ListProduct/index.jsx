@@ -237,7 +237,9 @@ const ListProduct = () => {
             </Card>
           ))
         ) : (
-          <Spin />
+          <div style={{ display: "grid", margin: "100px" }}>
+            <Spin />
+          </div>
         )}
       </div>
       <div className="pagination-list-product">

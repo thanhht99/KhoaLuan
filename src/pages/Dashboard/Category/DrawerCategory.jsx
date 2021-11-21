@@ -145,7 +145,9 @@ const DrawerCategory = (props) => {
           </Form>
         </>
       ) : (
-        <Spin />
+        <div style={{ display: "grid", margin: "100px" }}>
+            <Spin />
+          </div>
       )}
     </>
   );

@@ -11,22 +11,19 @@ import {
   Radio,
   message,
   notification,
+  Affix,
 } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { validateMessages } from "./../../../constants/validateMessages";
 import Cookies from "js-cookie";
 import { NotFound } from "../../../_components/NotFound/index";
 import moment from "moment";
-import {
-  getUser,
-  updateAvatar,
-  updateUser,
-} from "./../../../api/user/index";
+import { updateAvatar, updateUser } from "./../../../api/user/index";
 import * as config from "../../../constants/config";
-import { insertUser, resetUser } from "../../../store/reducers/user";
+import { insertUser } from "../../../store/reducers/user";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -49,11 +46,13 @@ function beforeUpload(file) {
 const Info = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [form] = Form.useForm();
   const [state, setState] = useState({
     loading: false,
     imageUrl: "",
     flag: false,
     flagSave: false,
+    originFileObj: null,
   });
   const token = Cookies.get("token");
   const user = useSelector((state) => state.user.User);
@@ -65,10 +64,10 @@ const Info = () => {
     DOB.getDate() + "/" + (DOB.getMonth() + 1) + "/" + DOB.getFullYear();
 
   useEffect(() => {
-    if (state.flagSave) {
-      setState((prev) => ({ ...prev, flagSave: false }));
-      window.location.reload();
-    }
+    // if (state.flagSave) {
+    //   setState((prev) => ({ ...prev, flagSave: false }));
+    //   window.location.reload();
+    // }
     if (!user.image && user.gender === "Male") {
       setState((prev) => ({ ...prev, imageUrl: "/image/avatar/male.jpg" }));
     }
@@ -81,74 +80,49 @@ const Info = () => {
         imageUrl: `${config.API_URL}/user/avatar/${acc._id}`,
       }));
     }
-  }, [
-    dispatch,
-    history,
-    token,
-    state.flagSave,
-    user.image,
-    user.gender,
-    acc._id,
-  ]);
+  }, [dispatch, history, token, user.image, user.gender, acc._id]);
 
   const onChange = (info) => {
     if (info.file.type === "image/jpeg" || info.file.type === "image/png") {
       info.file.status = "done";
     }
     if (info.file.status === "uploading") {
-      setState({ loading: true });
+      setState((prev) => ({
+        ...prev,
+        loading: true,
+      }));
       return;
     }
     if (info.file.status === "done") {
       getBase64(info.file.originFileObj, async (imageUrl) => {
-        setState({
+        setState((prev) => ({
+          ...prev,
           imageUrl,
           loading: false,
-        });
-        const formData = new FormData();
-        formData.append("image", info.file.originFileObj);
-        const res = await updateAvatar(token, formData);
-        if (res) {
-          setState((prev) => ({ ...prev, flag: true }));
-        }
+          originFileObj: info.file.originFileObj,
+        }));
       });
-      if (state.flag) {
-        setState((prev) => ({ ...prev, flag: false }));
-        notification["success"]({
-          message: "Success",
-          description: "Update image successfully",
-        });
-      }
     }
   };
 
   const onFinish = async (values) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
     const { address, phone } = values;
 
     const res = await updateUser(token, { address, phone: "0" + phone });
     if (res === null) {
       history.push("/server-upgrade");
     } else if (res.success === true) {
+      const formData = new FormData();
+      formData.append("image", state.originFileObj);
+      await updateAvatar(token, formData);
+
+      setTimeout(window.location.reload(), 5000);
+
       notification["success"]({
         message: "Success",
-        description: "",
+        description: "Update info successfully",
       });
-      dispatch(resetUser());
-      const re_user = await getUser(token);
-      if (re_user.code === 401) {
-        Cookies.remove("token", { path: "" });
-        notification["warning"]({
-          message: "Warning",
-          description: `${re_user.message}`,
-        });
-        history.push("/account/sign-in/reload");
-        window.location.reload();
-      } else if (re_user.code !== 401) {
-        dispatch(insertUser({ newUser: re_user.data }));
-        setState((prev) => ({ ...prev, flagSave: true }));
-      }
-      history.push("/user/info/reload");
     } else if (res.success === false) {
       if (res.code === 404 || res.code === 403) {
         notification["warning"]({
@@ -183,6 +157,18 @@ const Info = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const onChangeForm = () => {
+    const formValues = form.getFieldsValue();
+    // console.log("🛸🛸🛸🛸🛸🛸🛸🛸🛸 formValues", formValues);
+
+    let newUser = {
+      ...user,
+      phone: "0" + formValues.phone,
+      address: formValues.address,
+    };
+    dispatch(insertUser({ newUser }));
+  };
+
   const uploadButton = (
     <div>
       {state.loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -198,6 +184,15 @@ const Info = () => {
           <div id="stars2"></div>
           <div id="stars3"></div>
           <div className="formInfo">
+            {token && (acc.role === "Admin" || acc.role === "Saler") && (
+              <>
+                <Affix>
+                  <Button type="primary">
+                    <Link to="/dashboard">Go to Dashboard</Link>
+                  </Button>
+                </Affix>
+              </>
+            )}
             <Form
               className={"my-form-info"}
               labelCol={{
@@ -210,6 +205,8 @@ const Info = () => {
               initialValues={{
                 remember: true,
               }}
+              form={form}
+              onChange={onChangeForm}
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               validateMessages={validateMessages}

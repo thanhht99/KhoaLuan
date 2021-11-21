@@ -137,7 +137,7 @@ const DrawerProduct = (props) => {
     // console.log("Success:", values);
 
     // console.log("State 😈 👿 👿 😈 👿 👿:", state);
-    
+
     const formData = new FormData();
     formData.append("file", state.originFileObj);
     formData.append("description", values.description);
@@ -492,7 +492,9 @@ const DrawerProduct = (props) => {
           </Form>
         </>
       ) : (
-        <Spin />
+        <div style={{ display: "grid", margin: "100px" }}>
+          <Spin />
+        </div>
       )}
     </>
   );

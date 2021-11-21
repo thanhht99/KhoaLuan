@@ -37,7 +37,7 @@ const Home = () => {
       id="htmlHome"
       style={{ height: "100%", width: "100%" }}
     >
-      {token && acc.role === "Admin" && (
+      {token && (acc.role === "Admin" || acc.role === "Saler") && (
         <>
           <Affix offsetTop="0">
             <Button type="primary">

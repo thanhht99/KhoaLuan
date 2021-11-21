@@ -36,7 +36,7 @@ const SignIn = () => {
       dispatch(insertUser({ newUser: user.data }));
 
       if (acc.data.role === "Saler") {
-        history.push("/staff");
+        history.push("/dashboard");
       }
       if (acc.data.role === "Admin") {
         history.push("/dashboard");

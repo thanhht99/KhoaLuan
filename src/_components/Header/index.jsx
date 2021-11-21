@@ -53,6 +53,8 @@ const PageHeader = () => {
   const acc = useSelector((state) => state.acc.Acc);
   const token = Cookies.get("token");
 
+  // console.log("🚀🚀🚀🚀🚀 ~ Dashboard ~ state", state);
+
   useEffect(() => {
     if (!token) {
       setState((prev) => ({ ...prev, style: { visibility: "visible" } }));
@@ -85,7 +87,7 @@ const PageHeader = () => {
       fetchData();
     }
     setState((prev) => ({ ...prev, user, acc }));
-  }, [acc, user, token, dispatch, history, cookies]);
+  }, [acc, user, token, dispatch, history, cookies, user.image]);
 
   const handleMenuClick = (e) => {
     // console.log("click", e);

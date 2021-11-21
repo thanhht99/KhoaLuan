@@ -32,6 +32,8 @@ const ListOfProducts = () => {
   const history = useHistory();
   const reduxProductAll = useSelector((state) => state.productAll.Product);
   const reduxCategoryAll = useSelector((state) => state.categoryAll.Category);
+  const acc = useSelector((state) => state.acc.Acc);
+
   const initialState = {
     products: reduxProductAll,
     product: null,
@@ -381,7 +383,9 @@ const ListOfProducts = () => {
         Reload Page
       </Button>
       <Divider />
-      <AddProduct categories={state.categories} />
+      {acc && acc.role === "Admin" && (
+        <AddProduct categories={state.categories} />
+      )}
       <Table
         columns={columns}
         dataSource={state.products}
@@ -399,7 +403,7 @@ const ListOfProducts = () => {
           }));
         }}
       />
-      {state.product && (
+      {state.product && acc && acc.role === "Admin" && (
         <Drawer
           title={state.product.name}
           width={520}

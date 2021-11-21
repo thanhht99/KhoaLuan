@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import * as config from "../../constants/config";
 import { Layout, Menu, Tabs, Dropdown, Spin } from "antd";
 import {
   UserOutlined,
@@ -57,6 +58,9 @@ const Dashboard = () => {
     activeKey: panes[0].key,
     panes,
     newTabIndex: 2,
+    user: {},
+    acc: {},
+    image: "",
   });
 
   // console.log("🚀 🚀 🚀 🚀 🚀", state);
@@ -70,10 +74,40 @@ const Dashboard = () => {
   };
 
   const token = Cookies.get("token");
+  const user = useSelector((state) => state.user.User);
   const acc = useSelector((state) => state.acc.Acc);
+  // console.log("🚀🚀🚀🚀🚀 ~ Dashboard ~ acc", acc);
+  // console.log("🚀🚀🚀🚀🚀 ~ Dashboard ~ user", user);
+
   if (!token) {
     history.push("/account/sign-in");
   }
+
+  useEffect(() => {
+    if (user) {
+      if (!user.image && user.gender === "Male") {
+        setState((prev) => ({
+          ...prev,
+          user,
+          image: "/image/avatar/male.jpg",
+        }));
+      }
+      if (!user.image && user.gender === "Female") {
+        setState((prev) => ({
+          ...prev,
+          user,
+          image: "/image/avatar/female.jpg",
+        }));
+      }
+      if (user.image) {
+        setState((prev) => ({
+          ...prev,
+          user,
+          image: `${config.API_URL}/user/avatar/${acc._id}`,
+        }));
+      }
+    }
+  }, [acc._id, state.user, user]);
 
   const onChange = (activeKey) => {
     setState((prev) => ({
@@ -262,7 +296,7 @@ const Dashboard = () => {
   return (
     <div className="htmlDashboard" id="htmlDashboard">
       {token ? (
-        acc.role === "Admin" ? (
+        acc.role === "Admin" || acc.role === "Saler" ? (
           <Layout style={{ padding: "0px" }}>
             <Header
               className="headerDashboard"
@@ -296,16 +330,7 @@ const Dashboard = () => {
                   trigger={["click"]}
                 >
                   <span className="user-action" style={{ cursor: "pointer" }}>
-                    <img
-                      src="/image/avatarMan.jpg"
-                      alt=""
-                      className="avatar-img"
-                      style={{
-                        objectFit: "cover",
-                        width: "64px",
-                        height: "64px",
-                      }}
-                    ></img>
+                    <img src={state.image} alt="" className="avatar-img"></img>
                   </span>
                 </Dropdown>
               </div>
@@ -324,25 +349,31 @@ const Dashboard = () => {
                   defaultOpenKeys={["sub1"]}
                   style={{ height: "100%", borderRight: 0 }}
                 >
-                  <SubMenu
-                    key="customer"
-                    icon={<UserOutlined />}
-                    title="Customer"
-                  >
-                    <Menu.Item key="accountCustomer">Account</Menu.Item>
-                    <Menu.Item key="infoCustomer">Info</Menu.Item>
-                  </SubMenu>
-                  <SubMenu
-                    key="staff"
-                    icon={<UsergroupAddOutlined />}
-                    title="Staff"
-                  >
-                    <Menu.Item key="listStaff" onClick={onClickListStaff}>
-                      List
-                    </Menu.Item>
-                    <Menu.Item key="accountStaff">Account</Menu.Item>
-                    <Menu.Item key="infoStaff">Info</Menu.Item>
-                  </SubMenu>
+                  {acc.role === "Admin" && (
+                    <SubMenu
+                      key="customer"
+                      icon={<UserOutlined />}
+                      title="Customer"
+                    >
+                      <Menu.Item key="accountCustomer">Account</Menu.Item>
+                      <Menu.Item key="infoCustomer">Info</Menu.Item>
+                    </SubMenu>
+                  )}
+
+                  {acc.role === "Admin" && (
+                    <SubMenu
+                      key="staff"
+                      icon={<UsergroupAddOutlined />}
+                      title="Staff"
+                    >
+                      <Menu.Item key="listStaff" onClick={onClickListStaff}>
+                        List
+                      </Menu.Item>
+                      <Menu.Item key="accountStaff">Account</Menu.Item>
+                      <Menu.Item key="infoStaff">Info</Menu.Item>
+                    </SubMenu>
+                  )}
+
                   <SubMenu
                     key="product"
                     icon={<DatabaseFilled />}
@@ -351,11 +382,14 @@ const Dashboard = () => {
                     <Menu.Item key="listProduct" onClick={onClickListProduct}>
                       List
                     </Menu.Item>
-                    <Menu.Item key="category" onClick={onClickCategory}>
-                      Category
-                    </Menu.Item>
+                    {acc.role === "Admin" && (
+                      <Menu.Item key="category" onClick={onClickCategory}>
+                        Category
+                      </Menu.Item>
+                    )}
                     <Menu.Item key="feedback">Feedback</Menu.Item>
                   </SubMenu>
+
                   <SubMenu
                     key="business"
                     icon={<SketchOutlined />}
@@ -366,14 +400,18 @@ const Dashboard = () => {
                       Order
                     </Menu.Item>
                   </SubMenu>
-                  <SubMenu key="sale" icon={<TagFilled />} title="Sale">
-                    <Menu.Item key="promotion" onClick={onClickPromotion}>
-                      Promotion
-                    </Menu.Item>
-                    <Menu.Item key="voucher" onClick={onClickVoucher}>
-                      Voucher
-                    </Menu.Item>
-                  </SubMenu>
+
+                  {acc.role === "Admin" && (
+                    <SubMenu key="sale" icon={<TagFilled />} title="Sale">
+                      <Menu.Item key="promotion" onClick={onClickPromotion}>
+                        Promotion
+                      </Menu.Item>
+                      <Menu.Item key="voucher" onClick={onClickVoucher}>
+                        Voucher
+                      </Menu.Item>
+                    </SubMenu>
+                  )}
+
                   <SubMenu
                     key="notify"
                     icon={<NotificationOutlined />}
@@ -403,7 +441,9 @@ const Dashboard = () => {
             </Layout>
           </Layout>
         ) : (
-          <Spin />
+          <div style={{ display: "grid", margin: "100px" }}>
+            <Spin />
+          </div>
         )
       ) : (
         <NotFound />

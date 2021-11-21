@@ -281,7 +281,9 @@ const DrawerOrder = (props) => {
           </div>
         </>
       ) : (
-        <Spin />
+        <div style={{ display: "grid", margin: "100px" }}>
+            <Spin />
+          </div>
       )}
     </>
   );
