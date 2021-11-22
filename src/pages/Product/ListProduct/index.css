@@ -36,12 +36,13 @@
     justify-content: flex-start;
 }
 
-.list-product-sort-by-options {
+
+/* .list-product-sort-by-options {
     display: flex;
     align-items: stretch;
     flex-basis: 0%;
     justify-content: flex-start;
-}
+} */
 
 .ant-select-selection-item {
     padding-right: 15px;

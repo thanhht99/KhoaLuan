@@ -37,6 +37,8 @@ const ListProduct = () => {
     products: [],
     category: "All",
     price: { value: "increase" },
+    discount: { value: "both" },
+    page: 1,
     // flag: false,
   });
   useEffect(() => {
@@ -75,10 +77,16 @@ const ListProduct = () => {
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);
     if (pageNumber <= 1) {
-      setState((prev) => ({ ...prev, minValue: 0, maxValue: 12 }));
+      setState((prev) => ({
+        ...prev,
+        page: pageNumber,
+        minValue: 0,
+        maxValue: 12,
+      }));
     } else {
       setState((prev) => ({
         ...prev,
+        page: pageNumber,
         minValue: pageNumber * 12 - 12,
         maxValue: pageNumber * 12,
       }));
@@ -114,6 +122,7 @@ const ListProduct = () => {
         products: prev.products.sort((a, b) => a.price - b.price),
         price: { value: "increase" },
       }));
+      onChange(1);
     }
     if (value.value === "decrease") {
       // console.log("🚀🚀🚀🚀🚀 decrease");
@@ -122,6 +131,96 @@ const ListProduct = () => {
         products: prev.products.sort((a, b) => b.price - a.price),
         price: { value: "decrease" },
       }));
+      onChange(1);
+    }
+  };
+
+  const discountChange = (value) => {
+    // console.log("🚀🚀🚀🚀🚀 value", value);
+    // console.log("🚀🚀🚀🚀🚀 state", state);
+    if (state.category === "All") {
+      if (value.value === "yes") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product
+            .sort((a, b) => a.price - b.price)
+            .filter((product) => {
+              return product.isPromotion === true;
+            }),
+          price: { value: "increase" },
+          discount: { value: "yes" },
+        }));
+        onChange(1);
+      }
+      if (value.value === "no") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product
+            .sort((a, b) => a.price - b.price)
+            .filter((product) => {
+              return product.isPromotion === false;
+            }),
+          price: { value: "increase" },
+          discount: { value: "no" },
+        }));
+        onChange(1);
+      }
+      if (value.value === "both") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product.sort((a, b) => a.price - b.price),
+          price: { value: "increase" },
+          discount: { value: "both" },
+        }));
+        onChange(1);
+      }
+    }
+    if (state.category !== "All") {
+      if (value.value === "yes") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product
+            .sort((a, b) => a.price - b.price)
+            .filter((product) => {
+              return (
+                product.isPromotion === true &&
+                product.category === state.category
+              );
+            }),
+          price: { value: "increase" },
+          discount: { value: "yes" },
+        }));
+        onChange(1);
+      }
+      if (value.value === "no") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product
+            .sort((a, b) => a.price - b.price)
+            .filter((product) => {
+              return (
+                product.isPromotion === false &&
+                product.category === state.category
+              );
+            }),
+          price: { value: "increase" },
+          discount: { value: "no" },
+        }));
+        onChange(1);
+      }
+      if (value.value === "both") {
+        setState((prev) => ({
+          ...prev,
+          products: list_product
+            .sort((a, b) => a.price - b.price)
+            .filter((product) => {
+              return product.category === state.category;
+            }),
+          price: { value: "increase" },
+          discount: { value: "both" },
+        }));
+        onChange(1);
+      }
     }
   };
 
@@ -136,6 +235,7 @@ const ListProduct = () => {
           products: changeProduct.sort((a, b) => a.price - b.price),
           category: e.target.value,
           price: { value: "increase" },
+          discount: { value: "both" },
         }));
         onChange(1);
       } else if (e.target.value === "All") {
@@ -144,6 +244,7 @@ const ListProduct = () => {
           products: list_product.sort((a, b) => a.price - b.price),
           category: e.target.value,
           price: { value: "increase" },
+          discount: { value: "both" },
         }));
         onChange(1);
       }
@@ -181,6 +282,18 @@ const ListProduct = () => {
               <Option value="decrease">Price: Decrease</Option>
             </Select>
           </div>
+          <div className="list-product-sort-by-discount">
+            <Select
+              labelInValue
+              style={{ width: 160, marginLeft: "8px" }}
+              onChange={discountChange}
+              value={state.discount}
+            >
+              <Option value="yes">Discount: yes</Option>
+              <Option value="no">Discount: no</Option>
+              <Option value="both">Discount: both</Option>
+            </Select>
+          </div>
         </div>
       </div>
       <div className="cart-list-product">
@@ -192,7 +305,31 @@ const ListProduct = () => {
               hoverable
               style={{ width: 350 }}
               cover={
-                <img alt="" src={val.image} className="image-list-product" />
+                <div style={{}}>
+                  <img
+                    alt=""
+                    style={{
+                      height: "350px",
+                      width: "100%",
+                      position: "relative",
+                    }}
+                    src={val.image}
+                    className="image-list-product"
+                  />
+                  {val.isPromotion && (
+                    <img
+                      alt=""
+                      src="/image/discount.png"
+                      className="image-sale-product"
+                      style={{
+                        height: "100px",
+                        width: "360px",
+                        position: "absolute",
+                        right: "-1px",
+                      }}
+                    />
+                  )}
+                </div>
               }
               actions={[
                 <Button
@@ -244,7 +381,7 @@ const ListProduct = () => {
       </div>
       <div className="pagination-list-product">
         <Pagination
-          defaultCurrent={1}
+          defaultCurrent={state.page}
           total={state.products.length}
           defaultPageSize={12}
           onChange={onChange}

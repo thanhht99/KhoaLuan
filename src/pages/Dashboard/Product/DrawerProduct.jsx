@@ -36,6 +36,8 @@ const initialState = {
   previewImage: "",
   fileList: [],
   previewTitle: "",
+  discount: "",
+  promotion_name: "",
 };
 
 const DrawerProduct = (props) => {
@@ -43,13 +45,23 @@ const DrawerProduct = (props) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const reduxProduct = useSelector((state) => state.productDetail.Product);
+
   // console.log("🚀🚀🚀🚀🚀🚀🚀 reduxProduct", reduxProduct);
+  // console.log("🚀🚀🚀🚀🚀🚀🚀 props", props);
 
   const token = Cookies.get("token");
   const [state, setState] = useState(initialState);
 
   useEffect(() => {
     if (props.product) {
+      let discount = props.product.isPromotion
+        ? props.product.promotion_detail.discount > 1
+          ? `${props.product.promotion_detail.discount}$`
+          : `${props.product.promotion_detail.discount * 100}%`
+        : "";
+      let promotion_name = props.product.isPromotion
+        ? props.product.promotion_detail.promotion_name
+        : "";
       const fileList = props.product.listImage.map((image, index) => {
         const img = {
           uid: index,
@@ -63,6 +75,8 @@ const DrawerProduct = (props) => {
         ...prev,
         imageUrl: props.product.image,
         fileList,
+        discount,
+        promotion_name,
       }));
     }
     if (!props.drawerVisible) {
@@ -263,6 +277,14 @@ const DrawerProduct = (props) => {
                 name: ["listImage"],
                 value: state.fileList,
               },
+              {
+                name: ["discount"],
+                value: state.discount,
+              },
+              {
+                name: ["promotion_name"],
+                value: state.promotion_name,
+              },
             ]}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
@@ -340,6 +362,21 @@ const DrawerProduct = (props) => {
                 </Form.Item>
               </Col>
             </Row>
+
+            {reduxProduct.promotion_detail && (
+              <Row gutter={16}>
+                <Col span={8}>
+                  <Form.Item name="discount" label="Discount">
+                    <Input disabled />
+                  </Form.Item>
+                </Col>
+                <Col span={16}>
+                  <Form.Item name="promotion_name" label="Promotion name">
+                    <Input disabled />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
 
             <Row gutter={16}>
               <Col span={24}>

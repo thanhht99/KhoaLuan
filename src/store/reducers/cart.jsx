@@ -22,6 +22,7 @@ export const cartSlice = createSlice({
           name: state._products.name,
           image: state._products.image,
           price: state._products.price,
+          discount: state._products.promotion_detail || 0,
         };
         Cookies.set("keyCart", keyCart + 1, { path: "/" });
         cookiesCart.push(cart);
@@ -42,6 +43,7 @@ export const cartSlice = createSlice({
             name: state._products.name,
             image: state._products.image,
             price: state._products.price,
+            discount: state._products.promotion_detail || 0,
           };
           Cookies.set("keyCart", keyCart + 1, { path: "/" });
           cookiesCart.push(_cart);
@@ -59,11 +61,12 @@ export const cartSlice = createSlice({
       if (cookiesCart.length === 0) {
         let cart = {
           id: state._products.id,
-          quantity: 1,
+          quantity: action.payload.number,
           key: keyCart + 1,
           name: state._products.name,
           image: state._products.image,
           price: state._products.price,
+          discount: state._products.promotion_detail || 0,
         };
         Cookies.set("keyCart", keyCart + 1, { path: "/" });
         cookiesCart.push(cart);
@@ -79,11 +82,12 @@ export const cartSlice = createSlice({
         if (!check) {
           let _cart = {
             id: state._products.id,
-            quantity: 1,
+            quantity: action.payload.number,
             key: keyCart + 1,
             name: state._products.name,
             image: state._products.image,
             price: state._products.price,
+            discount: state._products.promotion_detail || 0,
           };
           Cookies.set("keyCart", keyCart + 1, { path: "/" });
           cookiesCart.push(_cart);

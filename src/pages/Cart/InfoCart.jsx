@@ -23,7 +23,12 @@ const InfoCart = () => {
   });
   let TotalCart = 0;
   state.cart.forEach((item) => {
-    TotalCart += item.quantity * item.price;
+    TotalCart +=
+      item.discount !== 0
+        ? item.discount.discount > 1
+          ? item.quantity * (item.price - item.discount.discount)
+          : item.quantity * (item.price - item.price * item.discount.discount)
+        : item.quantity * item.price;
   });
 
   useEffect(() => {
@@ -110,12 +115,52 @@ const InfoCart = () => {
       ),
     },
     {
+      title: "Discount",
+      dataIndex: ["discount"],
+      align: "center",
+      render: (discount) => (
+        <div style={{ fontWeight: "bold", color: "rgb(255 109 44)" }}>
+          {discount !== 0 ? (
+            discount.discount > 1 ? (
+              <>{discount.discount}$</>
+            ) : (
+              <>{discount.discount * 100}%</>
+            )
+          ) : null}
+        </div>
+      ),
+    },
+    {
       title: "Total Price",
       dataIndex: ["id", "record"],
       align: "center",
       render: (id, record) => (
         <div style={{ fontWeight: "bold" }}>
-          {TotalPrice(record.price, record.quantity)}$
+          {record.discount !== 0 ? (
+            record.discount.discount > 1 ? (
+              <>
+                {TotalPrice(
+                  parseFloat(record.price - record.discount.discount).toFixed(
+                    2
+                  ),
+                  record.quantity
+                )}
+                $
+              </>
+            ) : (
+              <>
+                {TotalPrice(
+                  parseFloat(
+                    record.price - record.price * record.discount.discount
+                  ).toFixed(2),
+                  record.quantity
+                )}
+                $
+              </>
+            )
+          ) : (
+            <>{TotalPrice(record.price, record.quantity)}$</>
+          )}
         </div>
       ),
     },
@@ -129,6 +174,7 @@ const InfoCart = () => {
       ),
     },
   ];
+
   return (
     <div style={{ paddingBottom: "50px" }}>
       <Table columns={columns} dataSource={state.cart} />
@@ -142,8 +188,7 @@ const InfoCart = () => {
         }}
       >
         <span>
-          Total :
-          <strong> {Number(TotalCart).toLocaleString("en-US")} $</strong>
+          Total :<strong> {Number(TotalCart).toLocaleString("en-US")} $</strong>
         </span>
         <br />
       </div>

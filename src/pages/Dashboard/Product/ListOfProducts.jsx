@@ -6,18 +6,15 @@ import {
   Tooltip,
   notification,
   Switch,
-  Input,
   Drawer,
   Divider,
-  Space,
   Button,
   Popconfirm,
 } from "antd";
 import { getCategory } from "../../../api/category";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import { getProducts, updateActiveProduct } from "../../../api/product";
-import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
-import Highlighter from "react-highlight-words";
+import { ReloadOutlined } from "@ant-design/icons";
 import { AddProduct } from "./AddProduct";
 import { DrawerProduct } from "./DrawerProduct";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +23,7 @@ import { insertCategory } from "../../../store/reducers/categoryAll";
 import { insertProductAll } from "../../../store/reducers/productAll";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router";
+import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
 
 const ListOfProducts = () => {
   const dispatch = useDispatch();
@@ -48,8 +46,6 @@ const ListOfProducts = () => {
   const token = Cookies.get("token");
 
   const [state, setState] = useState(initialState);
-
-  let searchInput = React.createRef();
 
   const refresh = () => {
     setState({ ...initialState });
@@ -106,105 +102,6 @@ const ListOfProducts = () => {
       fetchData();
     }
   }, [dispatch, reduxCategoryAll, reduxProductAll, state.products.length]);
-
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-    }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          ref={(node) => {
-            searchInput = node;
-          }}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setState((prev) => ({
-                ...prev,
-                searchText: selectedKeys[0],
-                searchedColumn: dataIndex,
-              }));
-            }}
-          >
-            Filter
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        : "",
-    onFilterDropdownVisibleChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.select(), 100);
-      }
-    },
-    render: (text) =>
-      state.searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[state.searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setState((prev) => ({
-      ...prev,
-      searchText: selectedKeys[0],
-      searchedColumn: dataIndex,
-    }));
-  };
-
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setState((prev) => ({
-      ...prev,
-      searchText: "",
-    }));
-  };
 
   const onClickProduct = (record) => {
     // console.log("🚀 🚀 🚀 Hello World", record);
@@ -314,9 +211,40 @@ const ListOfProducts = () => {
       render: (price) => <div>{price}$</div>,
     },
     {
+      title: "Discount",
+      dataIndex: ["isPromotion"],
+      width: "10%",
+      align: "center",
+      filters: [
+        {
+          text: "True",
+          value: "true",
+        },
+        {
+          text: "False",
+          value: "false",
+        },
+      ],
+      onFilter: (value, record) => {
+        return record.isPromotion.toString().indexOf(value) === 0;
+      },
+      render: (isPromotion, record) => (
+        <div style={{ fontWeight: "bold", color: "rgb(255 109 44)" }}>
+          {isPromotion ? (
+            record.promotion_detail.discount > 1 ? (
+              <>{record.promotion_detail.discount}$</>
+            ) : (
+              <>{record.promotion_detail.discount * 100}%</>
+            )
+          ) : null}
+        </div>
+      ),
+    },
+    {
       title: "Quantity",
       dataIndex: "quantity",
       width: "10%",
+      align: "center",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.quantity - b.quantity,
     },
@@ -324,6 +252,7 @@ const ListOfProducts = () => {
       title: "Category",
       dataIndex: "category",
       width: "10%",
+      align: "center",
       filters: filterCategories,
       onFilter: (value, record) => {
         return record.category.indexOf(value) === 0;
@@ -332,6 +261,7 @@ const ListOfProducts = () => {
     {
       title: "Active",
       dataIndex: "isActive",
+      align: "center",
       width: "10%",
       filters: [
         {

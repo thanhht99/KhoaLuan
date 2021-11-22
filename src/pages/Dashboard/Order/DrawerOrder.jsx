@@ -91,13 +91,52 @@ const DrawerOrder = (props) => {
       render: (id, record) => <div>{record.quantity}</div>,
     },
     {
+      title: "Discount",
+      dataIndex: ["discount"],
+      align: "center",
+      render: (discount) => (
+        <div style={{ fontWeight: "bold", color: "rgb(255 109 44)" }}>
+          {discount !== 0 ? (
+            discount.discount > 1 ? (
+              <>{discount.discount}$</>
+            ) : (
+              <>{discount.discount * 100}%</>
+            )
+          ) : null}
+        </div>
+      ),
+    },
+    {
       title: "Total Price",
       dataIndex: ["id", "record"],
       align: "center",
-      width: "20%",
       render: (id, record) => (
         <div style={{ fontWeight: "bold" }}>
-          {TotalPrice(record.price, record.quantity)}$
+          {record.discount !== 0 ? (
+            record.discount.discount > 1 ? (
+              <>
+                {TotalPrice(
+                  parseFloat(record.price - record.discount.discount).toFixed(
+                    2
+                  ),
+                  record.quantity
+                )}
+                $
+              </>
+            ) : (
+              <>
+                {TotalPrice(
+                  parseFloat(
+                    record.price - record.price * record.discount.discount
+                  ).toFixed(2),
+                  record.quantity
+                )}
+                $
+              </>
+            )
+          ) : (
+            <>{TotalPrice(record.price, record.quantity)}$</>
+          )}
         </div>
       ),
     },
@@ -282,8 +321,8 @@ const DrawerOrder = (props) => {
         </>
       ) : (
         <div style={{ display: "grid", margin: "100px" }}>
-            <Spin />
-          </div>
+          <Spin />
+        </div>
       )}
     </>
   );

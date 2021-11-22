@@ -132,3 +132,7 @@
 .ant-steps-item-title {
     margin-top: -4px;
 }
+
+.form-product-dashboard .ant-form-item-label>label {
+    font-size: 17px;
+}

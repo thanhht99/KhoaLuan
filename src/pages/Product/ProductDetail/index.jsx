@@ -39,6 +39,8 @@ const ProductDetail = (props) => {
   const { Panel } = Collapse;
   const [visible, setVisible] = useState(false);
 
+  // console.log("🚀🚀🚀🚀🚀 state", state);
+
   useEffect(() => {
     setState((prev) => ({ ...prev, flag: false, radioSize: "S" }));
     const sessionProducts = sessionStorage.getItem("products");
@@ -83,6 +85,10 @@ const ProductDetail = (props) => {
   };
 
   const onClickAddToCart = (val) => {
+    console.log(
+      "🚀 ~ file: index.jsx ~ line 90 ~ onClickAddToCart ~ state",
+      state
+    );
     if (val.quantity > 0 && state.quantity < val.quantity) {
       dispatch(numberProduct({ product: val, number: state.quantity }));
       message.destroy();
@@ -159,6 +165,18 @@ const ProductDetail = (props) => {
                     src={state.product.image}
                     onClick={() => setVisible(true)}
                   />
+                  {state.product.isPromotion && (
+                    <img
+                      alt=""
+                      src="/image/discount.png"
+                      className="image-sale-product"
+                      style={{
+                        height: "100px",
+                        width: "360px",
+                        position: "absolute",
+                      }}
+                    />
+                  )}
                 </Row>
                 <div style={{ position: "relative" }}>
                   <Image.PreviewGroup
@@ -193,7 +211,53 @@ const ProductDetail = (props) => {
                   <h1>{state.product.name}</h1>
                 </Row>
                 <Row>
-                  <h2>{state.product.price}$</h2>
+                  {state.product.isPromotion ? (
+                    <>
+                      <strike style={{ color: "hsla(340, 100%, 50%, 0.5)" }}>
+                        <h2 style={{ color: "hsla(340, 100%, 50%, 0.5)" }}>
+                          {state.product.price}$
+                        </h2>
+                      </strike>
+                      <span style={{ marginLeft: "20px" }}>
+                        {state.product.promotion_detail.discount > 1 ? (
+                          <>
+                            <h2>
+                              {parseFloat(
+                                state.product.price -
+                                  state.product.promotion_detail.discount
+                              ).toFixed(2)}
+                              $
+                            </h2>
+                            <span>
+                              <strong style={{ color: "rgb(255 109 44)" }}>
+                                DISCOUNT:{" "}
+                                {state.product.promotion_detail.discount}$
+                              </strong>
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <h2>
+                              {parseFloat(
+                                state.product.price -
+                                  state.product.price *
+                                    state.product.promotion_detail.discount
+                              ).toFixed(2)}
+                              $
+                            </h2>
+                            <span>
+                              <strong style={{ color: "rgb(255 109 44)" }}>
+                                DISCOUNT:{" "}
+                                {state.product.promotion_detail.discount * 100}%
+                              </strong>
+                            </span>
+                          </>
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <h2>{state.product.price}$</h2>
+                  )}
                 </Row>
                 <Row style={{ textAlign: "center", lineHeight: "31px" }}>
                   <div className="rating">

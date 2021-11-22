@@ -40,6 +40,8 @@ const Cart = (props) => {
     cart: reduxCart,
   });
 
+  // console.log("🚀 ~ file: index.jsx ~ line 40 ~ Cart ~ state", state);
+
   useEffect(() => {
     if (reduxCart.length !== cookiesCart.length) {
       dispatch(updateCart());
