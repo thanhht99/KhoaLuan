@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import "../index.css";
+import "./index.css";
+import { doNotGetData } from "../../../constants/doNotGetData";
 import { ReloadOutlined } from "@ant-design/icons";
 import {
-  Divider,
   Button,
   Table,
   Tooltip,
   notification,
-  Drawer,
   Switch,
+  Divider,
+  Drawer,
 } from "antd";
-import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
-import { useDispatch, useSelector } from "react-redux";
-import Cookies from "js-cookie";
-import { doNotGetData } from "../../../constants/doNotGetData";
-import { insertOrderAll } from "../../../store/reducers/orderAll";
-import { allOrder } from "../../../api/order";
 import { useHistory } from "react-router";
-import { DrawerOrder } from "./DrawerOrder";
-import { insertOrder } from "../../../store/reducers/orderDetail";
+import Cookies from "js-cookie";
+import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
+import { orderOfUser } from "../../../api/order";
 import { filterOrderStatus } from "../../../constants/orderStatus";
+import { useDispatch, useSelector } from "react-redux";
+import { insertOrderAll } from "../../../store/reducers/orderAll";
+import { DrawerOrdersUser } from "./drawer";
+import { insertOrder } from "../../../store/reducers/orderDetail";
 
-const ListOfOrders = () => {
+const Order = () => {
   const token = Cookies.get("token");
-  const history = useHistory();
   const dispatch = useDispatch();
+  const history = useHistory();
   const reduxOrderAll = useSelector((state) => state.orderAll.Order);
+
   const initialState = {
     orders: reduxOrderAll,
     order: null,
@@ -36,13 +37,13 @@ const ListOfOrders = () => {
   const [state, setState] = useState(initialState);
 
   const fetchData = async () => {
-    const res_allOrder = await allOrder(token);
-    if (!res_allOrder) {
+    const res = await orderOfUser(token);
+    if (!res) {
       doNotGetData();
     }
-    if (res_allOrder) {
-      if (res_allOrder.success) {
-        const keyAllOrder = res_allOrder.data.map((item, index) => {
+    if (res) {
+      if (res.success) {
+        const keyAllOrder = res.data.map((item, index) => {
           const key = index;
           return { ...item, key };
         });
@@ -52,19 +53,19 @@ const ListOfOrders = () => {
           orders: keyAllOrder,
         }));
       }
-      if (!res_allOrder.success) {
-        if (res_allOrder.message === "Token is expired") {
+      if (!res.success) {
+        if (res.message === "Token is expired") {
           Cookies.remove("token", { path: "/" });
           notification["warning"]({
             message: "Warning",
-            description: `${res_allOrder.message}`,
+            description: `${res.message}`,
           });
           history.push("/account/sign-in/reload");
           window.location.reload();
         }
         notification["warning"]({
-          message: "Warning: Get all orders",
-          description: `${res_allOrder.message}.`,
+          message: "Warning: get orders of user",
+          description: `${res.message}.`,
         });
       }
     }
@@ -81,7 +82,6 @@ const ListOfOrders = () => {
 
   const refresh = () => {
     fetchData();
-    // setState({ ...initialState });
   };
 
   const onClickOrder = (record) => {
@@ -179,18 +179,14 @@ const ListOfOrders = () => {
   ];
 
   const onClose = async () => {
-    fetchData();
-
     setState((prev) => ({
       ...prev,
-      // categories: keyCategory,
       drawerVisible: false,
     }));
   };
 
   return (
-    <>
-      <br />
+    <div className="html-user-orders">
       <Button
         type="primary"
         size="small"
@@ -227,15 +223,15 @@ const ListOfOrders = () => {
           visible={state.drawerVisible}
           className={"drawer-order-dashboard"}
         >
-          <DrawerOrder
+          <DrawerOrdersUser
             id={state.order._id}
             order={state.order}
             drawerVisible={state.drawerVisible}
           />
         </Drawer>
       )}
-    </>
+    </div>
   );
 };
 
-export { ListOfOrders };
+export { Order };

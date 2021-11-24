@@ -22,11 +22,13 @@ import {
   updateInfoOrder,
 } from "../../store/reducers/infoOrder";
 import { createOrder } from "../../api/order";
+import { saveCart } from "../../api/cart";
 
 const { Step } = Steps;
 
 const Cart = (props) => {
   const cookiesPositionCart = JSON.parse(Cookies.get("positionCart"));
+  const token = Cookies.get("token");
 
   const [current, setCurrent] = useState(cookiesPositionCart);
   const dispatch = useDispatch();
@@ -115,7 +117,17 @@ const Cart = (props) => {
       });
     } else if (!reduxInfoOrder.isError2) {
       const apiOrder = await createOrder(reduxInfoOrder);
+      // console.log("💯💯💯💯💯💯 apiOrder", apiOrder);
+      
       if (apiOrder.success) {
+        // save cart
+        if (token) {
+          const body = {
+            products: [],
+          };
+          await saveCart(body, token);
+        }
+
         let json_InfoOrder = JSON.stringify(apiOrder.data);
         Cookies.set("infoOrder", json_InfoOrder, { path: "/" });
         Cookies.set("positionCart", 3, { path: "/" });

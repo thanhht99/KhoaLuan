@@ -103,6 +103,12 @@ export const cartSlice = createSlice({
       state.Carts = cookiesCart;
       return state;
     },
+    getCartFromAPI: (state, action) => {
+      state.Carts = action.payload.newCart;
+      let json_cart = JSON.stringify(state.Carts);
+      Cookies.set("cart", json_cart, { path: "/" });
+      return state;
+    },
     deleteProduct: (state, action) => {
       let cookiesCart = JSON.parse(Cookies.get("cart"));
       const id = action.payload.id;
@@ -140,6 +146,7 @@ export const cartSlice = createSlice({
 
 export const {
   addCart,
+  getCartFromAPI,
   numberProduct,
   updateCart,
   deleteProduct,

@@ -85,10 +85,6 @@ const ProductDetail = (props) => {
   };
 
   const onClickAddToCart = (val) => {
-    console.log(
-      "🚀 ~ file: index.jsx ~ line 90 ~ onClickAddToCart ~ state",
-      state
-    );
     if (val.quantity > 0 && state.quantity < val.quantity) {
       dispatch(numberProduct({ product: val, number: state.quantity }));
       message.destroy();

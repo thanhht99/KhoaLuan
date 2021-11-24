@@ -5,6 +5,7 @@ import { validateMessages } from "../../constants/validateMessages";
 import { Form, Input, Select } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addInfoOrder } from "../../store/reducers/infoOrder";
+import Cookies from "js-cookie";
 
 const { Option } = Select;
 
@@ -12,6 +13,12 @@ const InfoOrder = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const reduxInfoOrder = useSelector((state) => state.infoOrder.InfoOrder);
+  const token = Cookies.get("token");
+  const reduxUser = useSelector((state) => state.user.User);
+  const reduxAcc = useSelector((state) => state.acc.Acc);
+
+  // console.log("🗯.🗯.🗯.🗯.🗯. reduxInfoOrder", reduxInfoOrder);
+  // console.log("💦💦💦💦💦💦 YES");
 
   const [state, setState] = useState({
     infoOrder: reduxInfoOrder,
@@ -19,7 +26,19 @@ const InfoOrder = () => {
 
   useEffect(() => {
     setState((prev) => ({ ...prev, infoOrder: reduxInfoOrder }));
-  }, [reduxInfoOrder]);
+    if (reduxAcc.id && !reduxInfoOrder.email) {
+      const infoOrder = {
+        address: reduxUser.address,
+        email: reduxUser.email,
+        fullName: reduxUser.fullName,
+        phone: reduxUser.phone,
+        note: null,
+        voucherCode: null,
+        isError: true,
+      };
+      dispatch(addInfoOrder({ infoOrder }));
+    }
+  }, [reduxInfoOrder, reduxUser, reduxAcc, dispatch]);
 
   const onChange = () => {
     const formValues = form.getFieldsValue();
@@ -135,7 +154,11 @@ const InfoOrder = () => {
             },
           ]}
         >
-          <Input placeholder="Email" />
+          {token ? (
+            <Input placeholder="Email" disabled />
+          ) : (
+            <Input placeholder="Email" />
+          )}
         </Form.Item>
 
         <Form.Item

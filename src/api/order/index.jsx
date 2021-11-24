@@ -74,6 +74,24 @@ export const allOrder = async (token) => {
   }
 };
 
+export const orderOfUser = async (token) => {
+  try {
+    const res = await callApi("order/", "GET", null, headersToken(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const changeOrderStatus = async (id, body, token) => {
   try {
     const res = await callApi(

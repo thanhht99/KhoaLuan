@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Drawer, Button, Row, Col } from "antd";
+import { Badge, Drawer, Button, Row, Col, notification } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import Cookies from "js-cookie";
-import { resetCart, updateCart } from "./../../store/reducers/cart";
+import {
+  getCartFromAPI,
+  resetCart,
+  updateCart,
+} from "./../../store/reducers/cart";
 import { Link } from "react-router-dom";
+import { getCart, saveCart } from "../../api/cart";
+import { useHistory } from "react-router";
+import { doNotGetData } from "../../constants/doNotGetData";
 
 const Drawers = (props) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const reduxCart = useSelector((state) => state.cart.Carts, shallowEqual);
   const cookiesCart = JSON.parse(Cookies.get("cart"));
+  const token = Cookies.get("token");
+
   if (reduxCart.length !== cookiesCart.length) {
     dispatch(updateCart());
   }
   const [state, setState] = useState({
     shoppingCartList: reduxCart,
+    checkAPI: false,
     drawerVisible: false,
   });
 
@@ -41,11 +52,67 @@ const Drawers = (props) => {
     </div>
   );
 
+  // console.log("💯💯💯💯💯💯 state", state);
+
   useEffect(() => {
-    setState({
-      shoppingCartList: reduxCart,
-    });
-  }, [reduxCart]);
+    const fetchData = async () => {
+      const get_cart = await getCart(token);
+      if (!get_cart) {
+        doNotGetData();
+      }
+      if (get_cart) {
+        if (get_cart.success) {
+          // console.log("🚀🚀🚀🚀🚀 ~ get_cart.data", get_cart.data);
+          dispatch(getCartFromAPI({ newCart: get_cart.data.products }));
+          setState((prev) => ({
+            ...prev,
+            shoppingCartList: get_cart.data.products,
+          }));
+        }
+        if (!get_cart.success) {
+          if (get_cart.message === "Token is expired") {
+            Cookies.remove("token", { path: "/" });
+            notification["warning"]({
+              message: "Warning: get order",
+              description: `${get_cart.message}`,
+            });
+            history.push("/account/sign-in/reload");
+            window.location.reload();
+          } else {
+            notification["warning"]({
+              message: "Warning: get order",
+              description: `${get_cart.message}.`,
+            });
+          }
+        }
+      }
+    };
+    if (token && !state.checkAPI) {
+      fetchData();
+      setState((prev) => ({
+        ...prev,
+        checkAPI: true,
+      }));
+    }
+    if (!token && state.checkAPI) {
+      setState((prev) => ({
+        ...prev,
+        checkAPI: false,
+      }));
+    } else {
+      setState((prev) => ({
+        ...prev,
+        shoppingCartList: reduxCart,
+      }));
+    }
+  }, [
+    state.shoppingCartList.length,
+    state.checkAPI,
+    token,
+    dispatch,
+    history,
+    reduxCart,
+  ]);
 
   const update = () => {
     setState({
@@ -56,6 +123,47 @@ const Drawers = (props) => {
 
   const onClickClear = () => {
     dispatch(resetCart());
+  };
+
+  const onClickSaveCart = async () => {
+    // console.log("💦💦💦💦💦💦 state", state);
+
+    const body = {
+      products: state.shoppingCartList,
+    };
+
+    const save = await saveCart(body, token);
+    if (save && save.success) {
+      notification["success"]({
+        message: "Save",
+        description: "Successfully saved",
+      });
+    }
+    if (save && !save.success) {
+      if (save.message === "Token is expired") {
+        Cookies.remove("token", { path: "/" });
+        notification["warning"]({
+          message: "Save cart",
+          description: `${save.message}`,
+        });
+        history.push("/account/sign-in/reload");
+        // window.location.reload();
+      }
+      if (typeof save.message === "object") {
+        const message = Object.keys(save.message).map((key) => {
+          return save.message[key];
+        });
+        notification["warning"]({
+          message: "Save cart",
+          description: `${message}`,
+        });
+      } else {
+        notification["warning"]({
+          message: "Save cart",
+          description: `${save.message}`,
+        });
+      }
+    }
   };
 
   return (
@@ -91,6 +199,17 @@ const Drawers = (props) => {
             </Col>
           </Row>
         ))}
+
+        {token && (
+          <Button
+            type="primary"
+            style={{ margin: 5 }}
+            onClick={onClickSaveCart}
+          >
+            Save cart
+          </Button>
+        )}
+
         {state.shoppingCartList.length === 0 ? null : (
           <>
             <Button type="primary" style={{ margin: 5 }}>
@@ -102,6 +221,7 @@ const Drawers = (props) => {
                 Go to cart
               </Link>
             </Button>
+
             <Button type="primary" style={{ margin: 5 }} onClick={onClickClear}>
               <Link to="/product/all">Clear</Link>
             </Button>

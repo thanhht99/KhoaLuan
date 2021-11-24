@@ -11,8 +11,15 @@ import { getAcc, getUser } from "./../../api/user";
 import { logout } from "./../../api/auth";
 import { insertUser, resetUser } from "./../../store/reducers/user";
 import { insertAcc, resetAcc } from "./../../store/reducers/acc";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  DatabaseOutlined,
+} from "@ant-design/icons";
 import { useCookies } from "react-cookie";
+import { resetCart } from "../../store/reducers/cart";
+import { resetInfoOrder } from "../../store/reducers/infoOrder";
+import { resetOrderAll } from "../../store/reducers/orderAll";
 
 const Drawers = React.lazy(() => import("./drawer"));
 const { Header } = Layout;
@@ -67,7 +74,7 @@ const PageHeader = () => {
         const re_acc = await getAcc(token);
         const re_user = await getUser(token);
         if (re_user && re_acc && re_acc.code === 401) {
-          Cookies.remove("token", { path: "" });
+          Cookies.remove("token", { path: "/" });
           notification["warning"]({
             message: "Warning",
             description: `${re_acc.message}`,
@@ -97,14 +104,24 @@ const PageHeader = () => {
       <Menu.Item key="1" icon={<UserOutlined />}>
         <Link to="/user/info">Info</Link>
       </Menu.Item>
+      {acc.role === "Customer" && (
+        <Menu.Item key="2" icon={<DatabaseOutlined />}>
+          <Link to="/user/order">Order</Link>
+        </Menu.Item>
+      )}
       <Menu.Item
-        key="2"
+        key="3"
         icon={<LogoutOutlined />}
         onClick={async () => {
-          Cookies.remove("token", { path: "" });
+          Cookies.remove("token", { path: "/" });
           await logout(token);
           dispatch(resetAcc());
           dispatch(resetUser());
+          dispatch(resetInfoOrder());
+          dispatch(resetCart());
+          dispatch(resetOrderAll());
+          Cookies.set("positionCart", 0, { path: "/" });
+          Cookies.set("keyCart", 0, { path: "/" });
         }}
       >
         <Link to="/account/sign-in/reload">Logout</Link>
