@@ -19,6 +19,7 @@ const Drawers = (props) => {
   const reduxCart = useSelector((state) => state.cart.Carts, shallowEqual);
   const cookiesCart = JSON.parse(Cookies.get("cart"));
   const token = Cookies.get("token");
+  const acc = useSelector((state) => state.acc.Acc);
 
   if (reduxCart.length !== cookiesCart.length) {
     dispatch(updateCart());
@@ -87,7 +88,7 @@ const Drawers = (props) => {
         }
       }
     };
-    if (token && !state.checkAPI) {
+    if (token && !state.checkAPI && acc.role === "Customer") {
       fetchData();
       setState((prev) => ({
         ...prev,
@@ -112,6 +113,7 @@ const Drawers = (props) => {
     dispatch,
     history,
     reduxCart,
+    acc.role,
   ]);
 
   const update = () => {

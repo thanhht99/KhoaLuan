@@ -1,106 +1,112 @@
 import callApi from "./../index";
 
-const headers = (token) => {
+const headersToken = (token) => {
   return { Authorization: `Basic ${token}` };
 };
 
-export const getUser = async (token) => {
-  try {
-    const res = await callApi("user/", "GET", null, headers(token))
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          return null;
-        }
-        return err.response.data;
-      });
-    return res;
-  } catch (error) {
-    return null;
-  }
-};
-
-export const getAcc = async (token) => {
-  try {
-    const res = await callApi("user/acc/info", "GET", null, headers(token))
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          return null;
-        }
-        return err.response.data;
-      });
-    return res;
-  } catch (error) {
-    return null;
-  }
-};
-
-export const updateUser = async (token, body) => {
-  try {
-    const res = await callApi("user/updateUser", "PATCH", body, headers(token))
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          return null;
-        }
-        return err.response.data;
-      });
-    return res;
-  } catch (error) {
-    return null;
-  }
-};
-
-export const getAccById = async (id, token) => {
-  try {
-    const res = await callApi(`user/acc/_id/${id}`, "GET", null, headers(token))
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          return null;
-        }
-        return err.response.data;
-      });
-    return res;
-  } catch (error) {
-    return null;
-  }
-};
-
-export const getAvatarUser = async (token) => {
-  try {
-    const res = await callApi("user/avatar", "GET", null, headers(token))
-      .then((res) => {
-        return res.data;
-      })
-      .catch((err) => {
-        if (err.message === "Network Error") {
-          return null;
-        }
-        return err.response.data;
-      });
-    return res;
-  } catch (error) {
-    return null;
-  }
-};
-
-export const updateAvatar = async (token, body) => {
+export const newConversation = async (body, token) => {
   try {
     const res = await callApi(
-      "user/updateAvatar",
+      "conversation/",
+      "POST",
+      body,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const updateConversation = async (id, body, token) => {
+  try {
+    const res = await callApi(
+      `conversation/update/${id}`,
       "PATCH",
       body,
-      headers(token)
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getConversationByUser = async (userId, token) => {
+  try {
+    const res = await callApi(
+      `conversation/${userId}`,
+      "GET",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getConversationById = async (id, token) => {
+  try {
+    const res = await callApi(
+      `conversation/_id/${id}`,
+      "GET",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getConversationIncludesTwoUser = async (
+  firstUserId,
+  secondUserId,
+  token
+) => {
+  try {
+    const res = await callApi(
+      `conversation/find/${firstUserId}/${secondUserId}`,
+      "GET",
+      null,
+      headersToken(token)
     )
       .then((res) => {
         return res.data;

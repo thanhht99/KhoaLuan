@@ -17,6 +17,8 @@ import voucherDetailSlice from "./reducers/voucherDetail";
 import promotionAllSlice from "./reducers/promotionAll";
 import promotionDetailSlice from "./reducers/promotionDetail";
 
+import needSupportSlice from "./reducers/listOfNeedSupport";
+
 export const store = configureStore({
   reducer: {
     acc: accSlice,
@@ -37,8 +39,10 @@ export const store = configureStore({
 
     voucherAll: voucherAllSlice,
     voucherDetail: voucherDetailSlice,
-    
+
     promotionAll: promotionAllSlice,
     promotionDetail: promotionDetailSlice,
+
+    needSupport: needSupportSlice,
   },
 });

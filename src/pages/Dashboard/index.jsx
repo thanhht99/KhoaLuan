@@ -21,6 +21,7 @@ import {
   MenuOutlined,
   ShoppingCartOutlined,
   GiftOutlined,
+  WechatOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -33,6 +34,7 @@ import { ListOfCategory } from "./Category/ListOfCategory";
 import { ListOfOrders } from "./Order/ListOfOrders";
 import { ListOfVoucher } from "./Voucher/ListOfVoucher";
 import { ListOfPromotion } from "./Promotion/ListOfPromotion";
+import { ListOfSupport } from "./SupportChat/ListOfSupport";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -273,6 +275,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickSupport = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <WechatOutlined />
+          Support chat
+        </span>
+      ),
+      content: <ListOfSupport />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -416,7 +439,11 @@ const Dashboard = () => {
                     key="notify"
                     icon={<NotificationOutlined />}
                     title="Notify"
-                  ></SubMenu>
+                  >
+                    <Menu.Item key="support" onClick={onClickSupport}>
+                      Support
+                    </Menu.Item>
+                  </SubMenu>
                 </Menu>
               </Sider>
               <Layout style={{ padding: "24px" }}>

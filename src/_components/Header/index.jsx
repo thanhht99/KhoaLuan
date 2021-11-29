@@ -20,6 +20,7 @@ import { useCookies } from "react-cookie";
 import { resetCart } from "../../store/reducers/cart";
 import { resetInfoOrder } from "../../store/reducers/infoOrder";
 import { resetOrderAll } from "../../store/reducers/orderAll";
+import DrawerChat from "./drawerChat";
 
 const Drawers = React.lazy(() => import("./drawer"));
 const { Header } = Layout;
@@ -37,6 +38,7 @@ const PageHeader = () => {
     acc: {},
     user: {},
     style: {},
+    drawerVisible: false,
   });
   if (isNaN(Number(cookies.positionCart))) {
     setCookie("positionCart", 0, { path: "/" });
@@ -99,6 +101,7 @@ const PageHeader = () => {
   const handleMenuClick = (e) => {
     // console.log("click", e);
   };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -195,6 +198,11 @@ const PageHeader = () => {
               <Link to="/account/sign-in">Sign In</Link>
             </Menu.Item>
           </Menu>
+          {state.acc.role === "Customer" && (
+            <div className="header-chat">
+              <DrawerChat />
+            </div>
+          )}
         </Header>
       )}
     </div>

@@ -22,3 +22,13 @@
 .ant-row-rtl .logo-avatar {
     float: left;
 }
+
+.chat-input-area {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 10px;
+}
+
+.chatBoxTop {
+    margin-bottom: 50px;
+}

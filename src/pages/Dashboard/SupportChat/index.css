@@ -1,0 +1,83 @@
+.sider-supportChat-dashboard {
+    border-color: hsla(340, 100%, 50%, 0.5);
+    border-right-width: 10px;
+    border-left-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 7px;
+    border-style: solid;
+    color: black;
+    background: rgb(240 242 245);
+    overflow: hidden;
+}
+
+.scroll-supportChat-dashboard {
+    height: 560px;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+}
+
+.header-supportChat-dashboard {
+    background: rgb(240 242 245);
+    justify-content: center;
+    display: grid;
+    box-shadow: inset 0 0 10px #000;
+    color: rgb(24, 144, 255);
+    overflow: hidden;
+}
+
+.footer-supportChat-dashboard {
+    padding: 0px;
+    display: grid;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.content-supportChat-dashboard {
+    padding: 0px;
+    margin-left: 20px;
+    margin-right: 10px;
+    height: 500px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.chatOnlineImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white;
+}
+
+.chatOnlineImg-header {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white;
+    margin-bottom: 3px;
+}
+
+.chatOnlineFriend {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+
+.chatOnlineFriend-header {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.noConversationText {
+    display: flex;
+    justify-content: center;
+    font-size: 50px;
+    color: rgb(224, 220, 220);
+    cursor: default;
+    justify-content: center;
+}
