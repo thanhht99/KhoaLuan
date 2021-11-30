@@ -185,7 +185,7 @@ const DrawerChat = (props) => {
     });
 
     socket.current.on("receive_message", (data) => {
-      console.log("🔜🔜🔜🔜🔜🔜🔜🔜 data", data);
+      // console.log("🔜🔜🔜🔜🔜🔜🔜🔜 data", data);
       if (data.senderId === "Waiting") {
         socket.current.emit("customer_leaveRoom", {
           conversationId: state.conversations
@@ -238,7 +238,7 @@ const DrawerChat = (props) => {
       checkReceive === "Waiting" || checkReceive === "SENDER"
         ? "SENDER"
         : checkReceive;
-    console.log("🥶🥶🥶🥶🥶🥶🥶 ~ receiverId", receiverId);
+    // console.log("🥶🥶🥶🥶🥶🥶🥶 ~ receiverId", receiverId);
 
     if (receiverId !== "SENDER") {
       socket.current.emit("sendMessage", {

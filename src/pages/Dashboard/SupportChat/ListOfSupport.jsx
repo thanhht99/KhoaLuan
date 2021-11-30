@@ -58,11 +58,13 @@ const ListOfSupport = () => {
   const [messages, setMessages] = useState([]);
   const [newMessageState, setNewMessage] = useState("");
   const [state, setState] = useState(initialState);
-  console.log("🥎🥎🥎🥎🥎🥎~ messages", messages);
+  // console.log("🥎🥎🥎🥎🥎🥎~ messages", messages);
 
   useEffect(() => {
     socket.current = io(`${API_SOCKET_URL}`);
     socket.current.on("receive_message", (data) => {
+      // console.log("🥶🥶🥶🥶🥶🥶🥶~ data", data);
+
       const arrivalMessage = {
         sender: data.senderId,
         text: data.text,
@@ -331,7 +333,7 @@ const ListOfSupport = () => {
     }
     if (res) {
       if (res.success) {
-        console.log("🥶🥶🥶🥶🥶🥶🥶 ~ res", res);
+        // console.log("🥶🥶🥶🥶🥶🥶🥶~ res.data", res.data);
 
         socket.current.emit("sendMessage", {
           senderId: state.idUser,
@@ -339,12 +341,8 @@ const ListOfSupport = () => {
           text: newMessageState,
           conversationId: state.conversations ? state.conversations._id : null,
         });
-        try {
-          setMessages((prev) => [...prev, res.data]);
-          setNewMessage("");
-        } catch (err) {
-          console.log(err);
-        }
+        // setMessages((prev) => [...prev, res.data]);
+        setNewMessage("");
       }
       if (!res.success) {
         if (res.message === "Token is expired") {
@@ -469,7 +467,7 @@ const ListOfSupport = () => {
                       className="chatOnlineImg-header"
                       src={
                         state.chatWith
-                          ? state.chatWith.user_detail
+                          ? state.chatWith.user_detail.image
                             ? `${API_URL}/user/avatar/${state.chatWith._id}`
                             : "/image/avatar/female.jpg"
                           : "/image/avatar/female.jpg"
