@@ -10,6 +10,7 @@ import {
   notification,
   Switch,
   Divider,
+  Popconfirm,
   Drawer,
 } from "antd";
 import { useHistory } from "react-router";
@@ -21,6 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { insertOrderAll } from "../../../store/reducers/orderAll";
 import { DrawerOrdersUser } from "./drawer";
 import { insertOrder } from "../../../store/reducers/orderDetail";
+import { getFormToFeedback } from "../../../api/feedback";
+import { DrawerFeedback } from "./drawerFeedback";
 
 const Order = () => {
   const token = Cookies.get("token");
@@ -31,10 +34,14 @@ const Order = () => {
   const initialState = {
     orders: reduxOrderAll,
     order: null,
+    feedback: null,
+    drawerFeedbackVisible: false,
     total: null,
     drawerVisible: false,
   };
   const [state, setState] = useState(initialState);
+
+  // console.log("🦈🦈🦈🦈🦈🦈", state);
 
   const fetchData = async () => {
     const res = await orderOfUser(token);
@@ -48,6 +55,7 @@ const Order = () => {
           return { ...item, key };
         });
         dispatch(insertOrderAll({ newOrder: keyAllOrder }));
+
         setState((prev) => ({
           ...prev,
           orders: keyAllOrder,
@@ -92,6 +100,38 @@ const Order = () => {
       drawerVisible: true,
     }));
     dispatch(insertOrder({ newOrder: record }));
+  };
+
+  const confirm = async (record) => {
+    const res = await getFormToFeedback(record._id, token);
+    if (!res) {
+      doNotGetData();
+    }
+    if (res) {
+      if (res.success) {
+        setState((prev) => ({
+          ...prev,
+          feedback: res.data,
+          drawerFeedbackVisible: true,
+          order: record,
+        }));
+      }
+      if (!res.success) {
+        if (res.message === "Token is expired") {
+          Cookies.remove("token", { path: "/" });
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}`,
+          });
+          history.push("/account/sign-in/reload");
+          window.location.reload();
+        }
+        notification["warning"]({
+          message: "Warning",
+          description: `${res.message}.`,
+        });
+      }
+    }
   };
 
   const columns = [
@@ -170,9 +210,25 @@ const Order = () => {
       onFilter: (value, record) => {
         return record.isFeedback.toString().indexOf(value) === 0;
       },
-      render: (isFeedback) => (
+      render: (isFeedback, record) => (
         <div>
-          <Switch checked={isFeedback} />
+          {record.orderStatus !== "Has received the goods" && (
+            <Switch checked={isFeedback} disabled />
+          )}
+          {record.orderStatus === "Has received the goods" ? (
+            record.isFeedback ? (
+              <Switch checked={isFeedback} disabled />
+            ) : (
+              <Popconfirm
+                title="Do you want feedback?"
+                onConfirm={() => confirm(record)}
+              >
+                <Switch checked={isFeedback} />
+              </Popconfirm>
+            )
+          ) : (
+            <></>
+          )}
         </div>
       ),
     },
@@ -181,7 +237,18 @@ const Order = () => {
   const onClose = async () => {
     setState((prev) => ({
       ...prev,
+      order: null,
       drawerVisible: false,
+    }));
+  };
+
+  const onCloseFeedback = async () => {
+    fetchData();
+    setState((prev) => ({
+      ...prev,
+      drawerFeedbackVisible: false,
+      feedback: null,
+      order: null,
     }));
   };
 
@@ -227,6 +294,22 @@ const Order = () => {
             id={state.order._id}
             order={state.order}
             drawerVisible={state.drawerVisible}
+          />
+        </Drawer>
+      )}
+      {state.feedback && (
+        <Drawer
+          title={state.order.orderCode}
+          width={520}
+          onClose={onCloseFeedback}
+          visible={state.drawerFeedbackVisible}
+          className={"drawer-order-dashboard"}
+        >
+          <DrawerFeedback
+            id={state.order._id}
+            order={state.order}
+            feedback={state.feedback}
+            drawerVisible={state.drawerFeedbackVisible}
           />
         </Drawer>
       )}

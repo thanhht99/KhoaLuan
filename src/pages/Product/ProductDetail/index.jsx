@@ -19,13 +19,15 @@ import {
   notification,
 } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import moment from "moment";
 import { NotFound } from "../../../_components/NotFound/index";
 import { useHistory } from "react-router-dom";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useDispatch } from "react-redux";
 import { numberProduct } from "../../../store/reducers/cart";
+import { doNotGetData } from "../../../constants/doNotGetData";
+import { findFeedbackByProduct } from "../../../api/feedback";
+import { format } from "timeago.js";
 
 const ProductDetail = (props) => {
   const history = useHistory();
@@ -35,20 +37,61 @@ const ProductDetail = (props) => {
     flag: false,
     radioSize: null,
     quantity: 1,
+    review: null,
+    reviewAll: null,
+    initLoading: true,
+    loading: false,
+    limit: 5,
+    category: "All",
   });
   const { Panel } = Collapse;
   const [visible, setVisible] = useState(false);
 
-  // console.log("🚀🚀🚀🚀🚀 state", state);
+  // console.log("☄️☄️☄️☄️☄️☄️ state", state);
 
   useEffect(() => {
+    const fetchData = async (sku) => {
+      const res = await findFeedbackByProduct(sku);
+      if (!res) {
+        doNotGetData();
+      }
+      if (res) {
+        if (res.success) {
+          // console.log("🦐🦐🦐🦐🦐🦐 res.data", res.data);
+          const review = res.data
+            .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+            .map((item, index) => {
+              const key = index;
+              return { ...item, key };
+            });
+
+          setState((prev) => ({
+            ...prev,
+            review,
+            reviewAll: review,
+          }));
+        }
+        if (!res.success) {
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    };
     setState((prev) => ({ ...prev, flag: false, radioSize: "S" }));
     const sessionProducts = sessionStorage.getItem("products");
     const products = JSON.parse(sessionProducts);
     if (products) {
       products.forEach((val) => {
         if (props.match.params.id === val.sku) {
-          setState((prev) => ({ ...prev, product: val, flag: true }));
+          fetchData(val.sku);
+          setState((prev) => ({
+            ...prev,
+            product: val,
+            flag: true,
+            initLoading: false,
+          }));
         }
       });
     } else {
@@ -80,6 +123,10 @@ const ProductDetail = (props) => {
     setState((prev) => ({ ...prev, radioSize: e.target.value }));
   };
 
+  const onLoadMore = () => {
+    setState((prev) => ({ ...prev, limit: prev.limit + 5 }));
+  };
+
   const onChangeQuantity = (value) => {
     setState((prev) => ({ ...prev, quantity: value }));
   };
@@ -99,36 +146,75 @@ const ProductDetail = (props) => {
   };
 
   //data - list comment
-  const data = [
-    {
-      actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-      author: "Han Solo",
-      avatar:
-        "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-      content: <p>Toi rat thich chiec quan nay, no that dep.</p>,
-      datetime: (
-        <Tooltip
-          title={moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss")}
-        >
-          <span>{moment().subtract(1, "days").fromNow()}</span>
-        </Tooltip>
-      ),
-    },
-    {
-      actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-      author: "Zayn Malik",
-      avatar:
-        "https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png",
-      content: <p>Love this jean, love its materials.</p>,
-      datetime: (
-        <Tooltip
-          title={moment().subtract(2, "days").format("YYYY-MM-DD HH:mm:ss")}
-        >
-          <span>{moment().subtract(2, "days").fromNow()}</span>
-        </Tooltip>
-      ),
-    },
-  ];
+  const data = state.review
+    ? state.review.map((item) => {
+        const comment = {
+          author: item.fullName,
+          avatar: item.image || "/image/avatar/2.jpg",
+          content: (
+            <span>
+              <Rate
+                disabled
+                allowHalf
+                value={Number(item.rating)}
+                style={{ fontSize: "17px", color: "hsla(340, 100%, 50%, 0.5)" }}
+              ></Rate>
+              <br />
+              {item.contentFeedback}
+            </span>
+          ),
+          datetime: (
+            <Tooltip title={new Date(item.createdAt).toDateString()}>
+              <span>{format(item.createdAt)}</span>
+            </Tooltip>
+          ),
+        };
+        return comment;
+      })
+    : [];
+
+  const loadMore =
+    !state.initLoading && !state.loading && state.limit < data.length ? (
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: 12,
+          marginBottom: 12,
+          height: 32,
+          lineHeight: "32px",
+        }}
+      >
+        <Button onClick={onLoadMore}>Loading more...</Button>
+      </div>
+    ) : null;
+
+  const categoryChange = (e) => {
+    setState((prev) => ({
+      ...prev,
+      review: null,
+    }));
+    const star = ["1", "2", "3", "4", "5"];
+    if (e.target.value === "All") {
+      setState((prev) => ({
+        ...prev,
+        review: state.reviewAll,
+        category: e.target.value,
+      }));
+    } else {
+      star.forEach((item) => {
+        if (e.target.value === item) {
+          let reviewChanged = state.reviewAll.filter((x) => {
+            return Number(e.target.value) === Number(x.rating);
+          });
+          setState((prev) => ({
+            ...prev,
+            review: reviewChanged,
+            category: e.target.value,
+          }));
+        }
+      });
+    }
+  };
 
   return (
     <>
@@ -355,33 +441,42 @@ const ProductDetail = (props) => {
             </Collapse>
           </div>
 
-          {/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-       CHUA DUNG TOI 
-       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/}
           <div className="commentProduct">
-            <h1 style={{ textAlign: "center" }}>DANH GIA SAN PHAM</h1>
+            <h1 style={{ textAlign: "center" }}>Reviews</h1>
             <div>
               <Row>
                 <Col span={6} style={{ textAlign: "center" }}>
-                  <p>4.5/5</p>
-                  <Rate disabled allowHalf defaultValue={4.5}></Rate>
+                  <p>{state.product.rating}/5</p>
+                  <Rate
+                    disabled
+                    allowHalf
+                    defaultValue={state.product.rating}
+                  ></Rate>
                 </Col>
                 <Col span={18}>
-                  <Button>Tat ca</Button>
-                  <Button>1 sao</Button>
-                  <Button>2 sao</Button>
-                  <Button>3 sao</Button>
-                  <Button>4 sao</Button>
-                  <Button>5 sao</Button>
+                  <Radio.Group
+                    onChange={categoryChange}
+                    value={state.category}
+                    style={{ paddingLeft: 15 }}
+                  >
+                    <Radio value="All">All</Radio>
+                    <Radio value="1">1 star</Radio>
+                    <Radio value="2">2 star</Radio>
+                    <Radio value="3">3 star</Radio>
+                    <Radio value="4">4 star</Radio>
+                    <Radio value="5">5 star</Radio>
+                  </Radio.Group>
                 </Col>
               </Row>
             </div>
             <div>
               <List
                 className="comment-list"
-                header={`${data.length} replies`}
+                header={`${data.length} reviewed`}
+                loading={state.initLoading}
+                loadMore={loadMore}
                 itemLayout="horizontal"
-                dataSource={data}
+                dataSource={data.slice(0, state.limit)}
                 renderItem={(item) => (
                   <li>
                     <Comment
