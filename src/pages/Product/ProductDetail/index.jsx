@@ -28,6 +28,8 @@ import { numberProduct } from "../../../store/reducers/cart";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import { findFeedbackByProduct } from "../../../api/feedback";
 import { format } from "timeago.js";
+import { getCategory } from "../../../api/category";
+import { getProductIsActiveTrue } from "../../../api/product";
 
 const ProductDetail = (props) => {
   const history = useHistory();
@@ -47,7 +49,7 @@ const ProductDetail = (props) => {
   const { Panel } = Collapse;
   const [visible, setVisible] = useState(false);
 
-  // console.log("☄️☄️☄️☄️☄️☄️ state", state);
+  // console.log("🌐🌐🌐🌐🌐🌐 state", state);
 
   useEffect(() => {
     const fetchData = async (sku) => {
@@ -82,6 +84,7 @@ const ProductDetail = (props) => {
     setState((prev) => ({ ...prev, flag: false, radioSize: "S" }));
     const sessionProducts = sessionStorage.getItem("products");
     const products = JSON.parse(sessionProducts);
+
     if (products) {
       products.forEach((val) => {
         if (props.match.params.id === val.sku) {
@@ -95,7 +98,30 @@ const ProductDetail = (props) => {
         }
       });
     } else {
-      history.push("/product/all");
+      const fetchProductData = async () => {
+        const re_category = await getCategory();
+        const re_product = await getProductIsActiveTrue();
+        if (!re_category || !re_product) {
+          doNotGetData();
+        }
+        if (re_category && re_product) {
+          if (re_category.success && re_product.success) {
+            sessionStorage.setItem(
+              "categories",
+              JSON.stringify(re_category.data)
+            );
+            sessionStorage.setItem("products", JSON.stringify(re_product.data));
+            window.location.reload();
+          }
+          if (!re_category.success || !re_product.success) {
+            notification["warning"]({
+              message: "Warning",
+              description: `${re_category.message}.\n ${re_product.message}.`,
+            });
+          }
+        }
+      };
+      fetchProductData();
     }
   }, [props.match.params.id, history]);
 

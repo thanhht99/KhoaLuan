@@ -1,26 +1,77 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
+import { doNotGetData } from "../../constants/doNotGetData";
 import HoverImage from "react-hover-image";
-import { Carousel, Button, Affix } from "antd";
+import { Carousel, Button, Affix, notification, Spin, Tooltip } from "antd";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
-
-// import store from './../../store'
+import { bestSeller, newProducts, vouchers } from "../../api/home";
 
 const Home = () => {
-  // const dispatch = useDispatch();
   const token = Cookies.get("token");
   const acc = useSelector((state) => state.acc.Acc);
+  const initialState = {
+    newProducts: null,
+    vouchers: null,
+    bestSeller: null,
+  };
+  const [state, setState] = useState(initialState);
+
+  // console.log("🦈🦈🦈🦈🦈🦈", state);
 
   useEffect(() => {
-    // const token = localStorage.getItem("token");
-    // console.log("🚀 ~ file: index.jsx ~ line 10 ~ useEffect ~ token", token);
-    // if(token) {
-    //     history.push('/home');
-    // }
-  });
+    const fetchData = async () => {
+      const bestSellerAPI = await bestSeller();
+      if (!bestSellerAPI) {
+        doNotGetData();
+      }
+      if (bestSellerAPI) {
+        if (bestSellerAPI.success) {
+          try {
+            const newProductsAPI = await newProducts();
+            const vouchersAPI = await vouchers();
+            // console.log("🧸🧸🧸🧸🧸🧸 bestSellerAPI", bestSellerAPI);
+            // console.log("🍒🍒🍒🍒🍒🍒 newProductsAPI", newProductsAPI);
+            // console.log("🦑🦑🦑🦑🦑🦑 vouchersAPI", vouchersAPI);
+
+            const bestSellerState = bestSellerAPI.data.map((item, index) => {
+              const key = index;
+              return { ...item, key };
+            });
+            const newProductsState = newProductsAPI.data.map((item, index) => {
+              const key = index;
+              return { ...item, key };
+            });
+            const vouchersState = vouchersAPI.data.map((item, index) => {
+              const key = index;
+              return { ...item, key };
+            });
+
+            setState((prev) => ({
+              ...prev,
+              bestSeller: bestSellerState,
+              newProducts: newProductsState,
+              vouchers: vouchersState,
+            }));
+          } catch (err) {
+            notification["warning"]({
+              message: "Warning: Home",
+              description: err,
+            });
+          }
+        }
+        if (!bestSellerAPI.success) {
+          notification["warning"]({
+            message: "Warning: Home",
+            description: `${bestSellerAPI.message}.`,
+          });
+        }
+      }
+    };
+    fetchData();
+  },[]);
 
   const contentStyle = {
     height: "70%",
@@ -97,119 +148,80 @@ const Home = () => {
           <p className="t-1">Best Seller</p>
           <p className="t-2">Best selling products</p>
         </div>
-        <div className="images">
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product1.jpg"
-                hoverSrc="/image/product/product1_1.jpg"
-              ></HoverImage>
-            </a>
+        {state.bestSeller ? (
+          <div className="images">
+            {state.bestSeller.length === 4 &&
+              state.bestSeller.map((item, index) => (
+                <div className="image-item" key={index}>
+                  <Tooltip placement="top" title={item.name}>
+                    <a href={`/product/detail/${item.sku}`}>
+                      <HoverImage
+                        className="hover-image"
+                        src={item.image}
+                        hoverSrc={item.listImage[0]}
+                      ></HoverImage>
+                    </a>
+                  </Tooltip>
+                </div>
+              ))}
           </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product2.jpg"
-                hoverSrc="/image/product/product2_1.jpg"
-              ></HoverImage>
-            </a>
+        ) : (
+          <div className="spin-home">
+            <Spin tip="Loading..." />
           </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product3.jpg"
-                hoverSrc="/image/product/product3_1.jpg"
-              ></HoverImage>
-            </a>
-          </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product4.jpg"
-                hoverSrc="/image/product/product4_1.jpg"
-              ></HoverImage>
-            </a>
-          </div>
-        </div>
+        )}
       </div>
       <div className="row">
         <div className="title">
-          <p className="t-1">New Product</p>
+          <p className="t-1">New Products</p>
           <p className="t-2">Top latest products</p>
         </div>
-        <div className="images">
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product8.jpg"
-                hoverSrc="/image/product/product8_1.jpg"
-              ></HoverImage>
-            </a>
+        {state.newProducts ? (
+          <div className="images">
+            {state.newProducts.length === 4 &&
+              state.newProducts.map((item, index) => (
+                <div className="image-item" key={index}>
+                  <Tooltip placement="top" title={item.name}>
+                    <a href={`/product/detail/${item.sku}`}>
+                      <HoverImage
+                        className="hover-image"
+                        src={item.image}
+                        hoverSrc={item.listImage[0]}
+                      ></HoverImage>
+                    </a>
+                  </Tooltip>
+                </div>
+              ))}
           </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product7.jpg"
-                hoverSrc="/image/product/product7_1.jpg"
-              ></HoverImage>
-            </a>
+        ) : (
+          <div className="spin-home">
+            <Spin tip="Loading..." />
           </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product6.jpg"
-                hoverSrc="/image/product/product6_1.jpg"
-              ></HoverImage>
-            </a>
-          </div>
-          <div className="image-item">
-            <a href="/">
-              <HoverImage
-                className="hover-image"
-                src="/image/product/product5.jpg"
-                hoverSrc="/image/product/product5_1.jpg"
-              ></HoverImage>
-            </a>
-          </div>
-        </div>
+        )}
       </div>
       <div className="row">
         <div className="title">
-          <p className="t-1">Promotions & Vouchers</p>
+          <p className="t-1">New Vouchers</p>
           <p className="t-2">Info</p>
         </div>
-        <div className="images">
-          <div className="image-item2">
-            <a href="/">
-              <img
-                src="/image/Promotions_Vouchers/black_friday.jpg"
-                alt=""
-              ></img>
-            </a>
+        {state.vouchers ? (
+          <div className="images">
+            {state.vouchers.length === 4 &&
+              state.vouchers.map((item, index) => (
+                <div className="image-item2" key={index}>
+                  <Tooltip placement="top" title={item.voucher_name}>
+                    <a href="/">
+                      <img src={item.image} alt=""></img>
+                    </a>
+                  </Tooltip>
+                </div>
+              ))}
           </div>
-          <div className="image-item2">
-            <a href="/">
-              <img src="/image/Promotions_Vouchers/sale50.jpg" alt=""></img>
-            </a>
+        ) : (
+          <div className="spin-home">
+            <Spin tip="Loading..." />
           </div>
-          <div className="image-item2">
-            <a href="/">
-              <img src="/image/Promotions_Vouchers/sale70.jpg" alt=""></img>
-            </a>
-          </div>
-          <div className="image-item2">
-            <a href="/">
-              <img src="/image/Promotions_Vouchers/xmas.jpg" alt=""></img>
-            </a>
-          </div>
-        </div>
+        )}
       </div>
       <div className="row-background">
         <div className="bg">

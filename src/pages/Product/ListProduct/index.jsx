@@ -41,6 +41,9 @@ const ListProduct = () => {
     page: 1,
     // flag: false,
   });
+
+  // console.log("☄️☄️☄️☄️☄️☄️ state", state);
+
   useEffect(() => {
     const fetchData = async () => {
       const re_category = await getCategory();
