@@ -71,7 +71,7 @@ const Home = () => {
       }
     };
     fetchData();
-  },[]);
+  }, []);
 
   const contentStyle = {
     height: "70%",
@@ -210,7 +210,7 @@ const Home = () => {
               state.vouchers.map((item, index) => (
                 <div className="image-item2" key={index}>
                   <Tooltip placement="top" title={item.voucher_name}>
-                    <a href="/">
+                    <a href={`/voucher/detail/${item.code}`}>
                       <img src={item.image} alt=""></img>
                     </a>
                   </Tooltip>

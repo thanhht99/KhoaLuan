@@ -1,33 +1,27 @@
 import React from "react";
 import { Pie } from "@ant-design/charts";
+import { useSelector } from "react-redux";
 
 const PieCategory = () => {
-  var data = [
-    {
-      type: "a",
-      value: 40,
-    },
-    {
-      type: "b",
-      value: 25,
-    },
-    {
-      type: "c",
-      value: 190,
-    },
-    {
-      type: "d",
-      value: 15,
-    },
-    {
-      type: "e",
-      value: 10,
-    },
-    {
-      type: "f",
-      value: 50,
-    },
-  ];
+  const reduxProductAll = useSelector((state) => state.productAll.Product);
+  const reduxCategoryTAFAll = useSelector(
+    (state) => state.categoryTAF.Category
+  );
+
+  let data = reduxCategoryTAFAll.map((category) => {
+    var total = 0;
+    reduxProductAll.forEach((product) => {
+      if (product.category === category.category_name) {
+        total++;
+      }
+    });
+    const item = {
+      type: category.category_name,
+      value: total,
+    };
+    return item;
+  });
+
   var config = {
     appendPadding: 10,
     data: data,

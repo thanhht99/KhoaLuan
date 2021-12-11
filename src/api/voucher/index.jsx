@@ -46,6 +46,29 @@ export const getAllVouchers = async (token) => {
   }
 };
 
+export const getAllVouchersSortByIsActive = async (isActive) => {
+  try {
+    const res = await callApi(
+      `voucher/allByActive?isActive=${isActive}`,
+      "GET",
+      null,
+      headers
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const updateActiveVoucher = async (id, isActive, token) => {
   try {
     const res = await callApi(

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import * as config from "../../constants/config";
-import { Layout, Menu, Tabs, Dropdown, Spin } from "antd";
+import { Layout, Menu, Tabs, Dropdown, Spin, notification } from "antd";
 import {
   UserOutlined,
   HomeOutlined,
@@ -22,6 +22,7 @@ import {
   ShoppingCartOutlined,
   GiftOutlined,
   WechatOutlined,
+  AndroidOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -35,6 +36,12 @@ import { ListOfOrders } from "./Order/ListOfOrders";
 import { ListOfVoucher } from "./Voucher/ListOfVoucher";
 import { ListOfPromotion } from "./Promotion/ListOfPromotion";
 import { ListOfSupport } from "./SupportChat/ListOfSupport";
+import { doNotGetData } from "../../constants/doNotGetData";
+import { getAllCategoryTrueAndFalse } from "../../api/category";
+import { getProducts } from "../../api/product";
+import { insertProductAll } from "../../store/reducers/productAll";
+import { insertCategoryTAF } from "../../store/reducers/categoryTrueAndFalse";
+import { Predict } from "./Predict/Predict";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -65,7 +72,7 @@ const Dashboard = () => {
     image: "",
   });
 
-  // console.log("🚀 🚀 🚀 🚀 🚀", state);
+  // console.log("🚀🚀🚀🚀🚀🚀", state);
 
   const dispatch = useDispatch();
   const toggle = () => {
@@ -78,8 +85,6 @@ const Dashboard = () => {
   const token = Cookies.get("token");
   const user = useSelector((state) => state.user.User);
   const acc = useSelector((state) => state.acc.Acc);
-  // console.log("🚀🚀🚀🚀🚀 ~ Dashboard ~ acc", acc);
-  // console.log("🚀🚀🚀🚀🚀 ~ Dashboard ~ user", user);
 
   if (!token) {
     history.push("/account/sign-in");
@@ -110,6 +115,37 @@ const Dashboard = () => {
       }
     }
   }, [acc._id, state.user, user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const re_category = await getAllCategoryTrueAndFalse(token);
+      const re_product = await getProducts();
+      if (!re_category || !re_product) {
+        doNotGetData();
+      }
+      if (re_category && re_product) {
+        if (re_category.success && re_product.success) {
+          const keyCategory = re_category.data.map((item, index) => {
+            const key = index;
+            return { ...item, key };
+          });
+          dispatch(insertCategoryTAF({ newCategory: keyCategory }));
+          const keyProducts = re_product.data.map((item, index) => {
+            const key = index;
+            return { ...item, key };
+          });
+          dispatch(insertProductAll({ newProduct: keyProducts }));
+        }
+        if (!re_category.success || !re_product.success) {
+          notification["warning"]({
+            message: "Warning",
+            description: `${re_category.message}.\n ${re_product.message}.`,
+          });
+        }
+      }
+    };
+    fetchData();
+  }, [dispatch, token]);
 
   const onChange = (activeKey) => {
     setState((prev) => ({
@@ -296,6 +332,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickPredict = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <AndroidOutlined />
+          AI Predict
+        </span>
+      ),
+      content: <Predict />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -372,6 +429,18 @@ const Dashboard = () => {
                   defaultOpenKeys={["sub1"]}
                   style={{ height: "100%", borderRight: 0 }}
                 >
+                  {acc.role === "Admin" && (
+                    <SubMenu
+                      key="admin"
+                      icon={<AndroidOutlined />}
+                      title="Admin"
+                    >
+                      <Menu.Item key="predict" onClick={onClickPredict}>
+                        Predict
+                      </Menu.Item>
+                    </SubMenu>
+                  )}
+
                   {acc.role === "Admin" && (
                     <SubMenu
                       key="customer"
