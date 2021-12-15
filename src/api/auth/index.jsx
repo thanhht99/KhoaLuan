@@ -37,16 +37,13 @@ export const signUp = async (body) => {
   try {
     const res = await callApi("auth/signUp", "POST", body, headers)
       .then((res) => {
-        console.log("😈 👿 👿 ~ DATA 🧡", res.data);
+        // console.log("😈 👿 👿 ~ DATA 🧡", res.data);
         return res.data;
       })
       .catch((err) => {
-        console.log("🚀~ err:", err);
         if (err.message === "Network Error") {
           return null;
         }
-        console.log("🙏🙏🙏 Error Error 🙏🙏🙏");
-        console.log("🚀", err.response.data);
         return err.response.data;
       });
     return res;
@@ -58,6 +55,47 @@ export const signUp = async (body) => {
 export const logout = async (token) => {
   try {
     const res = await callApi("auth/logout", "POST", null, headersToken(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const findAcc = async (id) => {
+  try {
+    const res = await callApi(`auth/findAcc/${id}`, "GET", null, headers)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const verifyCode = async (body, id) => {
+  try {
+    const res = await callApi(
+      `auth/signUp/verifyCode/${id}`,
+      "POST",
+      body,
+      headers
+    )
       .then((res) => {
         return res.data;
       })
