@@ -229,14 +229,23 @@ const ProductDetail = (props) => {
     } else {
       star.forEach((item) => {
         if (e.target.value === item) {
-          let reviewChanged = state.reviewAll.filter((x) => {
-            return Number(e.target.value) === Number(x.rating);
-          });
-          setState((prev) => ({
-            ...prev,
-            review: reviewChanged,
-            category: e.target.value,
-          }));
+          if (state.reviewAll) {
+            let reviewChanged = state.reviewAll.filter((x) => {
+              return Number(e.target.value) === Number(x.rating);
+            });
+            setState((prev) => ({
+              ...prev,
+              review: reviewChanged,
+              category: e.target.value,
+            }));
+          }
+          if (!state.reviewAll) {
+            setState((prev) => ({
+              ...prev,
+              review: null,
+              category: e.target.value,
+            }));
+          }
         }
       });
     }

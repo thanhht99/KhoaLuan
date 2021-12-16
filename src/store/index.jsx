@@ -18,6 +18,8 @@ import promotionAllSlice from "./reducers/promotionAll";
 import promotionDetailSlice from "./reducers/promotionDetail";
 
 import needSupportSlice from "./reducers/listOfNeedSupport";
+import staffListSlice from "./reducers/staffList";
+import customerListSlice from "./reducers/customerList";
 
 export const store = configureStore({
   reducer: {
@@ -44,5 +46,7 @@ export const store = configureStore({
     promotionDetail: promotionDetailSlice,
 
     needSupport: needSupportSlice,
+    staffList: staffListSlice,
+    customerList: customerListSlice,
   },
 });

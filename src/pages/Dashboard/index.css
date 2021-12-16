@@ -85,45 +85,21 @@
     color: rgb(0, 0, 0)
 }
 
-.form-promotion-dashboard .ant-form-item-label>label {
-    color: rgb(0, 0, 0)
-}
-
-.form-add-promotion-dashboard .ant-form-item-label>label {
-    color: rgb(0, 0, 0)
-}
-
+.form-staff-drawer-dashboard .ant-form-item-label>label,
+.form-promotion-dashboard .ant-form-item-label>label,
+.form-add-staff-dashboard .ant-form-item-label>label,
+.form-add-promotion-dashboard .ant-form-item-label>label,
+.form-add-category-dashboard .ant-form-item-label>label,
+.form-predict-dashboard .ant-form-item-label>label,
 .form-add-voucher-dashboard .ant-form-item-label>label {
     color: rgb(0, 0, 0)
 }
 
-.form-add-category-dashboard .ant-form-item-label>label {
-    color: rgb(0, 0, 0)
-}
-
-.form-predict-dashboard .ant-form-item-label>label {
-    color: rgb(0, 0, 0)
-}
-
-.btn-Reload-Page-List-Of-Products {
-    color: black;
-    border-color: white;
-    background: none;
-}
-
+.btn-Reload-Page-List-Of-Products,
+.btn-Reload-Page-List-Of-StaffList,
+.btn-Reload-Page-List-Of-Orders,
+.btn-Reload-Page-List-Of-Vouchers,
 .btn-Reload-Page-List-Of-Promotions {
-    color: black;
-    border-color: white;
-    background: none;
-}
-
-.btn-Reload-Page-List-Of-Orders {
-    color: black;
-    border-color: white;
-    background: none;
-}
-
-.btn-Reload-Page-List-Of-Vouchers {
     color: black;
     border-color: white;
     background: none;

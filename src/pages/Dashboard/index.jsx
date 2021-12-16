@@ -42,6 +42,8 @@ import { getProducts } from "../../api/product";
 import { insertProductAll } from "../../store/reducers/productAll";
 import { insertCategoryTAF } from "../../store/reducers/categoryTrueAndFalse";
 import { Predict } from "./Predict/Predict";
+import { ListOfStaffs } from "./Staff/ListOfStaffs";
+import { ListOfCustomers } from "./Customer/ListOfCustomers";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -216,7 +218,28 @@ const Dashboard = () => {
           List of staffs
         </span>
       ),
-      content: "List of staffs",
+      content: <ListOfStaffs />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
+  const onClickListCustomer = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <UnorderedListOutlined />
+          List of Customers
+        </span>
+      ),
+      content: <ListOfCustomers />,
       key: `${index}`,
     });
     setState((prev) => ({
@@ -339,7 +362,7 @@ const Dashboard = () => {
       title: (
         <span>
           <AndroidOutlined />
-          AI Predict
+          Predict order
         </span>
       ),
       content: <Predict />,
@@ -436,7 +459,7 @@ const Dashboard = () => {
                       title="Admin"
                     >
                       <Menu.Item key="predict" onClick={onClickPredict}>
-                        Predict
+                        Predict order
                       </Menu.Item>
                     </SubMenu>
                   )}
@@ -447,8 +470,9 @@ const Dashboard = () => {
                       icon={<UserOutlined />}
                       title="Customer"
                     >
-                      <Menu.Item key="accountCustomer">Account</Menu.Item>
-                      <Menu.Item key="infoCustomer">Info</Menu.Item>
+                      <Menu.Item key="listCustomer" onClick={onClickListCustomer}>
+                        List
+                      </Menu.Item>
                     </SubMenu>
                   )}
 
@@ -461,8 +485,6 @@ const Dashboard = () => {
                       <Menu.Item key="listStaff" onClick={onClickListStaff}>
                         List
                       </Menu.Item>
-                      <Menu.Item key="accountStaff">Account</Menu.Item>
-                      <Menu.Item key="infoStaff">Info</Menu.Item>
                     </SubMenu>
                   )}
 
@@ -479,7 +501,7 @@ const Dashboard = () => {
                         Category
                       </Menu.Item>
                     )}
-                    <Menu.Item key="feedback">Feedback</Menu.Item>
+                    {/* <Menu.Item key="feedback">Feedback</Menu.Item> */}
                   </SubMenu>
 
                   <SubMenu
@@ -487,7 +509,7 @@ const Dashboard = () => {
                     icon={<SketchOutlined />}
                     title="Business"
                   >
-                    <Menu.Item key="bill">Bill</Menu.Item>
+                    {/* <Menu.Item key="bill">Bill</Menu.Item> */}
                     <Menu.Item key="order" onClick={onClickOrder}>
                       Order
                     </Menu.Item>

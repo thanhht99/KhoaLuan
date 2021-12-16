@@ -110,3 +110,85 @@ export const verifyCode = async (body, id) => {
     return null;
   }
 };
+
+export const getStaff = async (token) => {
+  try {
+    const res = await callApi(`auth/staff`, "GET", null, headersToken(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getCustomer = async (token) => {
+  try {
+    const res = await callApi(`auth/customer`, "GET", null, headersToken(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const updateActiveAcc = async (userName, isActive, token) => {
+  try {
+    const res = await callApi(
+      `auth/updateActive/${userName}?isActive=${isActive}`,
+      "PATCH",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const updateIsLogin = async (userName, isLogin, token) => {
+  try {
+    const res = await callApi(
+      `auth/updateIsLogin/${userName}?isLogin=${isLogin}`,
+      "PATCH",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};

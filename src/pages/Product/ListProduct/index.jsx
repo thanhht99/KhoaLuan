@@ -366,8 +366,37 @@ const ListProduct = () => {
                 <Meta className="card-meta-list-product" title={val.name} />
               </Tooltip>
               <p style={{ fontSize: "17px", paddingTop: "15px" }}>
-                <strong>{val.price + " "} </strong>
-                <DollarCircleOutlined />
+                {val.isPromotion ? (
+                  <>
+                    <Tooltip placement="top" title={val.price + "$"}>
+                      {val.promotion_detail.discount > 1 ? (
+                        <strong style={{ color: "rgb(255 109 44)" }}>
+                          <span>
+                            {parseFloat(
+                              val.price - val.promotion_detail.discount
+                            ).toFixed(2) + " "}
+                          </span>
+                          <DollarCircleOutlined />
+                        </strong>
+                      ) : (
+                        <strong style={{ color: "rgb(255 109 44)" }}>
+                          <span>
+                            {parseFloat(
+                              val.price -
+                                val.price * val.promotion_detail.discount
+                            ).toFixed(2) + " "}{" "}
+                          </span>
+                          <DollarCircleOutlined />
+                        </strong>
+                      )}{" "}
+                    </Tooltip>
+                  </>
+                ) : (
+                  <>
+                    <span>{val.price + " "}</span>
+                    <DollarCircleOutlined />
+                  </>
+                )}
                 <span style={{ float: "right" }}>
                   <IconFont type="icon-shoppingcart" />
                   {val.sold}
