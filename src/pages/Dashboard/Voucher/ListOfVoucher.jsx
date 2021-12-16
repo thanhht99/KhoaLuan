@@ -22,6 +22,7 @@ import { getAllVouchers, updateActiveVoucher } from "../../../api/voucher";
 import { ReloadOutlined } from "@ant-design/icons";
 import { AddVoucher } from "./AddVoucher";
 import { DrawerVoucher } from "./DrawerVoucher";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfVoucher = () => {
   const dispatch = useDispatch();
@@ -266,6 +267,8 @@ const ListOfVoucher = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.vouchers} fileName="List of vouchers" />
       <Divider />
       <AddVoucher />
       <Table

@@ -27,6 +27,7 @@ import { insertCategoryDetail } from "../../../store/reducers/categoryDetail";
 import { insertCategory } from "../../../store/reducers/categoryAll";
 import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
 import { ReloadOutlined } from "@ant-design/icons";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfCategory = () => {
   const dispatch = useDispatch();
@@ -250,6 +251,8 @@ const ListOfCategory = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.categories} fileName="List of categories" />
       <Divider />
       <AddCategory />
       <Table

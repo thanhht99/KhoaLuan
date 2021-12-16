@@ -29,6 +29,7 @@ import { getProductIsActiveTrueAndIsPromotionFalse } from "../../../api/product"
 import { insertProductAllTrue } from "../../../store/reducers/productAllTrue";
 import { insertCategory } from "../../../store/reducers/categoryAll";
 import { DrawerPromotion } from "./DrawerPromotion";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfPromotion = () => {
   const dispatch = useDispatch();
@@ -286,6 +287,8 @@ const ListOfPromotion = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.promotions} fileName="List of promotions" />
       <Divider />
       <AddPromotion />
       <Table

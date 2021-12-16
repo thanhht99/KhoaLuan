@@ -5,32 +5,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
-import {
-  Tooltip,
-  Table,
-  notification,
-  Switch,
-  Drawer,
-  Divider,
-  Button,
-  Popconfirm,
-} from "antd";
+import { Table, notification, Switch, Divider, Button, Popconfirm } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
-import { getCustomer, updateActiveAcc, updateIsLogin } from "../../../api/auth";
-import { insertCustomerList } from "../../../store/reducers/customerList";
-import { DrawerCustomer } from "./DrawerCustomer";
 import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
+import { getAllFeedback, updateActiveFeedback } from "../../../api/feedback";
+import { insertFeedback } from "../../../store/reducers/feedbackAll";
 
-const ListOfCustomers = () => {
+const ListOfFeedbacks = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const reduxCustomerList = useSelector(
-    (state) => state.customerList.CustomerList
-  );
+  const reduxFeedback = useSelector((state) => state.feedbackAll.Feedback);
   const initialState = {
-    customerList: reduxCustomerList,
-    customer: null,
+    feedbackAll: reduxFeedback,
+    feedback: null,
     drawerVisible: false,
     total: null,
   };
@@ -38,28 +26,28 @@ const ListOfCustomers = () => {
 
   const [state, setState] = useState(initialState);
 
-  const fetchDataGetCustomer = async () => {
-    const res = await getCustomer(token);
+  const fetchDataGetFeedback = async () => {
+    const res = await getAllFeedback(token);
     if (!res) {
       doNotGetData();
     }
     if (res) {
       if (res.success) {
-        const newCustomerList = res.data.map((item, index) => {
+        const newFeedback = res.data.map((item, index) => {
           const key = index;
           return { ...item, key };
         });
-        dispatch(insertCustomerList({ newCustomerList }));
+        dispatch(insertFeedback({ newFeedback }));
         setState((prev) => ({
           ...prev,
-          customerList: newCustomerList,
+          feedbackAll: newFeedback,
         }));
       }
       if (!res.success) {
         if (res.message === "Token is expired") {
           Cookies.remove("token", { path: "/" });
           notification["warning"]({
-            message: "Warning: get customer",
+            message: "Warning: get feedback",
             description: `${res.message}`,
           });
           history.push("/account/sign-in/reload");
@@ -69,12 +57,12 @@ const ListOfCustomers = () => {
             return res.message[key];
           });
           notification["warning"]({
-            message: "Warning: get customer",
+            message: "Warning: get feedback",
             description: `${message}`,
           });
         } else {
           notification["warning"]({
-            message: "Warning: get customer",
+            message: "Warning: get feedback",
             description: `${res.message}`,
           });
         }
@@ -84,27 +72,27 @@ const ListOfCustomers = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getCustomer(token);
+      const res = await getAllFeedback(token);
       if (!res) {
         doNotGetData();
       }
       if (res) {
         if (res.success) {
-          const newCustomerList = res.data.map((item, index) => {
+          const newFeedback = res.data.map((item, index) => {
             const key = index;
             return { ...item, key };
           });
-          dispatch(insertCustomerList({ newCustomerList }));
+          dispatch(insertFeedback({ newFeedback }));
           setState((prev) => ({
             ...prev,
-            customerList: newCustomerList,
+            feedbackAll: newFeedback,
           }));
         }
         if (!res.success) {
           if (res.message === "Token is expired") {
             Cookies.remove("token", { path: "/" });
             notification["warning"]({
-              message: "Warning: get customer",
+              message: "Warning: get feedback",
               description: `${res.message}`,
             });
             history.push("/account/sign-in/reload");
@@ -114,12 +102,12 @@ const ListOfCustomers = () => {
               return res.message[key];
             });
             notification["warning"]({
-              message: "Warning: get customer",
+              message: "Warning: get feedback",
               description: `${message}`,
             });
           } else {
             notification["warning"]({
-              message: "Warning: get customer",
+              message: "Warning: get feedback",
               description: `${res.message}`,
             });
           }
@@ -127,24 +115,18 @@ const ListOfCustomers = () => {
       }
     };
     if (
-      reduxCustomerList.length === 0 ||
-      state.customerList.length !== reduxCustomerList.length
+      reduxFeedback.length === 0 ||
+      state.feedbackAll.length !== reduxFeedback.length
     ) {
       fetchData();
     }
-  }, [
-    dispatch,
-    history,
-    reduxCustomerList.length,
-    state.customerList.length,
-    token,
-  ]);
+  }, [dispatch, history, token, reduxFeedback, state.feedbackAll.length]);
 
   const confirmIsActive = async (record) => {
-    const res = await updateActiveAcc(record.userName, !record.isActive, token);
+    const res = await updateActiveFeedback(record._id, !record.isActive, token);
 
     if (res && res.success) {
-      fetchDataGetCustomer();
+      fetchDataGetFeedback();
 
       notification["success"]({
         message: "Successfully",
@@ -175,118 +157,46 @@ const ListOfCustomers = () => {
         });
       }
     }
-  };
-
-  const confirmIsLogin = async (record) => {
-    const res = await updateIsLogin(record.userName, !record.isLogin, token);
-
-    if (res && res.success) {
-      fetchDataGetCustomer();
-
-      notification["success"]({
-        message: "Successfully",
-        description: `${res.data}`,
-      });
-    }
-    if (res && !res.success) {
-      if (res.message === "Token is expired") {
-        Cookies.remove("token", { path: "/" });
-        notification["warning"]({
-          message: "Warning: confirm IsActive",
-          description: `${res.message}`,
-        });
-        history.push("/account/sign-in/reload");
-      }
-      if (typeof res.message === "object") {
-        const message = Object.keys(res.message).map((key) => {
-          return res.message[key];
-        });
-        notification["warning"]({
-          message: "Warning: confirm IsActive",
-          description: `${message}`,
-        });
-      } else {
-        notification["warning"]({
-          message: "Warning: confirm IsActive",
-          description: `${res.message}`,
-        });
-      }
-    }
-  };
-
-  const onClickStaff = (record) => {
-    setState((prev) => ({
-      ...prev,
-      customer: record,
-      drawerVisible: true,
-    }));
-  };
-
-  const onClose = async () => {
-    fetchDataGetCustomer();
-    setState((prev) => ({ ...prev, drawerVisible: false }));
   };
 
   const columns = [
     {
-      title: "Email",
-      dataIndex: "email",
+      title: "Order Code",
+      dataIndex: "orderCode",
+      width: "10%",
+      ...getColumnSearchProps("orderCode"),
+    },
+    {
+      title: "SKU",
+      dataIndex: "sku",
+      width: "10%",
+      ...getColumnSearchProps("sku"),
+    },
+    {
+      title: "Rating",
+      dataIndex: "rating",
+      width: "10%",
+      ...getColumnSearchProps("rating"),
+    },
+    {
+      title: "Content Feedback",
+      dataIndex: "contentFeedback",
       width: "40%",
-      ...getColumnSearchProps("email"),
-      render: (email, record) => (
-        <div style={{ cursor: "pointer" }}>
-          <Tooltip
-            placement="topLeft"
-            title={email}
-            color="hsla(340, 100%, 50%, 0.5)"
-            key={record.sku}
-            onClick={() => onClickStaff(record)}
-          >
-            {email}
-          </Tooltip>
-        </div>
-      ),
+      ...getColumnSearchProps("contentFeedback"),
     },
     {
-      title: "Username",
-      dataIndex: "userName",
-      width: "30%",
-      ...getColumnSearchProps("userName"),
-    },
-    {
-      title: "Is Login",
-      dataIndex: "isLogin",
-      align: "center",
-      width: "15%",
-      filters: [
-        {
-          text: "True",
-          value: "true",
-        },
-        {
-          text: "False",
-          value: "false",
-        },
-      ],
-      onFilter: (value, record) => {
-        return record.isLogin.toString().indexOf(value) === 0;
-      },
-      render: (isLogin, record) => (
-        <div>
-          <Popconfirm
-            title="Do you want to change the status?"
-            onConfirm={() => confirmIsLogin(record)}
-          >
-            <Switch checked={isLogin} />
-          </Popconfirm>
-        </div>
-      ),
+      title: "Created At",
+      dataIndex: "createdAt",
+      width: "20%",
+      ...getColumnSearchProps("createdAt"),
+      defaultSortOrder: "descend",
+      sorter: (a, b) => a.createdAt.localeCompare(b.createdAt),
     },
     {
       title: "Is Active",
       dataIndex: "isActive",
       align: "center",
-      width: "15%",
+      width: "10%",
       filters: [
         {
           text: "True",
@@ -326,22 +236,25 @@ const ListOfCustomers = () => {
         onClick={refresh}
         icon={<ReloadOutlined />}
         style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
-        className={"btn-Reload-Page-List-Of-customerList"}
+        className={"btn-Reload-Page-List-Of-StaffList"}
       >
         Reload Page
       </Button>
 
-      <ExportReactCSV csvData={state.customerList} fileName="List of customers" />
+      <ExportReactCSV
+        csvData={state.feedbackAll}
+        fileName="List of feedbacks"
+      />
       <Divider />
 
       <Table
         columns={columns}
-        dataSource={state.customerList}
+        dataSource={state.feedbackAll}
         footer={() => {
           const total =
             state.total || state.total === 0
               ? state.total
-              : state.customerList.length;
+              : state.feedbackAll.length;
           return <strong>Sum: {total}</strong>;
         }}
         onChange={(pagination, filters, sorter, extra) => {
@@ -351,23 +264,8 @@ const ListOfCustomers = () => {
           }));
         }}
       />
-
-      {state.customer && (
-        <Drawer
-          title={state.customer.email}
-          width={520}
-          onClose={onClose}
-          visible={state.drawerVisible}
-          className={"drawer-staff-dashboard"}
-        >
-          <DrawerCustomer
-            customer={state.customer}
-            drawerVisible={state.drawerVisible}
-          />
-        </Drawer>
-      )}
     </>
   );
 };
 
-export { ListOfCustomers };
+export { ListOfFeedbacks };

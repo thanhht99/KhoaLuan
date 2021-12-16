@@ -24,6 +24,7 @@ import { insertProductAll } from "../../../store/reducers/productAll";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router";
 import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfProducts = () => {
   const dispatch = useDispatch();
@@ -312,6 +313,8 @@ const ListOfProducts = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.products} fileName="List of products" />
       <Divider />
       {acc && acc.role === "Admin" && (
         <AddProduct categories={state.categories} />

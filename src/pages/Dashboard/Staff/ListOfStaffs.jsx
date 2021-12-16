@@ -21,6 +21,7 @@ import Cookies from "js-cookie";
 import { insertStaffList } from "../../../store/reducers/staffList";
 import { AddStaff } from "./AddStaff";
 import { DrawerStaff } from "./DrawerStaff";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfStaffs = () => {
   const dispatch = useDispatch();
@@ -322,6 +323,8 @@ const ListOfStaffs = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.staffList} fileName="List of staffs" />
       <Divider />
       <AddStaff />
 

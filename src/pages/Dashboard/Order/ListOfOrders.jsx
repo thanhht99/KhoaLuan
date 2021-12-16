@@ -21,6 +21,7 @@ import { useHistory } from "react-router";
 import { DrawerOrder } from "./DrawerOrder";
 import { insertOrder } from "../../../store/reducers/orderDetail";
 import { filterOrderStatus } from "../../../constants/orderStatus";
+import { ExportReactCSV } from "../../../constants/ExportReactCSV ";
 
 const ListOfOrders = () => {
   const token = Cookies.get("token");
@@ -201,6 +202,8 @@ const ListOfOrders = () => {
       >
         Reload Page
       </Button>
+
+      <ExportReactCSV csvData={state.orders} fileName="List of orders" />
       <Divider />
       <Table
         columns={columns}

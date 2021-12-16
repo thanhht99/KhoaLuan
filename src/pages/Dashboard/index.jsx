@@ -23,6 +23,7 @@ import {
   GiftOutlined,
   WechatOutlined,
   AndroidOutlined,
+  LikeOutlined,
 } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import { NotFound } from "../../_components/NotFound/index";
@@ -44,6 +45,7 @@ import { insertCategoryTAF } from "../../store/reducers/categoryTrueAndFalse";
 import { Predict } from "./Predict/Predict";
 import { ListOfStaffs } from "./Staff/ListOfStaffs";
 import { ListOfCustomers } from "./Customer/ListOfCustomers";
+import { ListOfFeedbacks } from "./Feedback/ListOfFeedbacks";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -271,6 +273,27 @@ const Dashboard = () => {
     }));
   };
 
+  const onClickFeedback = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <LikeOutlined />
+          Feedback
+        </span>
+      ),
+      content: <ListOfFeedbacks />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
   const onClickOrder = () => {
     const { panes, newTabIndex } = state;
     const index = newTabIndex + 1;
@@ -470,7 +493,10 @@ const Dashboard = () => {
                       icon={<UserOutlined />}
                       title="Customer"
                     >
-                      <Menu.Item key="listCustomer" onClick={onClickListCustomer}>
+                      <Menu.Item
+                        key="listCustomer"
+                        onClick={onClickListCustomer}
+                      >
                         List
                       </Menu.Item>
                     </SubMenu>
@@ -501,7 +527,9 @@ const Dashboard = () => {
                         Category
                       </Menu.Item>
                     )}
-                    {/* <Menu.Item key="feedback">Feedback</Menu.Item> */}
+                    <Menu.Item key="feedback" onClick={onClickFeedback}>
+                      Feedback
+                    </Menu.Item>
                   </SubMenu>
 
                   <SubMenu
