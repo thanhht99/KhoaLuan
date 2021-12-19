@@ -80,13 +80,45 @@ const Order = () => {
   };
 
   useEffect(() => {
-    if (
-      reduxOrderAll.length === 0 ||
-      state.orders.length !== reduxOrderAll.length
-    ) {
-      fetchData();
+    const fetchData1 = async () => {
+      const res = await orderOfUser(token);
+      if (!res) {
+        doNotGetData();
+      }
+      if (res) {
+        if (res.success) {
+          const keyAllOrder = res.data.map((item, index) => {
+            const key = index;
+            return { ...item, key };
+          });
+          dispatch(insertOrderAll({ newOrder: keyAllOrder }));
+
+          setState((prev) => ({
+            ...prev,
+            orders: keyAllOrder,
+          }));
+        }
+        if (!res.success) {
+          if (res.message === "Token is expired") {
+            Cookies.remove("token", { path: "/" });
+            notification["warning"]({
+              message: "Warning",
+              description: `${res.message}`,
+            });
+            history.push("/account/sign-in/reload");
+            window.location.reload();
+          }
+          notification["warning"]({
+            message: "Warning: get orders of user",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    };
+    if (state.orders.length !== reduxOrderAll.length) {
+      fetchData1();
     }
-  });
+  }, [reduxOrderAll.length, state.orders.length, dispatch, history, token]);
 
   const refresh = () => {
     fetchData();

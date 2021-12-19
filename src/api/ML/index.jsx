@@ -44,3 +44,26 @@ export const chartOrder = async (token) => {
     return null;
   }
 };
+
+export const chartCustomer = async (token) => {
+  try {
+    const res = await callApi(
+      "ml/chartCustomer",
+      "GET",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};

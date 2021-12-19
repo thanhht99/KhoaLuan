@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { insertAcc } from "./../../../store/reducers/acc";
 import { insertUser } from "./../../../store/reducers/user";
+import { SingInWithGoogle } from "./SingInWithGoogle";
 
 const SignIn = () => {
   const history = useHistory();
@@ -133,12 +134,13 @@ const SignIn = () => {
           <Form.Item
             wrapperCol={{
               offset: 8,
-              span: 16,
+              span: 10,
             }}
           >
             <Button type="primary" htmlType="submit">
               Sign In
             </Button>
+            <SingInWithGoogle />
           </Form.Item>
         </Form>
       </div>

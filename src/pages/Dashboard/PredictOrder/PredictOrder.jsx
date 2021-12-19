@@ -4,7 +4,7 @@ import "../index.css";
 import { RevenuePrediction } from "./RevenuePrediction";
 import { ChartOrder } from "./ChartOrder";
 
-const Predict = () => {
+const PredictOrder = () => {
   return (
     <>
       <ChartOrder />
@@ -13,4 +13,4 @@ const Predict = () => {
   );
 };
 
-export { Predict };
+export { PredictOrder };

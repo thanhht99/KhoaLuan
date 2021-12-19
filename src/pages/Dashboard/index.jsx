@@ -42,10 +42,11 @@ import { getAllCategoryTrueAndFalse } from "../../api/category";
 import { getProducts } from "../../api/product";
 import { insertProductAll } from "../../store/reducers/productAll";
 import { insertCategoryTAF } from "../../store/reducers/categoryTrueAndFalse";
-import { Predict } from "./Predict/Predict";
+import { PredictOrder } from "./PredictOrder/PredictOrder";
 import { ListOfStaffs } from "./Staff/ListOfStaffs";
 import { ListOfCustomers } from "./Customer/ListOfCustomers";
 import { ListOfFeedbacks } from "./Feedback/ListOfFeedbacks";
+import { PredictCustomer } from "./PredictCustomer/PredictCustomer";
 
 const { SubMenu } = Menu;
 const { Sider, Header } = Layout;
@@ -378,7 +379,7 @@ const Dashboard = () => {
     }));
   };
 
-  const onClickPredict = () => {
+  const onClickPredictOrder = () => {
     const { panes, newTabIndex } = state;
     const index = newTabIndex + 1;
     panes.push({
@@ -388,7 +389,28 @@ const Dashboard = () => {
           Predict order
         </span>
       ),
-      content: <Predict />,
+      content: <PredictOrder />,
+      key: `${index}`,
+    });
+    setState((prev) => ({
+      ...prev,
+      panes,
+      newTabIndex: index,
+      activeKey: `${index}`,
+    }));
+  };
+
+  const onClickPredictCustomer = () => {
+    const { panes, newTabIndex } = state;
+    const index = newTabIndex + 1;
+    panes.push({
+      title: (
+        <span>
+          <AndroidOutlined />
+          Predict customer
+        </span>
+      ),
+      content: <PredictCustomer />,
       key: `${index}`,
     });
     setState((prev) => ({
@@ -481,8 +503,11 @@ const Dashboard = () => {
                       icon={<AndroidOutlined />}
                       title="Admin"
                     >
-                      <Menu.Item key="predict" onClick={onClickPredict}>
+                      <Menu.Item key="predict1" onClick={onClickPredictOrder}>
                         Predict order
+                      </Menu.Item>
+                      <Menu.Item key="predict2" onClick={onClickPredictCustomer}>
+                        Predict customer
                       </Menu.Item>
                     </SubMenu>
                   )}

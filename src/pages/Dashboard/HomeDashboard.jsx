@@ -2,7 +2,7 @@ import React from "react";
 import "antd/dist/antd.css";
 import "./index.css";
 import PieCategory from "./percentage-of-sales-category";
-import { Layout, Calendar, Card, Col, Row, Progress } from "antd";
+import { Layout, Calendar, Card, Col, Row } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 
@@ -19,26 +19,7 @@ const HomeDashboard = () => {
       >
         <div className="site-card-dashboard">
           <Row gutter={16}>
-            <Col span={8}>
-              <Card
-                title="Current Visits"
-                bordered={false}
-                style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
-              >
-                <div className="overview-header-count">8846/10000</div>
-                <Progress percent={75} />
-                <div className="overview-body">
-                  <span className="new-registered-user-span">
-                    New registered user: 10
-                  </span>
-                  <br />
-                  <span style={{ fontWeight: "bold", color: "green" }}>
-                    <CaretUpOutlined />
-                    10%
-                  </span>
-                </div>
-              </Card>
-            </Col>
+            
             <Col span={8}>
               <Card
                 title="Total sales"
@@ -59,7 +40,7 @@ const HomeDashboard = () => {
                 </div>
               </Card>
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Card
                 title="Calendar"
                 bordered={false}

@@ -111,6 +111,7 @@ const ChartOrder = () => {
       <Line
         {...config1}
         onReady={(chartInstance) => (state.chart1 = chartInstance)}
+        key="1111"
       />
       <br />
 
