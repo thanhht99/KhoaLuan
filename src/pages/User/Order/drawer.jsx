@@ -35,11 +35,13 @@ const DrawerOrdersUser = (props) => {
     return product;
   });
   const keyCurrent = orderStatus.indexOf(reduxOrder.orderStatus);
-
+  
   const [state, setState] = useState({
     disabled: true,
     current: keyCurrent,
   });
+  
+  console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀 ~ reduxOrder", reduxOrder)
 
   useEffect(() => {
     if (props.id) {

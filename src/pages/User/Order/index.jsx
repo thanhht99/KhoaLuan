@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import "./index.css";
 import { doNotGetData } from "../../../constants/doNotGetData";
-import { ReloadOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, ReloadOutlined } from "@ant-design/icons";
 import {
   Button,
   Table,
@@ -16,14 +16,15 @@ import {
 import { useHistory } from "react-router";
 import Cookies from "js-cookie";
 import { getColumnSearchProps } from "../../../constants/getColumnSearchProps";
-import { orderOfUser } from "../../../api/order";
+import { cancelOrder, orderOfUser } from "../../../api/order";
 import { filterOrderStatus } from "../../../constants/orderStatus";
 import { useDispatch, useSelector } from "react-redux";
 import { insertOrderAll } from "../../../store/reducers/orderAll";
 import { DrawerOrdersUser } from "./drawer";
 import { insertOrder } from "../../../store/reducers/orderDetail";
-import { getFormToFeedback } from "../../../api/feedback";
+import { getFeedback, getFormToFeedback } from "../../../api/feedback";
 import { DrawerFeedback } from "./drawerFeedback";
+import { NotFound } from "../../../_components/NotFound";
 
 const Order = () => {
   const token = Cookies.get("token");
@@ -35,7 +36,9 @@ const Order = () => {
     orders: reduxOrderAll,
     order: null,
     feedback: null,
+    lookFeedback: null,
     drawerFeedbackVisible: false,
+    drawerLookFeedbackVisible: false,
     total: null,
     drawerVisible: false,
   };
@@ -115,10 +118,8 @@ const Order = () => {
         }
       }
     };
-    if (state.orders.length !== reduxOrderAll.length) {
-      fetchData1();
-    }
-  }, [reduxOrderAll.length, state.orders.length, dispatch, history, token]);
+    fetchData1();
+  }, [token, dispatch, history]);
 
   const refresh = () => {
     fetchData();
@@ -162,6 +163,76 @@ const Order = () => {
           message: "Warning",
           description: `${res.message}.`,
         });
+      }
+    }
+  };
+
+  const onClickCancel = async (record) => {
+    const res = await cancelOrder(record._id, token);
+    if (!res) {
+      doNotGetData();
+    }
+    if (res) {
+      if (res.success) {
+        notification["success"]({
+          message: "Success",
+          description: `${res.data}`,
+        });
+        fetchData();
+      }
+      if (!res.success) {
+        if (res.message === "Token is expired") {
+          Cookies.remove("token", { path: "/" });
+          notification["warning"]({
+            message: "Warning: cancel order",
+            description: `${res.message}`,
+          });
+          history.push("/account/sign-in/reload");
+        }
+        if (res.message !== "Token is expired") {
+          notification["warning"]({
+            message: "Warning: cancel order",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    }
+  };
+
+  const onClickLook = async (record) => {
+    const res = await getFormToFeedback(record._id, token);
+
+    if (!res) {
+      doNotGetData();
+    }
+    if (res) {
+      if (res.success) {
+        const res_feedback = await getFeedback(record.orderCode, token);
+
+        setState((prev) => ({
+          ...prev,
+          feedback: res.data,
+          lookFeedback: res_feedback.data,
+          drawerLookFeedbackVisible: true,
+          order: record,
+        }));
+      }
+      if (!res.success) {
+        if (res.message === "Token is expired") {
+          Cookies.remove("token", { path: "/" });
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}`,
+          });
+          history.push("/account/sign-in/reload");
+          window.location.reload();
+        }
+        if (res.message !== "Token is expired") {
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}.`,
+          });
+        }
       }
     }
   };
@@ -244,12 +315,51 @@ const Order = () => {
       },
       render: (isFeedback, record) => (
         <div>
-          {record.orderStatus !== "Has received the goods" && (
-            <Switch checked={isFeedback} disabled />
-          )}
+          {record.orderStatus !== "Has received the goods" &&
+            (record.orderStatus === "Waiting for confirmation" ||
+            record.orderStatus === "Waiting for the goods" ? (
+              <>
+                <>
+                  <Switch checked={isFeedback} disabled />
+                  <Popconfirm
+                    title="Are you sure？"
+                    icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                    onConfirm={() => onClickCancel(record)}
+                  >
+                    <span
+                      style={{
+                        cursor: "pointer",
+                        color: "rgba(255, 0, 85, 0.5)",
+                        fontWeight: "bold",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      Cancel
+                    </span>
+                  </Popconfirm>
+                </>
+              </>
+            ) : (
+              <>
+                <Switch checked={isFeedback} disabled />
+              </>
+            ))}
           {record.orderStatus === "Has received the goods" ? (
             record.isFeedback ? (
-              <Switch checked={isFeedback} disabled />
+              <>
+                <Switch checked={isFeedback} disabled />
+                <span
+                  style={{
+                    cursor: "pointer",
+                    color: "rgba(255, 0, 85, 0.5)",
+                    fontWeight: "bold",
+                    marginLeft: "10px",
+                  }}
+                  onClick={() => onClickLook(record)}
+                >
+                  Look
+                </span>
+              </>
             ) : (
               <Popconfirm
                 title="Do you want feedback?"
@@ -284,68 +394,102 @@ const Order = () => {
     }));
   };
 
+  const onCloseLookFeedback = async () => {
+    fetchData();
+    setState((prev) => ({
+      ...prev,
+      drawerLookFeedbackVisible: false,
+      feedback: null,
+      order: null,
+      lookFeedback: null,
+    }));
+  };
+
   return (
-    <div className="html-user-orders">
-      <Button
-        type="primary"
-        size="small"
-        onClick={refresh}
-        icon={<ReloadOutlined />}
-        style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
-        className={"btn-Reload-Page-List-Of-Orders"}
-      >
-        Reload Page
-      </Button>
-      <Divider />
-      <Table
-        columns={columns}
-        dataSource={state.orders}
-        footer={() => {
-          const total =
-            state.total || state.total === 0
-              ? state.total
-              : state.orders.length;
-          return <strong>Sum: {total}</strong>;
-        }}
-        onChange={(pagination, filters, sorter, extra) => {
-          setState((prev) => ({
-            ...prev,
-            total: extra.currentDataSource.length,
-          }));
-        }}
-      />
-      {state.order && (
-        <Drawer
-          title={state.order.orderCode}
-          width={520}
-          onClose={onClose}
-          visible={state.drawerVisible}
-          className={"drawer-order-dashboard"}
-        >
-          <DrawerOrdersUser
-            id={state.order._id}
-            order={state.order}
-            drawerVisible={state.drawerVisible}
+    <>
+      {token ? (
+        <div className="html-user-orders">
+          <Button
+            type="primary"
+            size="small"
+            onClick={refresh}
+            icon={<ReloadOutlined />}
+            style={{ backgroundColor: "hsla(340, 100%, 50%, 0.5)" }}
+            className={"btn-Reload-Page-List-Of-Orders"}
+          >
+            Reload Page
+          </Button>
+          <Divider />
+          <Table
+            columns={columns}
+            dataSource={state.orders}
+            footer={() => {
+              const total =
+                state.total || state.total === 0
+                  ? state.total
+                  : state.orders.length;
+              return <strong>Sum: {total}</strong>;
+            }}
+            onChange={(pagination, filters, sorter, extra) => {
+              setState((prev) => ({
+                ...prev,
+                total: extra.currentDataSource.length,
+              }));
+            }}
           />
-        </Drawer>
+          {state.order && (
+            <Drawer
+              title={state.order.orderCode}
+              width={520}
+              onClose={onClose}
+              visible={state.drawerVisible}
+              className={"drawer-order-dashboard"}
+            >
+              <DrawerOrdersUser
+                id={state.order._id}
+                order={state.order}
+                drawerVisible={state.drawerVisible}
+              />
+            </Drawer>
+          )}
+          {state.feedback && (
+            <Drawer
+              title={state.order.orderCode}
+              width={520}
+              onClose={onCloseFeedback}
+              visible={state.drawerFeedbackVisible}
+              className={"drawer-order-dashboard"}
+            >
+              <DrawerFeedback
+                id={state.order._id}
+                order={state.order}
+                feedback={state.feedback}
+                drawerVisible={state.drawerFeedbackVisible}
+              />
+            </Drawer>
+          )}
+          {state.lookFeedback && (
+            <Drawer
+              title={state.order.orderCode}
+              width={520}
+              onClose={onCloseLookFeedback}
+              visible={state.drawerLookFeedbackVisible}
+              className={"drawer-order-dashboard"}
+            >
+              <DrawerFeedback
+                id={state.order._id}
+                order={state.order}
+                feedback={state.feedback}
+                lookFeedback={state.lookFeedback}
+                drawerVisible={state.drawerLookFeedbackVisible}
+              />
+            </Drawer>
+          )}
+        </div>
+      ) : (
+        <NotFound />
       )}
-      {state.feedback && (
-        <Drawer
-          title={state.order.orderCode}
-          width={520}
-          onClose={onCloseFeedback}
-          visible={state.drawerFeedbackVisible}
-          className={"drawer-order-dashboard"}
-        >
-          <DrawerFeedback
-            id={state.order._id}
-            order={state.order}
-            feedback={state.feedback}
-            drawerVisible={state.drawerFeedbackVisible}
-          />
-        </Drawer>
-      )}
-    </div>
+    </>
   );
 };
 

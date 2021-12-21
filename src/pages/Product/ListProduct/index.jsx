@@ -18,6 +18,7 @@ import {
   message,
   Tooltip,
   Spin,
+  Input,
   // Divider,
 } from "antd";
 import { getCategory } from "../../../api/category";
@@ -28,6 +29,7 @@ import { addCart } from "../../../store/reducers/cart";
 
 const { Meta } = Card;
 const { Option } = Select;
+const { Search } = Input;
 
 const ListProduct = () => {
   const dispatch = useDispatch();
@@ -39,7 +41,7 @@ const ListProduct = () => {
     price: { value: "increase" },
     discount: { value: "both" },
     page: 1,
-    // flag: false,
+    search: null,
   });
 
   // console.log("☄️☄️☄️☄️☄️☄️ state", state);
@@ -227,6 +229,46 @@ const ListProduct = () => {
     }
   };
 
+  const onSearch = (value) => {
+    if (value) {
+      setState((prev) => ({
+        ...prev,
+        search: value,
+      }));
+      filterArray(value);
+    }
+    if (!value) {
+      setState((prev) => ({
+        ...prev,
+        products: list_product.sort((a, b) => a.price - b.price),
+        search: null,
+        category: "All",
+        price: { value: "increase" },
+        discount: { value: "both" },
+      }));
+      onChange(1);
+    }
+  };
+
+  const filterArray = (query) => {
+    var searchString = query;
+    var responseData = list_product;
+
+    if (searchString.length > 0) {
+      responseData = responseData.filter((item) => {
+        return item.name.toLowerCase().match(searchString.toLowerCase());
+      });
+      setState((prev) => ({
+        ...prev,
+        products: responseData.sort((a, b) => a.price - b.price),
+        category: "All",
+        price: { value: "increase" },
+        discount: { value: "both" },
+      }));
+      onChange(1);
+    }
+  };
+
   const categoryChange = (e) => {
     categories.forEach((val) => {
       if (e.target.value === val.category_name) {
@@ -239,6 +281,7 @@ const ListProduct = () => {
           category: e.target.value,
           price: { value: "increase" },
           discount: { value: "both" },
+          search: null,
         }));
         onChange(1);
       } else if (e.target.value === "All") {
@@ -247,6 +290,7 @@ const ListProduct = () => {
           products: list_product.sort((a, b) => a.price - b.price),
           category: e.target.value,
           price: { value: "increase" },
+          search: null,
           discount: { value: "both" },
         }));
         onChange(1);
@@ -297,6 +341,13 @@ const ListProduct = () => {
               <Option value="both">Discount: both</Option>
             </Select>
           </div>
+          <Search
+            placeholder="Search"
+            onSearch={onSearch}
+            enterButton
+            style={{ width: "160px", marginLeft: "8px" }}
+            defaultValue={state.search ? state.search : null}
+          />
         </div>
       </div>
       <div className="cart-list-product">

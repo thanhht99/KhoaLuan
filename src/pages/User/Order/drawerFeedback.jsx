@@ -13,7 +13,7 @@ const DrawerFeedback = (props) => {
   const token = Cookies.get("token");
   const history = useHistory();
   const initialState = {
-    review: false,
+    review: props.lookFeedback ? true : false,
   };
   const [state, setState] = useState(initialState);
 
@@ -95,17 +95,21 @@ const DrawerFeedback = (props) => {
             </Row>
             <Row gutter={16}>
               <Col span={24}>
-                <Form.Item
-                  name={"rate_" + item.sku}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please choose rate",
-                    },
-                  ]}
-                >
-                  <Rate />
-                </Form.Item>
+                {props.lookFeedback ? (
+                  <Rate defaultValue={props.lookFeedback[index].rating} disabled/>
+                ) : (
+                  <Form.Item
+                    name={"rate_" + item.sku}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please choose rate",
+                      },
+                    ]}
+                  >
+                    <Rate />
+                  </Form.Item>
+                )}
               </Col>
             </Row>
             <Row gutter={16}>
@@ -119,7 +123,19 @@ const DrawerFeedback = (props) => {
                     },
                   ]}
                 >
-                  <Input placeholder="Please enter feedback" />
+                  {props.lookFeedback ? (
+                    <span
+                      style={{
+                        display: "inline-block",
+                        fontSize: "14px",
+                        color: "black",
+                      }}
+                    >
+                      Feedback: {props.lookFeedback[index].contentFeedback}
+                    </span>
+                  ) : (
+                    <Input placeholder="Please enter feedback" />
+                  )}
                 </Form.Item>
               </Col>
             </Row>

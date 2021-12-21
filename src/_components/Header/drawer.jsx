@@ -63,7 +63,6 @@ const Drawers = (props) => {
       }
       if (get_cart) {
         if (get_cart.success) {
-          // console.log("🚀🚀🚀🚀🚀 ~ get_cart.data", get_cart.data);
           dispatch(getCartFromAPI({ newCart: get_cart.data.products }));
           setState((prev) => ({
             ...prev,
@@ -79,11 +78,6 @@ const Drawers = (props) => {
             });
             history.push("/account/sign-in/reload");
             window.location.reload();
-          } else {
-            notification["warning"]({
-              message: "Warning: get order",
-              description: `${get_cart.message}.`,
-            });
           }
         }
       }

@@ -389,7 +389,7 @@ const Reconfirm = () => {
           className="collapseDeliveryFee"
           style={{ backgroundColor: "red" }}
         >
-          <Panel header="Delivery fee" key="1">
+          <Panel header="Delivery fee ( J&T )" key="1">
             <Descriptions layout="vertical" bordered>
               <Descriptions.Item label="in HCM City">1,07 $</Descriptions.Item>
               <Descriptions.Item label="Đà Nẵng">2,08 $</Descriptions.Item>

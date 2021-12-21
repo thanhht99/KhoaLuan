@@ -114,3 +114,26 @@ export const updateActiveFeedback = async (_id, isActive, token) => {
     return null;
   }
 };
+
+export const getFeedback = async (orderCode, token) => {
+  try {
+    const res = await callApi(
+      `feedback/show/${orderCode}`,
+      "GET",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};

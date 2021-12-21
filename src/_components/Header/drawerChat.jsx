@@ -308,7 +308,7 @@ const DrawerChat = (props) => {
               height: "70px",
               width: "70px",
               float: "right",
-              marginTop: "600px",
+              marginTop: "550px",
             }}
             onClick={update}
           />
