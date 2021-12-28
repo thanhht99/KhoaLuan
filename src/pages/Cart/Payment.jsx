@@ -42,6 +42,8 @@ const Payment = () => {
     originFileObj: null,
   });
 
+  // console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 ~ cookiesInfoOrder", cookiesInfoOrder);
+
   const onChange = (info) => {
     if (info.file.type === "image/jpeg" || info.file.type === "image/png") {
       info.file.status = "done";
@@ -98,6 +100,14 @@ const Payment = () => {
         });
       }
     }
+  };
+
+  const onClickPaypal = async () => {
+    window.open(
+      `http://localhost:4200/api/payment/pay/${cookiesInfoOrder.orderCode}`,
+      "Paypal",
+      "width=1000,height=800"
+    );
   };
 
   return (
@@ -235,6 +245,61 @@ const Payment = () => {
                 {cookiesInfoOrder.orderCode}
               </Descriptions.Item>
             </Descriptions>
+            <br />
+            <div className="imagePayment">
+              <span style={{ fontSize: "24px" }}>
+                Upload a transfer verification image
+              </span>
+              <div className="imagePayment" style={{ paddingTop: "20px" }}>
+                <ImgCrop rotate>
+                  <Upload
+                    name="imagePayment"
+                    listType="picture-card"
+                    className={"imagePaymentUpload"}
+                    showUploadList={false}
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    beforeUpload={beforeUpload}
+                    onChange={onChange}
+                  >
+                    {state.imageUrl ? (
+                      <img
+                        id="imagePayment"
+                        src={state.imageUrl}
+                        alt="imagePayment"
+                        style={{
+                          width: "144px",
+                          height: "144px",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      uploadButton
+                    )}
+                  </Upload>
+                </ImgCrop>
+              </div>
+              <Button type="primary" htmlType="submit" onClick={onClick}>
+                Upload
+              </Button>
+            </div>
+          </Result>
+        </div>
+      )}
+      {cookiesInfoOrder.payments === "Paypal" && (
+        <div>
+          <Result
+            icon={<img src="/paypal.png" alt=""/>}
+            title="Payment method confirmed: Paypal"
+            subTitle={`Your order code: ${cookiesInfoOrder.orderCode}`}
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={onClickPaypal}
+              style={{ paddingTop: "0px", marginBottom: "20px" }}
+            >
+              Go to Paypal
+            </Button>
             <br />
             <div className="imagePayment">
               <span style={{ fontSize: "24px" }}>

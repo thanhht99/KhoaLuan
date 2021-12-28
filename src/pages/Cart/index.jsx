@@ -106,10 +106,6 @@ const Cart = (props) => {
   };
 
   const onClickInfoOrder2 = async () => {
-    // console.log(
-    //   "🚀 ~ file: index.jsx ~ line 105 ~ onClickInfoOrder2 ~ reduxInfoOrder",
-    //   reduxInfoOrder
-    // );
     if (reduxInfoOrder.isError2) {
       notification["error"]({
         message: "Error",
@@ -118,7 +114,7 @@ const Cart = (props) => {
     } else if (!reduxInfoOrder.isError2) {
       const apiOrder = await createOrder(reduxInfoOrder);
       // console.log("💯💯💯💯💯💯 apiOrder", apiOrder);
-      
+
       if (apiOrder.success) {
         // save cart
         if (token) {
@@ -146,7 +142,8 @@ const Cart = (props) => {
     const cookiesInfoOrderUpdate = JSON.parse(Cookies.get("infoOrder"));
     if (
       (cookiesInfoOrderUpdate.payments === "Momo" ||
-        cookiesInfoOrderUpdate.payments === "Bank account") &&
+        cookiesInfoOrderUpdate.payments === "Bank account" ||
+        cookiesInfoOrderUpdate.payments === "Paypal") &&
       !cookiesInfoOrderUpdate.imagePayment
     ) {
       notification["error"]({

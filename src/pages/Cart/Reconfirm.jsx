@@ -380,6 +380,8 @@ const Reconfirm = () => {
               <Radio value="COD">COD</Radio>
               <br />
               <Radio value="Bank account">Bank account</Radio>
+              <br/>
+              <Radio value="Paypal">Paypal</Radio>
             </Radio.Group>
           </Descriptions.Item>
         </Descriptions>
