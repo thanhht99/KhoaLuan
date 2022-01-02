@@ -49,7 +49,7 @@ const Reconfirm = () => {
     typeVoucher: null,
   });
 
-  // console.log("💥 . 💡", location);
+  console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡", location);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +74,8 @@ const Reconfirm = () => {
             location.lat,
             location.lng
           ).toFixed(1);
+          console.log("💥💥💥💥💥💥💥💥💥💥", distance);
+
           setLocation({
             lat: location.lat,
             lng: location.lng,
@@ -380,7 +382,7 @@ const Reconfirm = () => {
               <Radio value="COD">COD</Radio>
               <br />
               <Radio value="Bank account">Bank account</Radio>
-              <br/>
+              <br />
               <Radio value="Paypal">Paypal</Radio>
             </Radio.Group>
           </Descriptions.Item>
@@ -394,8 +396,8 @@ const Reconfirm = () => {
           <Panel header="Delivery fee ( J&T )" key="1">
             <Descriptions layout="vertical" bordered>
               <Descriptions.Item label="in HCM City">1,07 $</Descriptions.Item>
-              <Descriptions.Item label="Đà Nẵng">2,08 $</Descriptions.Item>
-              <Descriptions.Item label="Hà Nội">2,64 $</Descriptions.Item>
+              <Descriptions.Item label="Da Nang">2,08 $</Descriptions.Item>
+              <Descriptions.Item label="Ha Noi">2,64 $</Descriptions.Item>
               <Descriptions.Item label="<100Km">1,51 $</Descriptions.Item>
               <Descriptions.Item label="100-300Km">2,01 $</Descriptions.Item>
               <Descriptions.Item label=">300Km">3,07 $</Descriptions.Item>
