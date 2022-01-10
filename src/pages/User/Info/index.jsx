@@ -12,6 +12,7 @@ import {
   message,
   notification,
   Affix,
+  Drawer,
 } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
@@ -24,6 +25,7 @@ import moment from "moment";
 import { updateAvatar, updateUser } from "./../../../api/user/index";
 import * as config from "../../../constants/config";
 import { insertUser } from "../../../store/reducers/user";
+import DrawerChangePass from "./drawerChangePass";
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -53,6 +55,8 @@ const Info = () => {
     flag: false,
     flagSave: false,
     originFileObj: null,
+    user: null,
+    drawerVisible: false,
   });
   const token = Cookies.get("token");
   const user = useSelector((state) => state.user.User);
@@ -167,6 +171,22 @@ const Info = () => {
       address: formValues.address,
     };
     dispatch(insertUser({ newUser }));
+  };
+
+  const onClickChangeThePassword = async () => {
+    setState((prev) => ({
+      ...prev,
+      user,
+      drawerVisible: true,
+    }));
+  };
+
+  const onClose = async () => {
+    setState((prev) => ({
+      ...prev,
+      user: null,
+      drawerVisible: false,
+    }));
   };
 
   const uploadButton = (
@@ -381,6 +401,45 @@ const Info = () => {
                 </div>
               </Form.Item>
             </Form>
+
+            {user.isAcc && (
+              <div
+                style={{
+                  paddingLeft: "40%",
+                  paddingRight: "40%",
+                  paddingTop: "546px",
+                }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    background: "#52c41a",
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                  onClick={onClickChangeThePassword}
+                >
+                  Change the password
+                </Button>
+              </div>
+            )}
+
+            {state.user && (
+              <Drawer
+                title={state.user.email}
+                width={520}
+                onClose={onClose}
+                visible={state.drawerVisible}
+                className={"drawer-order-dashboard"}
+              >
+                <DrawerChangePass
+                    user={state.user}
+                    token={token}
+                    drawerVisible={state.drawerVisible}
+                  />
+              </Drawer>
+            )}
           </div>
           <div className="night">
             {Array.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13).map((val) => (

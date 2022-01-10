@@ -75,8 +75,12 @@ const ChartCustomer = () => {
       })
     : null;
   const newRegistration = checkNewRegistration
-    ? checkNewRegistration[0].total
+    ? checkNewRegistration[0]
+      ? checkNewRegistration[0].total
+      : 0
     : 0;
+  // console.log("🥟🥟🥟🥟🥟🥟🥟🥟 ~ checkNewRegistration", checkNewRegistration);
+  // console.log("🍘🍘🍘🍘🍘🍘🍘🍘 ~ total", total);
 
   const config1 = {
     data: data1,

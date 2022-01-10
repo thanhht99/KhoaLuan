@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import "antd/dist/antd.css";
 import { useHistory } from "react-router-dom";
-import { Form, Input, Button, Checkbox, notification } from "antd";
-import { signIn } from "./../../../api/auth/index";
+import { Form, Input, Button, notification, Modal } from "antd";
+import { forgetPassword, signIn } from "./../../../api/auth/index";
 import { getAcc, getUser } from "./../../../api/user/index";
 import { validateMessages } from "./../../../constants/validateMessages";
 import Cookies from "js-cookie";
@@ -11,10 +11,13 @@ import { useDispatch } from "react-redux";
 import { insertAcc } from "./../../../store/reducers/acc";
 import { insertUser } from "./../../../store/reducers/user";
 import { SingInWithGoogle } from "./SingInWithGoogle";
+import { doNotGetData } from "../../../constants/doNotGetData";
 
 const SignIn = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [form] = Form.useForm();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const token = Cookies.get("token");
   if (token) {
     history.push("/home");
@@ -62,6 +65,61 @@ const SignIn = () => {
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
+  };
+
+  const onFinishForgotPassword = async (values) => {
+    const body = {
+      userNameOrEmail: values.userNameOrEmail1,
+    };
+
+    const res = await forgetPassword(body);
+    if (!res) {
+      doNotGetData();
+    }
+    if (res) {
+      if (res.success) {
+        notification["success"]({
+          message: "Success:",
+          description: `${res.data}`,
+        });
+        form.resetFields();
+      }
+      if (!res.success) {
+        if (res.message === "Token is expired") {
+          Cookies.remove("token", { path: "/" });
+          notification["warning"]({
+            message: "Warning:",
+            description: `${res.message}`,
+          });
+          history.push("/account/sign-in/reload");
+        }
+        if (typeof res.message === "object") {
+          const message = Object.keys(res.message).map((key) => {
+            return res.message[key];
+          });
+          notification["warning"]({
+            message: "Warning:",
+            description: `${message}`,
+          });
+        } else {
+          notification["warning"]({
+            message: "Warning:",
+            description: `${res.message}`,
+          });
+        }
+      }
+    }
+  };
+
+  const onFinishFailedForgotPassword = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -126,9 +184,13 @@ const SignIn = () => {
               span: 16,
             }}
           >
-            <Checkbox>
-              <span className="rememberMe">Remember me</span>
-            </Checkbox>
+            <span
+              className="rememberMe"
+              style={{ color: "#1890ff", cursor: "pointer" }}
+              onClick={showModal}
+            >
+              Forgot password?
+            </span>
           </Form.Item>
 
           <Form.Item
@@ -143,6 +205,48 @@ const SignIn = () => {
             <SingInWithGoogle />
           </Form.Item>
         </Form>
+        <Modal
+          title="Forgot password"
+          visible={isModalVisible}
+          okButtonProps={{ disabled: true }}
+          onCancel={handleCancel}
+          // cancelButtonProps={{ disabled: true }}
+        >
+          <Form
+            className={"form-forgot-password"}
+            form={form}
+            labelCol={{ span: 9 }}
+            wrapperCol={{ span: 18 }}
+            style={{ height: "100%", width: "100%" }}
+            onFinish={onFinishForgotPassword}
+            onFinishFailed={onFinishFailedForgotPassword}
+            validateMessages={validateMessages}
+          >
+            <Form.Item
+              label="Username or Email"
+              name="userNameOrEmail1"
+              rules={[
+                {
+                  required: true,
+                  type: "string",
+                  max: 32,
+                },
+              ]}
+            >
+              <Input placeholder="Username or Email" />
+            </Form.Item>
+            <Form.Item
+              wrapperCol={{
+                offset: 9,
+                span: 10,
+              }}
+            >
+              <Button type="primary" htmlType="submit">
+                Send mail
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
 
       <div className="night">

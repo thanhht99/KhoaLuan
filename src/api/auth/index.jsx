@@ -52,6 +52,24 @@ export const signUp = async (body) => {
   }
 };
 
+export const forgetPassword = async (body) => {
+  try {
+    const res = await callApi("auth/forgetPassword", "POST", body, headers)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const logout = async (token) => {
   try {
     const res = await callApi("auth/logout", "POST", null, headersToken(token))

@@ -58,7 +58,9 @@ const ListOfSupport = () => {
   const [messages, setMessages] = useState([]);
   const [newMessageState, setNewMessage] = useState("");
   const [state, setState] = useState(initialState);
-  // console.log("🥎🥎🥎🥎🥎🥎~ messages", messages);
+
+  // console.log("🥎🥎🥎🥎🥎🥎~ state", state);
+  // console.log("🎂🎂🎂🎂🎂🎂~ messages", messages);
 
   useEffect(() => {
     socket.current = io(`${API_SOCKET_URL}`);

@@ -26,3 +26,7 @@
 .rememberMe {
     color: white;
 }
+
+.form-forgot-password .ant-form-item-label>label {
+    color: rgb(0, 0, 0)
+}

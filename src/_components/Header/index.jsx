@@ -191,6 +191,9 @@ const PageHeader = () => {
             <Menu.Item key="product">
               <Link to="/product/all">Product</Link>
             </Menu.Item>
+            <Menu.Item key="voucher">
+              <Link to="/voucher/all">Voucher</Link>
+            </Menu.Item>
             <Menu.Item key="signUp" style={state.style}>
               <Link to="/account/sign-up">Sign Up</Link>
             </Menu.Item>
