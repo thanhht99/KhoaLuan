@@ -13,8 +13,7 @@ import axios from "axios";
 import { addInfoOrder, changeIsError2 } from "../../store/reducers/infoOrder";
 import { getVoucher } from "../../api/voucher";
 import { Distance } from "../../constants/Distance";
-
-// const API_KEY = "AIzaSyBLIvjpZ--1QiK92WZIVzfiTHBAAvQtSuw";
+const API_KEY = "AIzaSyAuqtG8XhmKQPGoYpFi9dqZmhZTDWGCxE0";
 
 function TotalPrice(price, quantity) {
   return Number(price * quantity).toLocaleString("en-US");
@@ -53,16 +52,18 @@ const Reconfirm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡API_KEY", API_KEY);
+
       axios
         .get("https://maps.googleapis.com/maps/api/geocode/json", {
           params: {
             address: reduxInfoOrder.address,
-            key: process.env.REACT_APP_API_KEY,
-            // key: "AIzaSyC8I4KMuuzHAyURtO6s6_smDcKHOBXP3dw",
+            // key: process.env.REACT_APP_API_KEY,
+            key: API_KEY,
           },
         })
         .then((response) => {
-          // console.log("🌽🌽🌽🌽🌽🌽🌽🌽🌽", response);
+          console.log("🌽🌽🌽🌽🌽🌽🌽🌽🌽", response);
           const location = response.data.results[0].geometry.location;
           let province;
           response.data.results[0].address_components.forEach((item, index) => {
@@ -86,7 +87,7 @@ const Reconfirm = () => {
           });
         })
         .catch((err) => {
-          console.log(err);
+          console.log("💥💥💥💥💥💥💥💥💥💥", err);
           notification["error"]({
             message: "Error",
             description:
@@ -96,7 +97,7 @@ const Reconfirm = () => {
         });
     };
     if (reduxInfoOrder.address) {
-      fetchData();    
+      fetchData();
     }
   }, [reduxInfoOrder.address, dispatch]);
 

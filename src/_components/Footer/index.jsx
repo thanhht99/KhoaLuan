@@ -15,7 +15,7 @@ import {
 const { Footer } = Layout;
 
 // API key free
-const API_KEY = "AIzaSyC8I4KMuuzHAyURtO6s6_smDcKHOBXP3dw";
+const API_KEY = "AIzaSyAuqtG8XhmKQPGoYpFi9dqZmhZTDWGCxE0";
 // const API_KEY = process.env.REACT_APP_API_KEY;
 const AnyReactComponent = ({ text }) => (
   <div

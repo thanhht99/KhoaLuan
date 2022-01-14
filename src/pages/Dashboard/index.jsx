@@ -506,7 +506,10 @@ const Dashboard = () => {
                       <Menu.Item key="predict1" onClick={onClickPredictOrder}>
                         Predict order
                       </Menu.Item>
-                      <Menu.Item key="predict2" onClick={onClickPredictCustomer}>
+                      <Menu.Item
+                        key="predict2"
+                        onClick={onClickPredictCustomer}
+                      >
                         Predict customer
                       </Menu.Item>
                     </SubMenu>
@@ -552,9 +555,11 @@ const Dashboard = () => {
                         Category
                       </Menu.Item>
                     )}
-                    <Menu.Item key="feedback" onClick={onClickFeedback}>
-                      Feedback
-                    </Menu.Item>
+                    {acc.role === "Admin" && (
+                      <Menu.Item key="feedback" onClick={onClickFeedback}>
+                        Feedback
+                      </Menu.Item>
+                    )}
                   </SubMenu>
 
                   <SubMenu
