@@ -13,7 +13,9 @@ import {
 } from "@ant-design/icons";
 
 const { Footer } = Layout;
-const API_KEY = "AIzaSyC43U2-wqXxYEk1RBrTLdkYt3aDoOxO4Fw"; // API key free
+
+// API key free
+const API_KEY = "AIzaSyC8I4KMuuzHAyURtO6s6_smDcKHOBXP3dw";
 // const API_KEY = process.env.REACT_APP_API_KEY;
 const AnyReactComponent = ({ text }) => (
   <div

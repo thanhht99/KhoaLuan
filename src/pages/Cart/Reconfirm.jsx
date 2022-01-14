@@ -49,7 +49,7 @@ const Reconfirm = () => {
     typeVoucher: null,
   });
 
-  console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡", location);
+  // console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡", location);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,9 +58,11 @@ const Reconfirm = () => {
           params: {
             address: reduxInfoOrder.address,
             key: process.env.REACT_APP_API_KEY,
+            // key: "AIzaSyC8I4KMuuzHAyURtO6s6_smDcKHOBXP3dw",
           },
         })
         .then((response) => {
+          // console.log("🌽🌽🌽🌽🌽🌽🌽🌽🌽", response);
           const location = response.data.results[0].geometry.location;
           let province;
           response.data.results[0].address_components.forEach((item, index) => {
@@ -74,7 +76,7 @@ const Reconfirm = () => {
             location.lat,
             location.lng
           ).toFixed(1);
-          console.log("💥💥💥💥💥💥💥💥💥💥", distance);
+          // console.log("💥💥💥💥💥💥💥💥💥💥", distance);
 
           setLocation({
             lat: location.lat,
@@ -94,7 +96,7 @@ const Reconfirm = () => {
         });
     };
     if (reduxInfoOrder.address) {
-      fetchData();
+      fetchData();    
     }
   }, [reduxInfoOrder.address, dispatch]);
 

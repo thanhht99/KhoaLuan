@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import "./index.css";
 import PieCategory from "./percentage-of-sales-category";
 import { Layout, Calendar, Card, Col, Row } from "antd";
-import { CaretUpOutlined } from "@ant-design/icons";
+// import { CaretUpOutlined } from "@ant-design/icons";
 const { Content } = Layout;
 
 const HomeDashboard = () => {
@@ -20,7 +20,7 @@ const HomeDashboard = () => {
         <div className="site-card-dashboard">
           <Row gutter={16}>
             
-            <Col span={8}>
+            {/* <Col span={8}>
               <Card
                 title="Total sales"
                 bordered={false}
@@ -39,7 +39,7 @@ const HomeDashboard = () => {
                   <span style={{ marginLeft: "7px" }}>$ 12.423</span>
                 </div>
               </Card>
-            </Col>
+            </Col> */}
             <Col span={12}>
               <Card
                 title="Calendar"
