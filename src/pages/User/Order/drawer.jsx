@@ -41,7 +41,7 @@ const DrawerOrdersUser = (props) => {
     current: keyCurrent,
   });
   
-  console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀 ~ reduxOrder", reduxOrder)
+  // console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀 ~ reduxOrder", reduxOrder)
 
   useEffect(() => {
     if (props.id) {

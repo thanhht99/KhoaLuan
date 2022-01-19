@@ -15,8 +15,10 @@ import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import {
+  getAccByConversationId,
   getConversationById,
   getConversationByUser,
+  getListUserFromObjectIdConversation,
   updateConversation,
 } from "../../../api/conversation";
 import { CloseOutlined, SendOutlined } from "@ant-design/icons";
@@ -30,6 +32,11 @@ import {
   removeNeedSupport,
 } from "../../../store/reducers/listOfNeedSupport";
 import { getAccById } from "../../../api/user";
+import {
+  addAccNeedSupport,
+  insertAccNeedSupport,
+  removeAccNeedSupport,
+} from "../../../store/reducers/listAccOfNeedSupport";
 
 const { Header, Footer, Sider, Content } = Layout;
 
@@ -41,6 +48,9 @@ const ListOfSupport = () => {
   const reduxUser = useSelector((state) => state.user.User);
   const reduxNeedSupport = useSelector(
     (state) => state.needSupport.NeedSupport
+  );
+  const reduxAccNeedSupport = useSelector(
+    (state) => state.accNeedSupport.AccNeedSupport
   );
 
   const scrollRef = useRef();
@@ -57,16 +67,15 @@ const ListOfSupport = () => {
   };
   const [messages, setMessages] = useState([]);
   const [newMessageState, setNewMessage] = useState("");
+  const [newAccState, setAcc] = useState("");
   const [state, setState] = useState(initialState);
 
-  // console.log("🥎🥎🥎🥎🥎🥎~ state", state);
-  // console.log("🎂🎂🎂🎂🎂🎂~ messages", messages);
+  // console.log("🥎🥎🥎🥎🥎🥎~ reduxAccNeedSupport", reduxAccNeedSupport);
+  // console.log("💖💖💖💖💖💖~ reduxNeedSupport", reduxNeedSupport);
 
   useEffect(() => {
     socket.current = io(`${API_SOCKET_URL}`);
     socket.current.on("receive_message", (data) => {
-      // console.log("🥶🥶🥶🥶🥶🥶🥶~ data", data);
-
       const arrivalMessage = {
         sender: data.senderId,
         text: data.text,
@@ -84,10 +93,11 @@ const ListOfSupport = () => {
       });
 
       if (needAdd && needAdd.length > 0) {
-        needAdd.forEach((item) => {
+        needAdd.forEach(async (item) => {
           const check = reduxNeedSupport.includes(item);
           if (!check) {
             dispatch(addNeedSupport({ item }));
+            setAcc(item);
           }
         });
       }
@@ -95,6 +105,41 @@ const ListOfSupport = () => {
     socket.current.on("removeConversation", (data) => {
       dispatch(removeNeedSupport({ item: data }));
     });
+  });
+
+  useEffect(() => {
+    const getAccNeedSupport = async (newAccState) => {
+      const res = await getAccByConversationId(newAccState, token);
+      if (!res) {
+        doNotGetData();
+      }
+      if (res) {
+        if (res.success) {
+          dispatch(addAccNeedSupport({ item: res.data.userName }));
+          setAcc("");
+        }
+        if (!res.success) {
+          setAcc("");
+          if (res.message === "Token is expired") {
+            Cookies.remove("token", { path: "/" });
+            notification["warning"]({
+              message: "Warning",
+              description: `${res.message}`,
+            });
+            history.push("/account/sign-in/reload");
+            window.location.reload();
+          }
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    };
+    if (newAccState) {
+      getAccNeedSupport(newAccState);
+      console.log("🦇🦇🦇🦇🦇🦇🦇🦇🦇");
+    }
   });
 
   useEffect(() => {
@@ -106,10 +151,24 @@ const ListOfSupport = () => {
       }
       if (res) {
         if (res.success) {
+          const listNeedSupport = res.data.map((item) => {
+            return item.members[0];
+          });
+          const body = {
+            listNeedSupport,
+          };
+          const getListUserNeedSP = await getListUserFromObjectIdConversation(
+            body,
+            token
+          );
+          const newAccNeedSupport = getListUserNeedSP.data.map((item) => {
+            return item;
+          });
           const newNeedSupport = res.data.map((item) => {
             return item._id;
           });
           dispatch(insertNeedSupport({ newNeedSupport }));
+          dispatch(insertAccNeedSupport({ newAccNeedSupport }));
         }
         if (!res.success) {
           if (res.message === "Token is expired") {
@@ -289,6 +348,7 @@ const ListOfSupport = () => {
           text: `${reduxUser.fullName} connected`,
         });
         dispatch(removeNeedSupport({ item: res.data._id }));
+        dispatch(removeAccNeedSupport({ item: res_acc.data.userName }));
         const res_mess = await getMessageByConversation(record, token);
         const res_conversation = await getConversationByUser(
           state.idUser,
@@ -360,6 +420,52 @@ const ListOfSupport = () => {
           message: "Warning",
           description: `${res.message}.`,
         });
+      }
+    }
+  };
+
+  const onKeyPress = async (e) => {
+    if (e.charCode === 13) {
+      const message = {
+        sender: state.idUser,
+        text: newMessageState,
+        conversationId: state.conversations ? state.conversations._id : null,
+      };
+
+      const res = await newMessage(message, token);
+      if (!res) {
+        doNotGetData();
+      }
+      if (res) {
+        if (res.success) {
+          // console.log("🥶🥶🥶🥶🥶🥶🥶~ res.data", res.data);
+
+          socket.current.emit("sendMessage", {
+            senderId: state.idUser,
+            receiverId: state.chatWith._id,
+            text: newMessageState,
+            conversationId: state.conversations
+              ? state.conversations._id
+              : null,
+          });
+          // setMessages((prev) => [...prev, res.data]);
+          setNewMessage("");
+        }
+        if (!res.success) {
+          if (res.message === "Token is expired") {
+            Cookies.remove("token", { path: "/" });
+            notification["warning"]({
+              message: "Warning",
+              description: `${res.message}`,
+            });
+            history.push("/account/sign-in/reload");
+            window.location.reload();
+          }
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}.`,
+          });
+        }
       }
     }
   };
@@ -452,7 +558,7 @@ const ListOfSupport = () => {
                     className="chatOnlineName"
                     style={{ marginLeft: "10px" }}
                   >
-                    Customer {index + 1}
+                    {reduxAccNeedSupport[index] || `Customer ${index + 1}`}
                   </span>
                 </div>
               </Popconfirm>
@@ -510,6 +616,7 @@ const ListOfSupport = () => {
                         setNewMessage(e.target.value);
                       }}
                       value={newMessageState}
+                      onKeyPress={onKeyPress}
                     />
 
                     <Tooltip title="Send" color="blue">

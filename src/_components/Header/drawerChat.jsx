@@ -45,7 +45,7 @@ const DrawerChat = (props) => {
   const socket = useRef();
   const scrollRef = useRef();
 
-  // console.log("🚀🚀🚀🚀🚀🚀🚀~ state", state);
+  // console.log("🚀🚀🚀🚀🚀🚀🚀~ token", token);
   // console.log("🔜🔜🔜🔜🔜🔜🔜🔜 messages", messages);
 
   useEffect(() => {
@@ -136,7 +136,6 @@ const DrawerChat = (props) => {
         doNotGetData();
       }
       if (res) {
-        // console.log("💟💟💟💟💟💟💟💟~ res", res);
         if (res.success) {
           setMessages(res.data);
         }
@@ -157,7 +156,7 @@ const DrawerChat = (props) => {
         }
       }
     };
-    if (state.isConversation && messages.length === 0) {
+    if (token && state.isConversation && messages.length === 0) {
       getMessages();
     }
   }, [
@@ -286,6 +285,72 @@ const DrawerChat = (props) => {
     }
   };
 
+  const onKeyPress = async (e) => {
+    if (e.charCode === 13) {
+      const message = {
+        sender: state.idUser,
+        text: newMessageState,
+        conversationId: state.conversations ? state.conversations._id : null,
+      };
+
+      const checkReceive = state.senderId
+        ? state.senderId
+        : state.conversations
+        ? state.conversations.members.find((member) => member !== state.idUser)
+        : null;
+      const receiverId =
+        checkReceive === "Waiting" || checkReceive === "SENDER"
+          ? "SENDER"
+          : checkReceive;
+      // console.log("🥶🥶🥶🥶🥶🥶🥶 ~ receiverId", receiverId);
+
+      if (receiverId !== "SENDER") {
+        socket.current.emit("sendMessage", {
+          senderId: state.idUser,
+          receiverId,
+          text: newMessageState,
+          conversationId: state.conversations ? state.conversations._id : null,
+        });
+      }
+      if (receiverId === "SENDER") {
+        socket.current.emit("waitingRoom", {
+          conversationId: state.conversations ? state.conversations._id : null,
+        });
+      }
+
+      const res = await newMessage(message, token);
+      if (!res) {
+        doNotGetData();
+      }
+      if (res) {
+        if (res.success) {
+          const body = {
+            senderId: state.idUser,
+            receiverId: "SENDER",
+          };
+          await updateConversation(state.conversations._id, body, token);
+          setMessages([...messages, res.data]);
+          setNewMessageState("");
+        }
+        if (!res.success) {
+          if (res.message === "Token is expired") {
+            Cookies.remove("token", { path: "/" });
+            notification["warning"]({
+              message: "Warning",
+              description: `${res.message}`,
+            });
+            history.push("/account/sign-in/reload");
+            window.location.reload();
+          }
+          notification["warning"]({
+            message: "Warning",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Affix offsetTop="100" style={{}}>
@@ -344,11 +409,14 @@ const DrawerChat = (props) => {
               placeholder="Enter your message here"
               bordered={true}
               className="input-chat-message"
+              name="chatMessage"
+              id="chatMessage"
               style={{ position: "relative", width: "407px" }}
               onChange={(e) => {
                 setNewMessageState(e.target.value);
               }}
               value={newMessageState}
+              onKeyPress={onKeyPress}
             />
             <Button
               type="primary"

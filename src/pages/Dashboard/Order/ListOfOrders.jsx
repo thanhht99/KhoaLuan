@@ -150,6 +150,7 @@ const ListOfOrders = () => {
       dataIndex: "orderStatus",
       width: "20%",
       filters: filterOrderStatus,
+      defaultFilteredValue: ["Waiting for confirmation"],
       onFilter: (value, record) => {
         return record.orderStatus.indexOf(value) === 0;
       },
@@ -233,6 +234,7 @@ const ListOfOrders = () => {
           <DrawerOrder
             id={state.order._id}
             order={state.order}
+            onClose={onClose}
             drawerVisible={state.drawerVisible}
           />
         </Drawer>

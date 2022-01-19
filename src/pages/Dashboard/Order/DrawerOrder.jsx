@@ -18,6 +18,7 @@ import {
 } from "antd";
 import { changeOrderStatus } from "../../../api/order";
 import { doNotGetData } from "../../../constants/doNotGetData";
+import { cancelOrder } from "../../../api/order";
 
 const { Step } = Steps;
 
@@ -50,7 +51,8 @@ const DrawerOrder = (props) => {
     disabled: true,
     current: keyCurrent,
   });
-  // console.log("🚀 🚀 🚀 🚀 🚀  ~ state", state);
+  const [changeOS, setChangeOS] = useState(false);
+
   // console.log("🚀 🚀 🚀 🚀 🚀  ~ props", props);
   // console.log("🚀 🚀 🚀 🚀 🚀  ~ reduxOrder", reduxOrder);
 
@@ -58,7 +60,19 @@ const DrawerOrder = (props) => {
     if (props.id) {
       setState({ current: keyCurrent, disabled: true });
     }
-  }, [props.id, keyCurrent]);
+    if (
+      props.order.orderStatus === "Cancel order" ||
+      props.order.orderStatus === "Return the goods/ Refund"
+    ) {
+      setChangeOS(true);
+    }
+    if (
+      props.order.orderStatus !== "Cancel order" &&
+      props.order.orderStatus !== "Return the goods/ Refund"
+    ) {
+      setChangeOS(false);
+    }
+  }, [props.id, keyCurrent, props.order.orderStatus]);
 
   const next = () => {
     setState((prev) => ({ ...prev, current: prev.current + 1 }));
@@ -190,6 +204,40 @@ const DrawerOrder = (props) => {
     }
   };
 
+  const onClickCancel = async (record) => {
+    const res = await cancelOrder(record._id, token);
+    if (!res) {
+      doNotGetData();
+    }
+    if (res) {
+      if (res.success) {
+        notification["success"]({
+          message: "Success",
+          description: `${res.data}`,
+        });
+        setChangeOS(true);
+        props.onClose();
+        setState((prev) => ({ ...prev, disabled: true }));
+      }
+      if (!res.success) {
+        if (res.message === "Token is expired") {
+          Cookies.remove("token", { path: "/" });
+          notification["warning"]({
+            message: "Warning: cancel order",
+            description: `${res.message}`,
+          });
+          history.push("/account/sign-in/reload");
+        }
+        if (res.message !== "Token is expired") {
+          notification["warning"]({
+            message: "Warning: cancel order",
+            description: `${res.message}.`,
+          });
+        }
+      }
+    }
+  };
+
   return (
     <>
       {reduxOrder ? (
@@ -278,7 +326,7 @@ const DrawerOrder = (props) => {
           </Descriptions>
           <br />
           <Space size="middle">
-            <Button type="primary" onClick={toggleDisabled}>
+            <Button type="primary" onClick={toggleDisabled} disabled={changeOS}>
               Change order status
             </Button>
             <Button
@@ -295,6 +343,28 @@ const DrawerOrder = (props) => {
             >
               Previous
             </Button>
+            {props.order.orderStatus !== "Has received the goods" &&
+              (props.order.orderStatus === "Waiting for confirmation" ||
+              props.order.orderStatus === "Waiting for the goods" ? (
+                <>
+                  <Popconfirm
+                    title="Are you sure to cancel the order?"
+                    onConfirm={() => onClickCancel(props.order)}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <Button type="primary" danger>
+                      Cancel
+                    </Button>
+                  </Popconfirm>
+                </>
+              ) : (
+                <>
+                  <Button type="primary" danger disabled>
+                    Cancel
+                  </Button>
+                </>
+              ))}
           </Space>
           <div>
             <br />
@@ -315,7 +385,9 @@ const DrawerOrder = (props) => {
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary">Confirm & Save</Button>
+              <Button type="primary" disabled={changeOS}>
+                Confirm & Save
+              </Button>
             </Popconfirm>
           </div>
         </>

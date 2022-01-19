@@ -52,7 +52,7 @@ const Reconfirm = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡API_KEY", API_KEY);
+      // console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡API_KEY", API_KEY);
 
       axios
         .get("https://maps.googleapis.com/maps/api/geocode/json", {
@@ -63,7 +63,7 @@ const Reconfirm = () => {
           },
         })
         .then((response) => {
-          console.log("🌽🌽🌽🌽🌽🌽🌽🌽🌽", response);
+          // console.log("🌽🌽🌽🌽🌽🌽🌽🌽🌽", response);
           const location = response.data.results[0].geometry.location;
           let province;
           response.data.results[0].address_components.forEach((item, index) => {

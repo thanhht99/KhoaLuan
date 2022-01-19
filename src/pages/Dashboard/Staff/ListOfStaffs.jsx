@@ -290,6 +290,7 @@ const ListOfStaffs = () => {
           value: "false",
         },
       ],
+      defaultFilteredValue: ["true"],
       onFilter: (value, record) => {
         return record.isActive.toString().indexOf(value) === 0;
       },

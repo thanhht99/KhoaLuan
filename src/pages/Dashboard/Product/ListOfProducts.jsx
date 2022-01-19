@@ -277,6 +277,9 @@ const ListOfProducts = () => {
       onFilter: (value, record) => {
         return record.isActive.toString().indexOf(value) === 0;
       },
+      sortDirections: ['descend'],
+      defaultSortOrder: 'descend',
+      defaultFilteredValue: ["true"],
       render: (isActive, record) => (
         <div>
           <Popconfirm

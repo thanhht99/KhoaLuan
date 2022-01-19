@@ -122,3 +122,49 @@ export const getConversationIncludesTwoUser = async (
     return null;
   }
 };
+
+export const getListUserFromObjectIdConversation = async (body, token) => {
+  try {
+    const res = await callApi(
+      `conversation/getListUserFromObjectIdConversation`,
+      "POST",
+      body,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getAccByConversationId = async (conversationId, token) => {
+  try {
+    const res = await callApi(
+      `conversation/acc/${conversationId}`,
+      "GET",
+      null,
+      headersToken(token)
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
