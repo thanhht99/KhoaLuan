@@ -21,6 +21,12 @@ import { useHistory } from "react-router";
 import { useDispatch } from "react-redux";
 import { createNewVoucher, getAllVouchers } from "../../../api/voucher";
 import { insertVoucherAll } from "../../../store/reducers/voucherAll";
+import moment from "moment";
+
+function disabledDate(current) {
+  // Can not select days before today and today
+  return current && current < moment().endOf("day");
+}
 
 const AddVoucher = (props) => {
   const history = useHistory();
@@ -158,6 +164,7 @@ const AddVoucher = (props) => {
               <DatePicker
                 style={{ width: "100%" }}
                 format={dateFormat}
+                disabledDate={disabledDate}
               ></DatePicker>
             </Form.Item>
           </Col>

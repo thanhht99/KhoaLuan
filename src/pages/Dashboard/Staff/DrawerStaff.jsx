@@ -9,7 +9,9 @@ import {
   Input,
   InputNumber,
   notification,
+  Button,
   DatePicker,
+  Drawer,
 } from "antd";
 import { validateMessages } from "../../../constants/validateMessages";
 import { getUserByUserName } from "../../../api/user";
@@ -17,12 +19,14 @@ import Cookies from "js-cookie";
 import { doNotGetData } from "../../../constants/doNotGetData";
 import { useHistory } from "react-router-dom";
 import moment from "moment";
+import DrawerChangePassStaff from "./drawerChangePassStaff";
 
 const DrawerStaff = (props) => {
   const [formStaffDrawer] = Form.useForm();
   const history = useHistory();
   const initialState = {
     user: null,
+    drawerVisible: false,
   };
   const token = Cookies.get("token");
   const dateFormat = "DD/MM/YYYY";
@@ -86,6 +90,20 @@ const DrawerStaff = (props) => {
     };
     fetchData();
   }, [props.staff, history, token]);
+
+  const onClose = async () => {
+    setState((prev) => ({
+      ...prev,
+      drawerVisible: false,
+    }));
+  };
+
+  const onClickChangeThePassword = async () => {
+    setState((prev) => ({
+      ...prev,
+      drawerVisible: true,
+    }));
+  };
 
   return (
     <>
@@ -256,7 +274,36 @@ const DrawerStaff = (props) => {
                 </Form.Item>
               </Col>
             </Row>
+
+            <Row gutter={16}>
+              <Col span={24}></Col>
+            </Row>
           </Form>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              background: "#52c41a",
+              textAlign: "center",
+              width: "100%",
+            }}
+            onClick={onClickChangeThePassword}
+          >
+            Change the password
+          </Button>
+          <Drawer
+            title={props.staff.userName}
+            width={520}
+            onClose={onClose}
+            visible={state.drawerVisible}
+            className={"drawer-order-dashboard"}
+          >
+            <DrawerChangePassStaff
+              staff={props.staff}
+              token={token}
+              drawerVisible={state.drawerVisible}
+            />
+          </Drawer>
         </>
       ) : (
         <div style={{ display: "grid", margin: "100px" }}>

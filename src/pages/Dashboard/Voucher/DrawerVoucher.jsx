@@ -23,6 +23,11 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { updateVoucher } from "../../../api/voucher";
 
+function disabledDate(current) {
+  // Can not select days before today and today
+  return current && current < moment().endOf("day");
+}
+
 const initialState = {
   loading: false,
   imageUrl: "",
@@ -243,6 +248,7 @@ const DrawerVoucher = (props) => {
                   <DatePicker
                     style={{ width: "100%" }}
                     format={dateFormat}
+                    disabledDate={disabledDate}
                   ></DatePicker>
                 </Form.Item>
               </Col>
@@ -367,8 +373,8 @@ const DrawerVoucher = (props) => {
         </>
       ) : (
         <div style={{ display: "grid", margin: "100px" }}>
-            <Spin />
-          </div>
+          <Spin />
+        </div>
       )}
     </>
   );

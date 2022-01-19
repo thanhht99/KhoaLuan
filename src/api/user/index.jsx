@@ -40,6 +40,24 @@ export const updatePassword = async (body,token) => {
   }
 };
 
+export const updatePasswordFromAdmin = async (body,token) => {
+  try {
+    const res = await callApi("user/updatePasswordFromAdmin", "PATCH", body, headers(token))
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const getUserByUserName = async (userName, token) => {
   try {
     const res = await callApi(

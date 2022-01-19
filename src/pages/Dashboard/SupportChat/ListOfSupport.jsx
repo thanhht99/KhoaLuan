@@ -138,7 +138,6 @@ const ListOfSupport = () => {
     };
     if (newAccState) {
       getAccNeedSupport(newAccState);
-      console.log("🦇🦇🦇🦇🦇🦇🦇🦇🦇");
     }
   });
 
