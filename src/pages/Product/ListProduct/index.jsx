@@ -78,9 +78,11 @@ const ListProduct = () => {
 
   let list_product = JSON.parse(sessionStorage.getItem("products"));
   let categories = JSON.parse(sessionStorage.getItem("categories"));
-  const plainOptions = categories.map((item) => {
-    return item.category_name;
-  });
+  const plainOptions = categories
+    ? categories.map((item) => {
+        return item.category_name;
+      })
+    : [];
 
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);

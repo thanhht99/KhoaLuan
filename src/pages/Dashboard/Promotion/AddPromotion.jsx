@@ -27,6 +27,12 @@ import { getProductIsActiveTrueAndIsPromotionFalse } from "../../../api/product"
 import { getCategory } from "../../../api/category";
 import { insertCategory } from "../../../store/reducers/categoryAll";
 import { insertProductAllTrue } from "../../../store/reducers/productAllTrue";
+import moment from "moment";
+
+function disabledDate(current) {
+  // Can not select days before today and today
+  return current && current < moment().endOf("day");
+}
 
 const AddPromotion = (props) => {
   const history = useHistory();
@@ -270,6 +276,7 @@ const AddPromotion = (props) => {
               <DatePicker
                 style={{ width: "100%" }}
                 format={dateFormat}
+                disabledDate={disabledDate}
               ></DatePicker>
             </Form.Item>
           </Col>
@@ -288,6 +295,7 @@ const AddPromotion = (props) => {
               <DatePicker
                 style={{ width: "100%" }}
                 format={dateFormat}
+                disabledDate={disabledDate}
               ></DatePicker>
             </Form.Item>
           </Col>

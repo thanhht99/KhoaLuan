@@ -183,6 +183,7 @@ const AddVoucher = (props) => {
               <DatePicker
                 style={{ width: "100%" }}
                 format={dateFormat}
+                disabledDate={disabledDate}
               ></DatePicker>
             </Form.Item>
           </Col>
