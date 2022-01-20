@@ -184,7 +184,12 @@ const PageHeader = () => {
               </Dropdown>
             )}
           </div>
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["1"]}>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={["1"]}
+            style={{ backgroundImage: "linear-gradient(#ff0055, #F5CEC7)" }}
+          >
             <Menu.Item key="home">
               <Link to="/home">Home</Link>
             </Menu.Item>
@@ -193,6 +198,9 @@ const PageHeader = () => {
             </Menu.Item>
             <Menu.Item key="voucher">
               <Link to="/voucher/all">Voucher</Link>
+            </Menu.Item>
+            <Menu.Item key="lookUpOrder">
+              <Link to="/order/search">Look up orders</Link>
             </Menu.Item>
             <Menu.Item key="signUp" style={state.style}>
               <Link to="/account/sign-up">Sign Up</Link>

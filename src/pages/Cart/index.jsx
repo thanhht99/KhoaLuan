@@ -18,7 +18,7 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { resetCart, updateCart } from "../../store/reducers/cart";
 import {
-  resetInfoOrder,
+  // resetInfoOrder,
   updateInfoOrder,
 } from "../../store/reducers/infoOrder";
 import { createOrder } from "../../api/order";
@@ -155,7 +155,7 @@ const Cart = (props) => {
       cookiesInfoOrderUpdate.imagePayment
     ) {
       dispatch(resetCart());
-      dispatch(resetInfoOrder());
+      // dispatch(resetInfoOrder());
       Cookies.set("positionCart", 0, { path: "/" });
       Cookies.set("keyCart", 0, { path: "/" });
       next();

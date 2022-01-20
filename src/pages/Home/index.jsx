@@ -102,7 +102,7 @@ const Home = () => {
           src="/image/homevideo.gif"
           alt="Home Video"
           className="info"
-          style={{ height: "100%", width: "100%" }}
+          style={{ height: "400px", width: "100%" }}
         ></img>
       </div>
       <div className="container">
@@ -223,11 +223,11 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div className="row-background">
+      {/* <div className="row-background">
         <div className="bg">
           <img src="/image/homeBackground.jpg" alt=""></img>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

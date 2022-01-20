@@ -48,7 +48,7 @@ const Reconfirm = () => {
     typeVoucher: null,
   });
 
-  // console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡", location);
+  // console.log("💡💡💡💡💡💡💡💡💡💡💡💡💡💡💡", voucher);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -264,6 +264,7 @@ const Reconfirm = () => {
           );
     const newReduxInfoOrder = {
       ...reduxInfoOrder,
+      voucherCode: voucher.discount ? reduxInfoOrder.voucherCode : null,
       phone: "0" + reduxInfoOrder.phone,
       payments: e.target.value,
       orderDate: Date().toLocaleString(),
@@ -347,7 +348,7 @@ const Reconfirm = () => {
             {Number(TotalProduct).toLocaleString("en-US")}
           </Descriptions.Item>
           <Descriptions.Item label="Voucher Code">
-            {reduxInfoOrder.voucherCode}
+            {voucher.discount ? reduxInfoOrder.voucherCode : ""}
           </Descriptions.Item>
           <Descriptions.Item label="Discount">
             {voucher.typeVoucher === "Money" && <>{voucher.discount} $</>}

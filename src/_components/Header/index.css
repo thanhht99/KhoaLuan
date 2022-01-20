@@ -4,9 +4,10 @@
     background: #fff;
 }
 
-[data-theme="dark"] .site-layout-content {
+
+/* [data-theme="dark"] .site-layout-content {
     background: #fc0000;
-}
+} */
 
 .logo-avatar,
 .shopping-cart {
@@ -16,7 +17,7 @@
 .avatar-img {
     object-fit: cover;
     width: 64px;
-    height: 64px;
+    height: 68px;
 }
 
 .ant-row-rtl .logo-avatar {
@@ -31,4 +32,21 @@
 
 .chatBoxTop {
     margin-bottom: 50px;
+}
+
+.ant-layout-header {
+    background-image: linear-gradient(#ff0055, #F5CEC7);
+}
+
+.ant-menu.ant-menu-dark .ant-menu-item-selected,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+    background-color: hsla(340, 100%, 50%, 0.5)
+}
+
+.ant-menu-overflow-item ant-menu-item ant-menu-item-only-child {
+    background-color: hsla(340, 100%, 50%, 0.5)
+}
+
+.ant-menu-overflow-item ant-menu-item ant-menu-item-active ant-menu-item-only-child {
+    background: hsla(340, 100%, 50%, 0.5)
 }

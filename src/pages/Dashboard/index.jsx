@@ -407,7 +407,7 @@ const Dashboard = () => {
       title: (
         <span>
           <AndroidOutlined />
-          Predict customer
+          Customer chart
         </span>
       ),
       content: <PredictCustomer />,
@@ -510,7 +510,7 @@ const Dashboard = () => {
                         key="predict2"
                         onClick={onClickPredictCustomer}
                       >
-                        Predict customer
+                        Customer chart
                       </Menu.Item>
                     </SubMenu>
                   )}

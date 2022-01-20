@@ -21,7 +21,7 @@
     text-align: center !important;
     font-style: bold;
     color: hsla(340, 100%, 50%, 0.5);
-    background-color: rgb(161, 161, 161);
+    background-color: #F5CEC7;
     margin-top: -20px;
 }
 
@@ -81,12 +81,12 @@
 }
 
 .bg {
-    height: 551px;
+    height: 400px;
     object-fit: cover;
 }
 
 .bg img {
-    height: 100%;
+    height: 400px;
     width: 100%;
     object-fit: cover;
 }

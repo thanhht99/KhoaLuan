@@ -13,6 +13,10 @@
     font-size: medium;
 }
 
+.ant-layout-footer {
+    background-image: linear-gradient(#F5CEC7, #ff0055);
+}
+
 p.contact-email {
     width: 280px;
 }

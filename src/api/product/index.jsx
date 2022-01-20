@@ -188,3 +188,26 @@ export const updateActiveProduct = async (sku, isActive, token) => {
     return null;
   }
 };
+
+export const changeFromSkuToName = async (body) => {
+  try {
+    const res = await callApi(
+      "product/changeFromSkuToName",
+      "POST",
+      body,
+      headers
+    )
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};

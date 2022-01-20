@@ -6,6 +6,8 @@ import { Home } from "./../pages/Home/index";
 import { Cart } from "./../pages/Cart/index";
 import { Product } from "./../pages/Product/index";
 import { Voucher } from "./../pages/Voucher/index";
+import { Order } from "../pages/Order/index";
+
 import { NotFound } from "./../_components/NotFound/index";
 import { ServerUpgrade } from "./../_components/ServerUpgrade/index";
 
@@ -43,6 +45,10 @@ export const routes = [
   {
     path: "/staff",
     component: Staff,
+  },
+  {
+    path: "/order",
+    component: Order,
   },
   {
     path: "/cart",

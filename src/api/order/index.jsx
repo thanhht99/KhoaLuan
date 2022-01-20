@@ -92,6 +92,24 @@ export const orderOfUser = async (token) => {
   }
 };
 
+export const searchOrder = async (orderCode) => {
+  try {
+    const res = await callApi(`order/search/${orderCode}`, "GET", null, headers)
+      .then((res) => {
+        return res.data;
+      })
+      .catch((err) => {
+        if (err.message === "Network Error") {
+          return null;
+        }
+        return err.response.data;
+      });
+    return res;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const changeOrderStatus = async (id, body, token) => {
   try {
     const res = await callApi(

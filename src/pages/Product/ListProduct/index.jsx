@@ -419,28 +419,30 @@ const ListProduct = () => {
               <p style={{ fontSize: "17px", paddingTop: "15px" }}>
                 {val.isPromotion ? (
                   <>
-                    <Tooltip placement="top" title={val.price + "$"}>
-                      {val.promotion_detail.discount > 1 ? (
-                        <strong style={{ color: "rgb(255 109 44)" }}>
-                          <span>
-                            {parseFloat(
-                              val.price - val.promotion_detail.discount
-                            ).toFixed(2) + " "}
-                          </span>
-                          <DollarCircleOutlined />
-                        </strong>
-                      ) : (
-                        <strong style={{ color: "rgb(255 109 44)" }}>
-                          <span>
-                            {parseFloat(
-                              val.price -
-                                val.price * val.promotion_detail.discount
-                            ).toFixed(2) + " "}{" "}
-                          </span>
-                          <DollarCircleOutlined />
-                        </strong>
-                      )}{" "}
-                    </Tooltip>
+                    <span style={{ textDecoration: "line-through " }}>
+                      {val.price + " $"}
+                    </span>
+                    <span>{"  "}</span>
+                    {val.promotion_detail.discount > 1 ? (
+                      <strong style={{ color: "rgb(255 109 44)" }}>
+                        <span>
+                          {parseFloat(
+                            val.price - val.promotion_detail.discount
+                          ).toFixed(2) + " "}
+                        </span>
+                        <DollarCircleOutlined />
+                      </strong>
+                    ) : (
+                      <strong style={{ color: "rgb(255 109 44)" }}>
+                        <span>
+                          {parseFloat(
+                            val.price -
+                              val.price * val.promotion_detail.discount
+                          ).toFixed(2) + " "}{" "}
+                        </span>
+                        <DollarCircleOutlined />
+                      </strong>
+                    )}
                   </>
                 ) : (
                   <>
