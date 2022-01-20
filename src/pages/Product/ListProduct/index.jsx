@@ -17,8 +17,9 @@ import {
   Button,
   message,
   Tooltip,
-  Spin,
   Input,
+  Checkbox,
+  Result,
   // Divider,
 } from "antd";
 import { getCategory } from "../../../api/category";
@@ -30,6 +31,7 @@ import { addCart } from "../../../store/reducers/cart";
 const { Meta } = Card;
 const { Option } = Select;
 const { Search } = Input;
+const CheckboxGroup = Checkbox.Group;
 
 const ListProduct = () => {
   const dispatch = useDispatch();
@@ -43,8 +45,6 @@ const ListProduct = () => {
     page: 1,
     search: null,
   });
-
-  // console.log("☄️☄️☄️☄️☄️☄️ state", state);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +78,9 @@ const ListProduct = () => {
 
   let list_product = JSON.parse(sessionStorage.getItem("products"));
   let categories = JSON.parse(sessionStorage.getItem("categories"));
+  const plainOptions = categories.map((item) => {
+    return item.category_name;
+  });
 
   const onChange = (pageNumber) => {
     console.log("Page: ", pageNumber);
@@ -298,10 +301,57 @@ const ListProduct = () => {
     });
   };
 
+  const [checkAll, setCheckAll] = React.useState(false);
+  const [indeterminate, setIndeterminate] = React.useState(true);
+  const [checkedList, setCheckedList] = React.useState(plainOptions);
+  const onCheckAllChange = (e) => {
+    setCheckedList(e.target.checked ? plainOptions : []);
+    setCheckAll(e.target.checked);
+    setIndeterminate(false);
+
+    if (e.target.checked) {
+      setState((prev) => ({
+        ...prev,
+        products: list_product.sort((a, b) => a.price - b.price),
+        price: { value: "increase" },
+        search: null,
+        discount: { value: "both" },
+      }));
+      onChange(1);
+    }
+    if (!e.target.checked) {
+      setState((prev) => ({
+        ...prev,
+        products: [],
+        price: { value: "increase" },
+        search: null,
+        discount: { value: "both" },
+      }));
+      onChange(1);
+    }
+  };
+  const onChangeCheckbox = (list) => {
+    setCheckedList(list);
+    setIndeterminate(!!list.length && list.length < plainOptions.length);
+    setCheckAll(list.length === plainOptions.length);
+
+    let changeProduct = list_product.filter((product) => {
+      return list.includes(product.category);
+    });
+    setState((prev) => ({
+      ...prev,
+      products: changeProduct.sort((a, b) => a.price - b.price),
+      price: { value: "increase" },
+      discount: { value: "both" },
+      search: null,
+    }));
+    onChange(1);
+  };
+
   return (
     <div className="htmlListProduct" id="htmlListProduct">
       <div className="test-list-product">
-        <div className="list-product-sort-bar">
+        <div className="list-product-sort-bar" hidden>
           <span>Sort By</span>
           <Radio.Group
             onChange={categoryChange}
@@ -317,6 +367,57 @@ const ListProduct = () => {
                 </Radio>
               ))}
           </Radio.Group>
+          <div className="list-product-sort-by-options">
+            <Select
+              labelInValue
+              // defaultValue={{ value: "increase" }}
+              style={{ width: 160 }}
+              onChange={priceChange}
+              value={state.price}
+            >
+              <Option value="increase">Price: Increase</Option>
+              <Option value="decrease">Price: Decrease</Option>
+            </Select>
+          </div>
+          <div className="list-product-sort-by-discount">
+            <Select
+              labelInValue
+              style={{ width: 160, marginLeft: "8px" }}
+              onChange={discountChange}
+              value={state.discount}
+            >
+              <Option value="yes">Discount: yes</Option>
+              <Option value="no">Discount: no</Option>
+              <Option value="both">Discount: both</Option>
+            </Select>
+          </div>
+          <Search
+            placeholder="Search"
+            onSearch={onSearch}
+            enterButton
+            style={{ width: "160px", marginLeft: "8px" }}
+            defaultValue={state.search ? state.search : null}
+          />
+        </div>
+        <div className="list-product-sort-bar">
+          <span>Sort By</span>
+          {categories && categories.length > 0 && (
+            <>
+              <Checkbox
+                style={{ paddingLeft: 15, paddingRight: 8 }}
+                checked={checkAll}
+                onChange={onCheckAllChange}
+                indeterminate={indeterminate}
+              >
+                Check all
+              </Checkbox>
+              <CheckboxGroup
+                options={plainOptions}
+                value={checkedList}
+                onChange={onChangeCheckbox}
+              />
+            </>
+          )}
           <div className="list-product-sort-by-options">
             <Select
               labelInValue
@@ -459,9 +560,7 @@ const ListProduct = () => {
             </Card>
           ))
         ) : (
-          <div style={{ display: "grid", margin: "100px" }}>
-            <Spin />
-          </div>
+          <Result status="404" title="No products" />
         )}
       </div>
       <div className="pagination-list-product">
